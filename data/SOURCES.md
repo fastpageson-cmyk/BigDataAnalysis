@@ -32,5 +32,10 @@
 | raw/막시무스/가공/*.csv | 막시무스 가공본 치킨 부분집합(점포 층·네이버 평점, 동대문 30분권 네이버 리뷰), 작성자명·전화번호 제외 | 김건우(DAT) 가공 | code/pull_maximus.py | 2026-11-11 |
 | raw/지하철/subway_time_2015_2026.csv | 서울시 지하철 호선별 역별 시간대별 승하차 인원 (OA-12252, OpenAPI CardSubwayTime) 2015-01~2026-10 | 서울특별시 | https://data.seoul.go.kr/dataList/OA-12252/S/1/datasetView.do | 2026-11-11 (API, code/subway_fetch.py) |
 | (추가 후보) 제과점영업 인허가 | 서울시 제과점영업 인허가 정보 | 서울특별시 | data.seoul.go.kr에서 "제과점영업" 검색 | 미수집 |
+| raw/ftc_region/치킨_{연도}.csv | 공정위 가맹정보 브랜드 가맹점 및 직영점정보 (15125490), 치킨 업종만 저장 | 공정거래위원회 | https://www.data.go.kr/data/15125490/openapi.do | 2026-11-12 (API, code/ftc_region_fetch.py) |
+| raw/ftc_disclosure/finance.csv | 공정위 가맹정보 가맹본부 재무정보 (15125456) | 공정거래위원회 | https://www.data.go.kr/data/15125456/openapi.do | 2026-11-12 (API, code/ftc_disclosure_fetch.py) |
+| raw/ftc_disclosure/stores.csv | 공정위 가맹정보 브랜드 가맹점 목록 (15125492), 대표자명 제외 | 공정거래위원회 | https://www.data.go.kr/data/15125492/openapi.do | 2026-11-12 (API) |
+| raw/ftc_disclosure/contract.csv | 공정위 가맹정보 브랜드 가맹점 사업자 가맹기간 (15125484) | 공정거래위원회 | https://www.data.go.kr/data/15125484/openapi.do | 2026-11-12 (API) |
+| raw/ftc_disclosure/siting.csv | 공정위 가맹정보 브랜드 가맹점 사업자 입지선정기준 (15125488) | 공정거래위원회 | https://www.data.go.kr/data/15125488/openapi.do | 2026-11-12 (API) |
 
 수집일 2026-11-05/06은 이전 세션 기록 기준. 제출 전 원본 페이지에서 갱신일·이용조건 다시 확인.

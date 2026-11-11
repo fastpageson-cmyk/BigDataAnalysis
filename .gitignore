@@ -24,3 +24,9 @@ data/processed/*.pkl
 data/processed/sbiz_dong_points.csv
 data/processed/chicken_mobility_sample.csv
 logs/
+
+# 11/12 정보공개서: 점포 단위(가맹점명·주소·좌표)와 수집 진행 기록은 올리지 않음
+data/raw/ftc_disclosure/stores.csv
+data/raw/ftc_disclosure/*_done.txt
+data/processed/brand_store_match.csv
+.claude/

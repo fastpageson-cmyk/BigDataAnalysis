@@ -1,216 +1,289 @@
+<!doctype html>
+<html lang="ko">
+<head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>서울 치킨 창업 지도</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- 11/12 Material 3 기본판(google-design 스킬)으로 다시 만듦. 빌드: python code/web_build.py → web/index.html (M3 CSS·Leaflet CSS 인라인) -->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block">
+<script type="module">
+  // Material Web 2.5.0. 아티팩트는 cdn.jsdelivr.net만 허용해 esm.run 대신 같은 버전의 jsDelivr +esm 주소를 쓴다
+  import 'https://cdn.jsdelivr.net/npm/@material/web@2.5.0/all.js/+esm';
+  import { styles as typescaleStyles } from 'https://cdn.jsdelivr.net/npm/@material/web@2.5.0/typography/md-typescale-styles.js/+esm';
+  document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+</script>
 <style>
+/*M3_CSS*/
 /*LEAFLET_CSS*/
-/* 구성: 왼쪽 판단 패널(브랜드 → 전략 → 후보 목록), 오른쪽 서울 전역 지도. 지도는 타일 없이 구 경계·상권만 그린 도면 */
-:root{
-  --paper:#eef0ee; --panel:#fbfcfb; --ink:#14181c; --ink2:#4a5157; --ink3:#6d747a; --line:#d5d9d6; --line2:#c2c8c4;
-  --q1:#2a78d6; --q2:#c98500; --q3:#1a9e70; --q4:#9aa0a6; --hot:#d3342f; --cand:#14181c; --candring:#fbfcfb; --sel:#2a78d6;
-  --f-sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif; --f-num:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#161a1d; --panel:#1d2226; --ink:#e9ece9; --ink2:#b9c0bd; --ink3:#9ba39f; --line:#2e3539; --line2:#3a4247;
-  --q1:#3f8ee6; --q2:#d99a12; --q3:#2bb886; --q4:#6c7378; --hot:#ef5a52; --cand:#f2f4f1; --candring:#161a1d; --sel:#5aa0ee; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --paper:#161a1d; --panel:#1d2226; --ink:#e9ece9; --ink2:#b9c0bd; --ink3:#9ba39f; --line:#2e3539; --line2:#3a4247;
-  --q1:#3f8ee6; --q2:#d99a12; --q3:#2bb886; --q4:#6c7378; --hot:#ef5a52; --cand:#f2f4f1; --candring:#161a1d; --sel:#5aa0ee; color-scheme:dark}
+/* ── 화면 틀: 앱 바 + 두 창(왼쪽 판단 412, 오른쪽 지도) [A-doc layout] ── */
 html,body{height:100%}
-body{background:var(--paper);color:var(--ink);font:14px/1.5 var(--f-sans);margin:0}
-::selection{background:var(--sel);color:#fff}
-.app{display:grid;grid-template-columns:minmax(300px,380px) 1fr;height:100%}
-aside{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;display:flex;flex-direction:column;gap:20px;padding-block:20px 28px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:20px;scrollbar-color:var(--line2) transparent}
-h1{font-size:20px;line-height:1.25;margin:0;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
-.lede{margin:6px 0 0;color:var(--ink2);font-size:13px}
-.block{display:flex;flex-direction:column;gap:8px}
-.lbl{font-size:12px;font-weight:500;color:var(--ink3);letter-spacing:.02em}
-select{font:inherit;font-size:15px;font-weight:500;color:var(--ink);background:var(--paper);border:1px solid var(--line2);border-radius:6px;padding:9px 10px;width:100%}
-select:focus-visible,button:focus-visible,.row:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
-.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
-.facts div{background:var(--panel);padding:8px 8px 7px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.facts b{font:500 15px/1.2 var(--f-num);font-variant-numeric:tabular-nums}
-.facts span{font-size:12px;color:var(--ink3)}
-.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line2);border-radius:6px;overflow:hidden}
-.seg button{font:inherit;border:0;background:transparent;color:var(--ink2);padding:9px 6px;cursor:pointer;display:flex;flex-direction:column;gap:1px;text-align:left;padding-left:12px}
-.seg button b{font-size:14px;color:var(--ink)}
-.seg button small{font-size:12px;color:var(--ink3);line-height:1.35}
-.seg button[aria-pressed="true"]{background:var(--ink);}
-.seg button[aria-pressed="true"] b,.seg button[aria-pressed="true"] small{color:var(--panel)}
-.seg button+button{border-left:1px solid var(--line2)}
-.rule{font-size:12.5px;color:var(--ink2);margin:0}
-.layers{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font:inherit;font-size:12.5px;border:1px solid var(--line2);background:transparent;color:var(--ink2);border-radius:999px;padding:5px 11px 5px 9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.chip i{width:10px;height:10px;border-radius:2px;display:inline-block}
-.chip[aria-pressed="false"]{opacity:.55}
-.chip[aria-pressed="false"] i{background:transparent!important;outline:1px solid var(--line2)}
-.legend{display:grid;grid-template-columns:auto 1fr;gap:5px 8px;font-size:12px;color:var(--ink2);align-items:center}
-.legend i{width:14px;height:10px;border-radius:2px;display:inline-block}
-.head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-.count{font:500 22px/1 var(--f-num);font-variant-numeric:tabular-nums}
-.list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
-.row{display:grid;grid-template-columns:22px 1fr auto;gap:2px 8px;padding:8px 2px;border-bottom:1px solid var(--line);cursor:pointer;align-items:baseline}
-.row:hover{background:var(--paper)}
-.row .n{font:400 12px var(--f-num);color:var(--ink3)}
-.row .nm{font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row .v{font:500 13px var(--f-num);font-variant-numeric:tabular-nums}
-.row .sub{grid-column:2/4;font-size:12px;color:var(--ink3);font-variant-numeric:tabular-nums}
-.empty{color:var(--ink3);font-size:13px;padding:12px 0}
-.note{font-size:12px;color:var(--ink3);line-height:1.55;border-top:1px solid var(--line);padding-top:12px;margin:0}
-main{position:relative;min-width:0}
-#map{position:absolute;inset:0;background:var(--paper)}
-.leaflet-container{font:inherit;background:var(--paper)}
-.leaflet-control-zoom a{background:var(--panel)!important;color:var(--ink)!important;border-color:var(--line)!important}
-.gu-label{font:500 12px var(--f-sans);color:var(--ink3);white-space:nowrap;text-shadow:0 0 3px var(--paper),0 0 3px var(--paper);pointer-events:none}
-.leaflet-tooltip{background:var(--panel);color:var(--ink);border:1px solid var(--line2);border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.12);font:12.5px/1.45 var(--f-sans);padding:7px 9px}
-.leaflet-tooltip b{font-weight:700}
-.leaflet-tooltip .m{font-family:var(--f-num);font-variant-numeric:tabular-nums}
-.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink3);font-size:13px}
-@media (max-width:760px){
-  .app{grid-template-columns:1fr;grid-template-rows:56vh auto;height:auto}
-  main{order:-1;height:56vh}
-  aside{border-right:0;border-top:1px solid var(--line);overflow:visible;padding-right:max(16px,env(safe-area-inset-right,0px));padding-left:max(16px,env(safe-area-inset-left,0px))}
+[hidden]{display:none!important}
+body{display:flex;flex-direction:column;font:var(--md-sys-typescale-body-medium)}
+.m3-top-app-bar{flex:none}
+.wrap{flex:1;min-height:0;display:grid;gap:var(--md-sys-measurement-space300);padding:0 var(--md-sys-measurement-space300) var(--md-sys-measurement-space300)}
+@media (min-width:840px){.wrap{grid-template-columns:360px 1fr}}
+@media (min-width:1200px){.wrap{grid-template-columns:412px 1fr}}
+.side{overflow-y:auto;display:flex;flex-direction:column;gap:var(--md-sys-measurement-space200);padding:var(--md-sys-measurement-space100) 0 var(--md-sys-measurement-space300);min-width:0}
+.mapbox{position:relative;min-height:0;border-radius:var(--md-sys-shape-corner-large);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);background:var(--md-sys-color-surface-container-low)}
+#map{position:absolute;inset:0;background:var(--md-sys-color-surface-container-low)}
+@media (max-width:839px){
+  body{display:block}
+  .wrap{display:flex;flex-direction:column;padding:0 var(--md-sys-measurement-space200) var(--md-sys-measurement-space200)}
+  .mapbox{order:-1;height:60vh;flex:none}
+  .side{overflow:visible}
 }
+/* ── 판단 패널 ── */
+h2.sec{margin:0;font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface-variant)}
+.field{display:flex;flex-direction:column;gap:var(--md-sys-measurement-space50)}
+.flabel{font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant)}
+.field select{font:var(--md-sys-typescale-body-large);color:var(--md-sys-color-on-surface);background:var(--md-sys-color-surface);border:1px solid var(--md-sys-color-outline);border-radius:var(--md-sys-shape-corner-extra-small);padding:var(--md-sys-measurement-space200);min-height:56px;width:100%;cursor:pointer}
+.field select:focus-visible{outline:2px solid var(--md-sys-color-primary);outline-offset:-1px;border-color:var(--md-sys-color-primary)}
+.fsup{font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant);padding-left:var(--md-sys-measurement-space200)}
+.brandcard{display:flex;flex-direction:column;gap:var(--md-sys-measurement-space150)}
+.brandcard .top{display:flex;align-items:center;justify-content:space-between;gap:var(--md-sys-measurement-space100)}
+.brandcard h3{margin:0;font:var(--md-sys-typescale-title-large)}
+.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--md-sys-measurement-space150) var(--md-sys-measurement-space200);margin:0}
+.facts div{display:flex;flex-direction:column;min-width:0}
+.facts dt{font:var(--md-sys-typescale-label-medium);color:var(--md-sys-color-on-surface-variant);order:2}
+.facts dd{margin:0;font:var(--md-sys-typescale-title-medium);font-variant-numeric:tabular-nums;order:1}
+.say{margin:0;font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant)}
+.say b{color:var(--md-sys-color-on-surface);font-weight:500}
+.warn{display:flex;gap:var(--md-sys-measurement-space150);align-items:flex-start;background:var(--md-sys-color-error-container);color:var(--md-sys-color-on-error-container);border-radius:var(--md-sys-shape-corner-medium);padding:var(--md-sys-measurement-space150) var(--md-sys-measurement-space200);font:var(--md-sys-typescale-body-medium)}
+.warn md-icon{flex:none}
+.m3-segmented{display:flex}
+.m3-segmented button{flex:1}
+.rule{margin:var(--md-sys-measurement-space100) 0 0;font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant)}
+.head{display:flex;align-items:baseline;justify-content:space-between}
+.count{font:var(--md-sys-typescale-title-medium);font-variant-numeric:tabular-nums}
+md-list{background:transparent;padding:0;--md-list-item-leading-space:var(--md-sys-measurement-space100);--md-list-item-trailing-space:var(--md-sys-measurement-space100)}
+.rank{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface-variant);width:24px;text-align:center;font-variant-numeric:tabular-nums}
+.tr-sales{font:var(--md-sys-typescale-label-large);font-variant-numeric:tabular-nums;color:var(--md-sys-color-on-surface)}
+.empty{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);padding:var(--md-sys-measurement-space200) 0;margin:0}
+.checks{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--md-sys-measurement-space150)}
+.checks li{display:grid;grid-template-columns:24px 1fr;gap:var(--md-sys-measurement-space150);font:var(--md-sys-typescale-body-medium)}
+.checks md-icon{color:var(--md-sys-color-primary)}
+.checks small{display:block;font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant)}
+.note{margin:0;font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant)}
+/* ── 지도 위 범례 (지도 내용물이라 크기는 4의 배수 숫자) ── */
+.legend{position:absolute;left:var(--md-sys-measurement-space150);bottom:var(--md-sys-measurement-space150);z-index:500;background:var(--md-sys-color-surface-container);color:var(--md-sys-color-on-surface);border-radius:var(--md-sys-shape-corner-medium);padding:var(--md-sys-measurement-space150) var(--md-sys-measurement-space200);display:grid;grid-template-columns:auto 1fr;gap:var(--md-sys-measurement-space100) var(--md-sys-measurement-space150);align-items:center;font:var(--md-sys-typescale-label-medium);--md-elevation-level:2;max-width:260px}
+.legend i{display:inline-block;width:16px;height:12px;border-radius:var(--md-sys-shape-corner-extra-small)}
+.legend i.dot{width:12px;height:12px;border-radius:var(--md-sys-shape-corner-full);margin-left:2px}
+.layers{position:absolute;right:var(--md-sys-measurement-space150);top:var(--md-sys-measurement-space150);z-index:500;background:var(--md-sys-color-surface-container);border-radius:var(--md-sys-shape-corner-medium);padding:var(--md-sys-measurement-space100);--md-elevation-level:2;max-width:calc(100% - 96px)}
+.loading{position:absolute;inset:0;display:grid;place-items:center;font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);z-index:600}
+/* Leaflet 부품을 토큰 색으로 */
+.leaflet-container{font:inherit;background:var(--md-sys-color-surface-container-low)}
+.leaflet-control-zoom{border:0!important;border-radius:var(--md-sys-shape-corner-medium)!important;overflow:hidden}
+.leaflet-control-zoom a{background:var(--md-sys-color-surface-container)!important;color:var(--md-sys-color-on-surface)!important;border-color:var(--md-sys-color-outline-variant)!important}
+.leaflet-tooltip{background:var(--md-sys-color-inverse-surface);color:var(--md-sys-color-inverse-on-surface);border:0;border-radius:var(--md-sys-shape-corner-extra-small);box-shadow:none;font:var(--md-sys-typescale-body-small);padding:var(--md-sys-measurement-space100) var(--md-sys-measurement-space150);max-width:280px;white-space:normal}
+.leaflet-tooltip::before{display:none}
+.leaflet-tooltip b{font-weight:500}
+.gu-label{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant);white-space:nowrap;pointer-events:none;text-shadow:0 0 2px var(--md-sys-color-surface-container-low),0 0 2px var(--md-sys-color-surface-container-low)}
+.cand-n{display:grid;place-items:center;border-radius:var(--md-sys-shape-corner-full);background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);font:var(--md-sys-typescale-label-small);font-variant-numeric:tabular-nums;border:2px solid var(--md-sys-color-surface-container-low);box-sizing:border-box}
+.cand-n.sel{background:var(--md-sys-color-tertiary);color:var(--md-sys-color-on-tertiary)}
+@media (max-width:599px){.legend{display:none}}   /* 좁은 화면에서는 범례가 지도를 가려 숨긴다. 층 칩 이름이 대신 설명한다 [D] */
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+</head>
+<body>
+<header class="m3-top-app-bar">
+  <h1 class="headline">서울 치킨 창업 지도</h1>
+  <div class="trailing"><md-icon-button id="info-btn" aria-label="근거와 자료"><md-icon>info</md-icon></md-icon-button></div>
+</header>
 
-<div class="app">
-  <aside>
+<div class="wrap">
+  <section class="side" aria-label="판단 패널">
+    <!-- md-outlined-select는 이 화면(Leaflet과 함께)에서 메뉴가 열리지 않아 기본 select를 외곽선 입력란 모양으로 둔다 [D] -->
+    <label class="field"><span class="flabel">브랜드</span><select id="brand"></select><span class="fsup">서울 3년 폐업이 낮은 순</span></label>
+
+    <article class="m3-card filled brandcard" id="brandcard" aria-live="polite"></article>
+    <div class="warn" id="warn" hidden><md-icon>warning</md-icon><span id="warntext"></span></div>
+
     <div>
-      <h1>서울 치킨 창업 지도</h1>
-      <p class="lede">브랜드를 고르면, 서울 전역에서 그 브랜드로 낼 만한 250m 칸을 보여줍니다.</p>
-    </div>
-
-    <div class="block">
-      <label class="lbl" for="brand">브랜드</label>
-      <select id="brand"></select>
-      <div class="facts" id="facts"></div>
-    </div>
-
-    <div class="block">
-      <span class="lbl" id="stratlbl">전략</span>
-      <div class="seg" role="group" aria-labelledby="stratlbl">
-        <button id="s-long" aria-pressed="true"><b>가늘고 길게</b><small>장사가 되는 상권 중 가게가 덜 바뀌고 덜 붐비는 칸</small></button>
-        <button id="s-short" aria-pressed="false"><b>굵고 짧게</b><small>장사가 되는 상권이면 경쟁이 있어도 포함</small></button>
+      <h2 class="sec" id="stratlbl">후보 칸 조건</h2>
+      <div class="m3-segmented" role="group" aria-labelledby="stratlbl" style="margin-top:var(--md-sys-measurement-space100)">
+        <button id="s-long" aria-pressed="true"><md-focus-ring></md-focus-ring><md-ripple></md-ripple>가늘고 길게</button>
+        <button id="s-short" aria-pressed="false"><md-focus-ring></md-focus-ring><md-ripple></md-ripple>굵고 짧게</button>
       </div>
       <p class="rule" id="rule"></p>
     </div>
 
-    <div class="block">
-      <span class="lbl">지도에 보이기</span>
-      <div class="layers">
-        <button class="chip" id="l-trdar" aria-pressed="true"><i style="background:var(--q1)"></i>상권 매출×폐업</button>
-        <button class="chip" id="l-hot" aria-pressed="true"><i style="background:var(--hot)"></i>이 브랜드가 몰린 곳</button>
-        <button class="chip" id="l-cand" aria-pressed="true"><i style="background:var(--cand)"></i>후보 칸</button>
-      </div>
-      <div class="legend">
-        <i style="background:var(--q1)"></i><span>① 잘 팔리고 덜 망하는 상권</span>
-        <i style="background:var(--q2)"></i><span>② 잘 팔리지만 많이 망하는 상권</span>
-        <i style="background:var(--q3)"></i><span>③ 덜 팔리지만 덜 망하는 상권</span>
-        <i style="background:var(--q4)"></i><span>④ 덜 팔리고 많이 망하는 상권</span>
-        <i style="background:var(--hot)"></i><span>이 브랜드 점포가 500m 칸에 2곳 이상 (진할수록 많음)</span>
-        <i style="background:var(--cand);border-radius:50%;width:10px;height:10px;margin-left:2px;box-shadow:0 0 0 1.5px var(--candring),0 0 0 2.5px var(--line2)"></i><span>후보 칸 (250m 칸의 중심)</span>
-      </div>
+    <div>
+      <div class="head"><h2 class="sec">후보 상권 · 점포당 매출 높은 순</h2><span class="count" id="count">–</span></div>
+      <md-list id="list" aria-label="후보 상권"></md-list>
+      <p class="empty" id="empty" hidden></p>
     </div>
 
-    <div class="block">
-      <div class="head"><span class="lbl">후보 칸 · 점포당 매출 높은 순</span><span class="count" id="count">–</span></div>
-      <div class="list" id="list"><div class="empty">데이터를 불러오는 중입니다.</div></div>
-    </div>
+    <article class="m3-card outlined">
+      <h2 class="sec" style="margin-bottom:var(--md-sys-measurement-space150)">자리를 볼 때 (검증된 것만)</h2>
+      <ul class="checks">
+        <li><md-icon>stairs</md-icon><span>지하 매장은 피한다<small>프랜차이즈 3년 폐업 26.2% vs 1층 12.3% (지하 269곳뿐)</small></span></li>
+        <li><md-icon>sync_problem</md-icon><span>직전 가게가 1년을 못 버틴 자리는 피한다<small>치킨집 3년 폐업 30.5% vs 24.4%</small></span></li>
+        <li><md-icon>event_upcoming</md-icon><span>2–3년차가 고비다<small>개인 치킨집 연 14.9%로 가장 높고, 넘겨도 안전 구간은 없다</small></span></li>
+      </ul>
+    </article>
 
-    <p class="note" id="note">
-      검증(2023년 말 상태로 칸을 나누고 2024–26년 실제 폐업과 비교): 상권 점포당 매출 상위 25%에 있던 치킨집은 폐업 14.2%, 나머지 21.4% (p=0.003). 같은 기준이 개인 치킨집에서는 뚜렷하지만(15.4% vs 25.9%) 프랜차이즈 안에서는 차이가 없었습니다. 프랜차이즈는 어느 칸이냐보다 어느 브랜드냐가 폐업을 가릅니다. '경쟁이 적은 칸'은 프랜차이즈에서 오히려 폐업이 많아(23.2% vs 11.8%) 기준에서 뺐습니다. 같은 브랜드 1km 밖 조건은 가맹 영업구역 관행을 따른 것이고 검증된 효과는 아닙니다.<br><br>
-      자료: 서울 인허가 치킨집(2026-11-04), 서울시 상권분석서비스 상권 추정매출·점포(2024Q1–2026Q2), 공정위 가맹정보 2024. 매출은 카드 결제 기반 추정이며 이익이 아닙니다.
-    </p>
-  </aside>
-  <main><div id="map" role="region" aria-label="서울 지도"></div><div class="loading" id="loading">지도를 그리는 중입니다.</div></main>
+    <p class="note">입지는 보조 규칙이다. 같은 방법으로 비교하면 치킨은 한식·커피보다 동네 효과가 약하고(동네 과거 폐업률 AUC 0.50 vs 0.57), 폐업을 가르는 것은 주로 브랜드다.</p>
+  </section>
+
+  <main class="mapbox">
+    <div id="map" role="region" aria-label="서울 지도"></div>
+    <div class="layers"><md-chip-set aria-label="지도 층">
+      <md-filter-chip id="l-trdar" label="매출 상위 상권" selected></md-filter-chip>
+      <md-filter-chip id="l-cand" label="후보 칸" selected></md-filter-chip>
+      <md-filter-chip id="l-hot" label="이미 몰린 곳"></md-filter-chip>
+    </md-chip-set></div>
+    <div class="legend" aria-label="범례"><md-elevation></md-elevation>
+      <i id="lg-top"></i><span>치킨 점포당 매출 상위 25% 상권</span>
+      <i id="lg-rest"></i><span>나머지 상권 (매출 자료 있음)</span>
+      <i class="dot" id="lg-cand"></i><span>후보 칸 (숫자 = 그 상권의 칸 수)</span>
+      <i id="lg-hot"></i><span>이 브랜드 점포 2곳 이상인 500m 칸</span>
+    </div>
+    <div class="loading" id="loading">지도를 그리는 중입니다.</div>
+  </main>
 </div>
+
+<md-dialog id="info">
+  <div slot="headline">이 지도의 근거</div>
+  <div slot="content" class="note" style="font:var(--md-sys-typescale-body-medium)">
+    <p>후보 칸 = 250m 칸 중 ① 그 칸이 속한 상권의 치킨 점포당 매출이 서울 상위 25%(점포분기 20 이상 상권만), ② 같은 브랜드 점포가 1km 밖. '가늘고 길게'는 여기에 ③ 최근 5년 가게 회전 상위 25%가 아님을 더한다.</p>
+    <p>①은 검증됨: 2023년 말 상위 25% 상권의 치킨집은 2024–26 폐업 14.2%, 나머지 21.4%(p=0.003). 단 차이는 개인 치킨집에서 나오고 프랜차이즈 안에서는 없다. ②는 가맹 영업구역 관행이고 효과는 검증되지 않았다. ③은 결과를 본 뒤 정한 사후 조건이다. '경쟁 적은 칸'은 프랜차이즈에서 오히려 폐업이 많아(23.2% vs 11.8%) 넣지 않았다.</p>
+    <p>브랜드 수치: 서울 3년 폐업은 서울 인허가 2015–22 개업(점주 교체 제외), 이탈률·신규/인수 비율은 공정위 가맹점 현황 2024년 실적(전국), 평균매출·창업비는 공정위 2024(전국, 창업비에 임차보증금 없음). 매출은 카드 결제 기반 추정이며 이익이 아니다.</p>
+    <p>자료: 서울 인허가 치킨집(2026-11-04), 서울시 상권분석서비스 상권 추정매출·점포(2024Q1–2026Q2), 공정위 가맹정보.</p>
+  </div>
+  <div slot="actions"><md-text-button id="info-close">닫기</md-text-button></div>
+</md-dialog>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const $=id=>document.getElementById(id);
-const st={brand:null,strat:'long',layers:{trdar:true,hot:true,cand:true}};
-let D,map,L_gu,L_tr,L_hot,L_cand,trIndex={};
-const QN={1:'①',2:'②',3:'③',4:'④'};
+const st={brand:null,strat:'long',layers:{trdar:true,cand:true,hot:false},sel:null};
+let D,map,ren,L_gu,L_tr,L_hot,L_cand,trIndex={};
 const fmt=(x,d=1)=>x==null?'–':x.toLocaleString('ko-KR',{maximumFractionDigits:d,minimumFractionDigits:d});
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-fetch('data.json').then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(init).catch(e=>{
-  $('loading').textContent='지도 데이터(data.json)를 불러오지 못했습니다. 페이지를 새로 고쳐 주세요.';$('list').innerHTML='<div class="empty">데이터를 불러오지 못했습니다.</div>';
+fetch('data.json').then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(init).catch(()=>{
+  $('loading').textContent='지도 데이터를 불러오지 못했습니다. 페이지를 새로 고쳐 주세요.';
 });
 
 function init(data){
   D=data; $('loading').hidden=true;
   D.trdar.forEach(t=>trIndex[t.code]=t);
   map=L.map('map',{zoomControl:true,preferCanvas:true,attributionControl:false,zoomSnap:.25}).setView([37.5565,126.99],11);
-  const ren=L.canvas({padding:.3});
-  L_gu=L.layerGroup().addTo(map);
-  D.gu.forEach(g=>{
-    const lay=L.geoJSON(g.geom,{renderer:ren,interactive:false,style:{color:css('--line2'),weight:1.2,fill:true,fillColor:css('--panel'),fillOpacity:1}}).addTo(L_gu);
-    const c=lay.getBounds().getCenter();
-    L.marker(c,{interactive:false,icon:L.divIcon({className:'gu-label',html:g.name,iconSize:null})}).addTo(L_gu);
-  });
-  L_tr=L.geoJSON({type:'FeatureCollection',features:D.trdar.map(t=>({type:'Feature',geometry:t.geom,properties:t}))},{renderer:ren,style:trStyle,onEachFeature:(f,l)=>l.bindTooltip(trTip(f.properties),{sticky:true})}).addTo(map);
-  L_hot=L.layerGroup().addTo(map); L_cand=L.layerGroup().addTo(map);
+  ren=L.canvas({padding:.3});
+  L_gu=L.layerGroup().addTo(map); L_tr=L.layerGroup().addTo(map); L_hot=L.layerGroup(); L_cand=L.layerGroup().addTo(map);
+  drawBase();
   const seoul=L.geoJSON(D.gu.map(g=>g.geom)).getBounds();
-  const fit=()=>{map.invalidateSize(false); const s=map.getSize(); if(s.x>0&&s.y>0) map.fitBounds(seoul,{padding:[12,12],animate:false}); else map.setView([37.5565,126.99],11,{animate:false})};
+  const fit=()=>{map.invalidateSize(false);const s=map.getSize();if(s.x>0&&s.y>0)map.fitBounds(seoul,{padding:[16,16],animate:false})};
   requestAnimationFrame(fit); new ResizeObserver(()=>map.invalidateSize(false)).observe($('map'));
+  map.on('zoomend',()=>{drawTrdar()});
+  // 브랜드: 서울 3년 폐업 낮은 순(자료 없는 브랜드는 뒤)
+  const bs=[...D.brands].sort((a,b)=>(a.close3??999)-(b.close3??999)||b.stores-a.stores);
   const sel=$('brand');
-  const order=['교촌','bhc','60계','굽네','지코바','처갓집','푸라닭','BBQ'];
-  const bs=[...D.brands].sort((a,b)=>(order.indexOf(a.name)<0?99:order.indexOf(a.name))-(order.indexOf(b.name)<0?99:order.indexOf(b.name))||b.stores-a.stores);
-  sel.innerHTML=bs.map(b=>`<option value="${b.name}">${b.name}${b.quad?'  ·  사분면 '+b.quad:''}</option>`).join('');
+  sel.innerHTML=bs.map(b=>`<option value="${esc(b.name)}">${esc(b.name)} · 서울 3년 폐업 ${b.close3==null?'자료 없음':fmt(b.close3)+'%'}</option>`).join('');
   st.brand=bs[0].name;
-  sel.addEventListener('change',e=>{st.brand=e.target.value;render()});
+  sel.addEventListener('change',()=>{st.brand=sel.value;st.sel=null;render()});
   $('s-long').onclick=()=>{st.strat='long';render()}; $('s-short').onclick=()=>{st.strat='short';render()};
-  for(const k of ['trdar','hot','cand']) $('l-'+k).onclick=()=>{st.layers[k]=!st.layers[k];$('l-'+k).setAttribute('aria-pressed',st.layers[k]);applyLayers()};
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{L_tr.setStyle(trStyle);render()});
+  for(const k of ['trdar','cand','hot']) $('l-'+k).addEventListener('click',()=>{st.layers[k]=$('l-'+k).selected;applyLayers()});
+  $('info-btn').onclick=()=>$('info').show(); $('info-close').onclick=()=>$('info').close();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{drawBase();render()});
   render();
 }
-function trStyle(f){
-  const p=f.properties; const col=p.q?css('--q'+p.q):css('--line2');
-  return {color:p.both1?css('--q1'):col,weight:p.both1?1.6:.6,fillColor:col,fillOpacity:p.q?(p.q===1?.42:.28):.06,opacity:p.q?.9:.4};
+function drawBase(){
+  L_gu.clearLayers();
+  D.gu.forEach(g=>{
+    const lay=L.geoJSON(g.geom,{renderer:ren,interactive:false,style:{color:css('--md-sys-color-outline-variant'),weight:1,fill:true,fillColor:css('--md-sys-color-surface-container-lowest'),fillOpacity:1}}).addTo(L_gu);
+    L.marker(lay.getBounds().getCenter(),{interactive:false,icon:L.divIcon({className:'gu-label',html:esc(g.name),iconSize:null})}).addTo(L_gu);
+  });
+  ['top','rest','cand','hot'].forEach(k=>{const e=$('lg-'+k);
+    e.style.background={top:css('--md-sys-color-primary-container'),rest:'transparent',cand:css('--md-sys-color-primary'),hot:css('--md-sys-color-error')}[k];
+    e.style.outline=k==='rest'?`1px solid ${css('--md-sys-color-outline')}`:k==='top'?`1px solid ${css('--md-sys-color-primary')}`:'none';
+    if(k==='hot')e.style.opacity=.45});
+  drawTrdar();
 }
-function trTip(p){
-  if(!p.q) return `<b>${p.name}</b><br>${p.gu} · ${p.type}<br>치킨 매출 자료 없음`;
-  return `<b>${p.name}</b> <span>${QN[p.q]}</span><br>${p.gu} · ${p.type}<br>치킨집 점포당 연매출 <span class="m">${fmt(p.sales,2)}</span>억 <span style="color:var(--ink3)">(2021–23: ${fmt(p.sales0,2)})</span><br>연 실제 폐업률 <span class="m">${fmt(p.close)}</span>% <span style="color:var(--ink3)">(2021–23: ${fmt(p.close0)}%)</span>${p.both1?'<br>두 기간 모두 ①':''}`;
+// 상권: 매출 축만 그린다(폐업률 축은 다음 기간에 이어지지 않음, quadrant.py). 상위 25%만 채우고 나머지는 확대했을 때 윤곽만
+function drawTrdar(){
+  if(!map)return; L_tr.clearLayers(); const z=map.getZoom();
+  const top=css('--md-sys-color-primary-container'),topl=css('--md-sys-color-primary'),line=css('--md-sys-color-outline');
+  D.trdar.forEach(t=>{
+    if(t.pct==null) return;
+    const isTop=t.pct>=.75; if(!isTop&&z<13) return;
+    L.geoJSON(t.geom,{renderer:ren,style:isTop?{color:topl,weight:.8,opacity:.7,fillColor:top,fillOpacity:.75}:{color:line,weight:.6,opacity:.6,fill:true,fillOpacity:0}})
+     .bindTooltip(trTip(t),{sticky:true}).addTo(L_tr);
+  });
+  applyLayers();
+}
+function trTip(t){
+  return `<b>${esc(t.name)}</b> · ${esc(t.gu)}<br>치킨 점포당 연매출 ${fmt(t.sales,2)}억 (서울 상위 ${Math.max(1,Math.round((1-t.pct)*100))}%)<br>2021–23년에는 ${fmt(t.sales0,2)}억`;
 }
 function cells(){
-  const C=D.cells, dist=D.dist[st.brand], out=[];
+  const C=D.cells,dist=D.dist[st.brand],out=[];
   for(let i=0;i<C.lat.length;i++){
     if(C.pct[i]==null||C.pct[i]<.75||dist[i]<=1000) continue;
-    if(st.strat==='long'&&(C.turn[i]>=D.meta.turn75||C.chk[i]>D.meta.q50)) continue;
+    if(st.strat==='long'&&C.turn[i]>=D.meta.turn75) continue;
     out.push(i);
   }
-  return out.sort((a,b)=>C.sales[b]-C.sales[a]||C.chk[a]-C.chk[b]);
+  return out;
+}
+// 칸을 상권별로 묶는다: 지도에는 상권마다 점 하나(칸 수 표시), 목록도 상권 단위
+function groups(ids){
+  const C=D.cells,g={};
+  ids.forEach(i=>{const k=C.tr[i]; (g[k]=g[k]||{code:k,ids:[],sales:C.sales[i]}).ids.push(i)});
+  return Object.values(g).map(x=>{const la=x.ids.reduce((s,i)=>s+C.lat[i],0)/x.ids.length,lo=x.ids.reduce((s,i)=>s+C.lon[i],0)/x.ids.length;
+    const near=Math.min(...x.ids.map(i=>D.dist[st.brand][i])); return {...x,lat:la,lon:lo,near,t:trIndex[x.code]||{}}}).sort((a,b)=>b.sales-a.sales);
 }
 function render(){
   const b=D.brands.find(x=>x.name===st.brand);
   $('s-long').setAttribute('aria-pressed',st.strat==='long'); $('s-short').setAttribute('aria-pressed',st.strat==='short');
-  $('facts').innerHTML=[[b.close3==null?'–':fmt(b.close3)+'%','서울 3년 폐업'],[b.sales==null?'–':fmt(b.sales,1)+'억','연 평균매출'],[b.cost==null?'–':fmt(b.cost,2)+'억','창업비'],[b.stores.toLocaleString('ko-KR'),'서울 영업 중']].map(([v,k])=>`<div><b>${v}</b><span>${k}</span></div>`).join('');
-  $('rule').textContent=(st.strat==='long'
-    ?`조건: 상권 점포당 매출 상위 25% · 같은 ${st.brand} 1km 밖 · 최근 5년 가게 회전 상위 25% 아님 · 500m 치킨집 ${D.meta.q50}곳 이하`
-    :`조건: 상권 점포당 매출 상위 25% · 같은 ${st.brand} 1km 밖`);
+  // 브랜드 카드. 위험 단계 기준(서울 3년 폐업 5% 이하 낮음, 15% 초과 높음)은 표 분포를 보고 정한 표시용 구간 [추정]
+  const lv=b.close3==null?['neutral','자료 부족']:b.close3<=5?['done','폐업 낮음']:b.close3<=15?['neutral','폐업 보통']:['error','폐업 높음'];
+  let entry='';
+  if(b.entry!=null) entry=b.entry<.5?`<p class="say">신규 개점 1곳에 기존 점포 인수(명의변경) <b>${fmt(1/b.entry,0)}곳</b>. 새로 내기보다 <b>인수가 주된 길</b>이다.</p>`
+                                    :`<p class="say">신규 개점 1곳에 기존 점포 인수 ${fmt(1/b.entry,1)}곳. 새 점포를 받는 브랜드다.</p>`;
+  $('brandcard').innerHTML=`<div class="top"><h3>${esc(b.name)}</h3><span class="m3-status ${lv[0]}">${lv[1]}</span></div>
+    <dl class="facts">
+      <div><dd>${b.close3==null?'–':fmt(b.close3)+'%'}</dd><dt>서울 3년 폐업</dt></div>
+      <div><dd>${b.exit==null?'–':fmt(b.exit)+'%'}</dd><dt>전국 연 이탈률 (2024)</dt></div>
+      <div><dd>${b.sales==null?'–':fmt(b.sales,1)+'억'}</dd><dt>가맹점 평균 연매출</dt></div>
+      <div><dd>${b.cost==null?'–':fmt(b.cost,2)+'억'}</dd><dt>창업비 (보증금 제외)</dt></div>
+    </dl>${entry}<p class="say">서울 영업 중 ${b.stores.toLocaleString('ko-KR')}곳</p>`;
+  const hi=b.close3!=null&&b.close3>15;
+  $('warn').hidden=!hi; if(hi) $('warntext').textContent=`${b.name}의 서울 3년 폐업은 ${fmt(b.close3)}%다. 이 정도 차이는 자리로 메울 수 없다(입지 변수 20개를 더해도 예측이 늘지 않음). 브랜드부터 다시 보길 권한다.`;
+  $('rule').textContent=st.strat==='long'
+    ?`상권 매출 상위 25% · 같은 ${st.brand} 1km 밖 · 최근 5년 가게 회전 상위 25% 아님`
+    :`상권 매출 상위 25% · 같은 ${st.brand} 1km 밖`;
   // 밀집
-  L_hot.clearLayers(); const hot=css('--hot'); const dn=D.dens[st.brand]||[]; const mx=Math.max(2,...dn.map(d=>d[2]));
+  L_hot.clearLayers(); const hot=css('--md-sys-color-error'); const dn=D.dens[st.brand]||[]; const mx=Math.max(2,...dn.map(d=>d[2]));
   dn.forEach(([la,lo,n])=>{const dla=250/111320,dlo=250/(111320*Math.cos(la*Math.PI/180));
-    L.rectangle([[la-dla,lo-dlo],[la+dla,lo+dlo]],{stroke:false,fillColor:hot,fillOpacity:.25+.55*Math.min(1,(n-1)/(mx-1))}).bindTooltip(`<b>${st.brand}</b> ${n}곳이 이 500m 칸에 영업 중`,{sticky:true}).addTo(L_hot)});
-  // 후보
-  L_cand.clearLayers(); const ids=cells(), C=D.cells, cc=css('--cand'), ring=css('--candring');
-  ids.forEach((i,k)=>{const t=trIndex[C.tr[i]]||{};
-    L.circleMarker([C.lat[i],C.lon[i]],{radius:5.5,color:ring,weight:1.5,fillColor:cc,fillOpacity:1}).bindTooltip(candTip(i,k,t),{sticky:true}).addTo(L_cand)});
-  $('count').textContent=ids.length.toLocaleString('ko-KR')+'칸';
-  $('list').innerHTML=ids.length?ids.slice(0,60).map((i,k)=>{const t=trIndex[C.tr[i]]||{};
-    return `<div class="row" tabindex="0" data-i="${i}"><span class="n">${k+1}</span><span class="nm">${t.gu||''} ${t.name||''}</span><span class="v">${fmt(C.sales[i],2)}억</span><span class="sub">500m 치킨집 ${C.chk[i]}곳 · 같은 브랜드 ${D.dist[st.brand][i]>=9999?'없음':(D.dist[st.brand][i]/1000).toFixed(1)+'km'} · 가게 회전 ${Math.round(C.turn[i]*100)}%</span></div>`}).join('')+(ids.length>60?`<div class="empty">상위 60칸만 보여줍니다. 나머지 ${ids.length-60}칸은 지도에 있습니다.</div>`:'')
-    :'<div class="empty">조건을 모두 만족하는 칸이 없습니다. "굵고 짧게"로 바꿔 보세요.</div>';
-  $('list').querySelectorAll('.row').forEach(r=>{const go=()=>{const i=+r.dataset.i;map.setView([C.lat[i],C.lon[i]],15);L_cand.eachLayer(l=>{const p=l.getLatLng();if(Math.abs(p.lat-C.lat[i])<1e-6&&Math.abs(p.lng-C.lon[i])<1e-6)l.openTooltip()})};r.onclick=go;r.onkeydown=e=>{if(e.key==='Enter')go()}});
+    L.rectangle([[la-dla,lo-dlo],[la+dla,lo+dlo]],{renderer:ren,stroke:false,fillColor:hot,fillOpacity:.2+.4*Math.min(1,(n-1)/(mx-1))}).bindTooltip(`<b>${esc(st.brand)}</b> ${n}곳이 이 500m 칸에 영업 중`,{sticky:true}).addTo(L_hot)});
+  // 후보: 상권별 점 하나
+  const G=groups(cells()); L_cand.clearLayers();
+  G.forEach((g,k)=>{const n=g.ids.length,sz=n>=10?28:n>=4?24:20;
+    const m=L.marker([g.lat,g.lon],{icon:L.divIcon({className:'',html:`<div class="cand-n${st.sel===g.code?' sel':''}" style="width:${sz}px;height:${sz}px">${n}</div>`,iconSize:[sz,sz]}),keyboard:false})
+      .bindTooltip(candTip(g,k),{direction:'top',offset:[0,-sz/2]}).addTo(L_cand);
+    m.on('click',()=>focus(g));});
+  $('count').textContent=`${G.length}곳 · ${G.reduce((s,g)=>s+g.ids.length,0)}칸`;
+  const top=G.slice(0,40);
+  $('list').innerHTML=top.map((g,k)=>`<md-list-item type="button" data-code="${esc(g.code)}">
+      <span slot="start" class="rank">${k+1}</span>
+      <div slot="headline">${esc(g.t.name||'상권 밖')}</div>
+      <div slot="supporting-text">${esc(g.t.gu||'')} · 후보 ${g.ids.length}칸 · 가장 가까운 ${esc(st.brand)} ${g.near>=9999?'없음':(g.near/1000).toFixed(1)+'km'}</div>
+      <span slot="end" class="tr-sales">${fmt(g.sales,2)}억</span></md-list-item>`).join('');
+  $('empty').hidden=G.length>0&&G.length<=40;
+  $('empty').textContent=G.length?`상위 40곳만 목록에 둡니다. 나머지 ${G.length-40}곳은 지도에 있습니다.`:'조건을 모두 만족하는 칸이 없습니다. "굵고 짧게"로 바꿔 보세요.';
+  $('list').querySelectorAll('md-list-item').forEach(el=>el.addEventListener('click',()=>focus(G.find(g=>g.code===el.dataset.code))));
   applyLayers();
 }
-function candTip(i,k,t){const C=D.cells,d=D.dist[st.brand][i];
-  return `<b>후보 ${k+1}</b> · ${t.gu||''} ${t.name||''} ${t.q?QN[t.q]:''}<br>상권 점포당 연매출 <span class="m">${fmt(C.sales[i],2)}</span>억 (서울 상위 ${Math.max(1,Math.round((1-C.pct[i])*100))}%)<br>500m 안 치킨집 <span class="m">${C.chk[i]}</span>곳 · 칸 안 음식점 <span class="m">${C.food[i]}</span>곳<br>가장 가까운 ${st.brand} <span class="m">${d>=9999?'없음':(d/1000).toFixed(1)+'km'}</span> · 최근 5년 가게 회전 <span class="m">${Math.round(C.turn[i]*100)}%</span>`}
+function focus(g){ if(!g) return; st.sel=g.code; map.setView([g.lat,g.lon],15); render(); }
+function candTip(g,k){
+  const C=D.cells, i=g.ids.reduce((a,j)=>C.turn[j]<C.turn[a]?j:a,g.ids[0]);
+  return `<b>${k+1}. ${esc(g.t.name||'상권 밖')}</b> · ${esc(g.t.gu||'')}<br>치킨 점포당 연매출 ${fmt(g.sales,2)}억 · 후보 ${g.ids.length}칸<br>500m 치킨집 ${C.chk[i]}곳 · 최근 5년 2년 못 간 음식점 ${C.dead[i]}곳 (현재 ${C.food[i]}곳)<br>가장 가까운 ${esc(st.brand)} ${g.near>=9999?'없음':(g.near/1000).toFixed(1)+'km'}`;
+}
 function applyLayers(){
   for(const [k,l] of [['trdar',L_tr],['hot',L_hot],['cand',L_cand]]){ if(st.layers[k]&&!map.hasLayer(l)) l.addTo(map); if(!st.layers[k]&&map.hasLayer(l)) map.removeLayer(l); }
-  if(map.hasLayer(L_hot)) L_hot.eachLayer(l=>l.bringToFront()); if(map.hasLayer(L_cand)) L_cand.eachLayer(l=>l.bringToFront());
 }
 </script>
+</body>
+</html>

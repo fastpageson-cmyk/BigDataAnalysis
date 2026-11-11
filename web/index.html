@@ -1,216 +1,1362 @@
+<!doctype html>
+<html lang="ko">
+<head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>서울 치킨 창업 지도</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- 11/12 Material 3 기본판(google-design 스킬)으로 다시 만듦. 빌드: python code/web_build.py → web/index.html (M3 CSS·Leaflet CSS 인라인) -->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block">
+<script type="module">
+  // Material Web 2.5.0. 아티팩트는 cdn.jsdelivr.net만 허용해 esm.run 대신 같은 버전의 jsDelivr +esm 주소를 쓴다
+  import 'https://cdn.jsdelivr.net/npm/@material/web@2.5.0/all.js/+esm';
+  import { styles as typescaleStyles } from 'https://cdn.jsdelivr.net/npm/@material/web@2.5.0/typography/md-typescale-styles.js/+esm';
+  document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+</script>
 <style>
-.leaflet-image-layer,.leaflet-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane,.leaflet-pane>canvas,.leaflet-pane>svg,.leaflet-tile,.leaflet-tile-container,.leaflet-zoom-box{position:absolute;left:0;top:0}.leaflet-container{overflow:hidden}.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}.leaflet-tile::selection{background:0 0}.leaflet-safari .leaflet-tile{image-rendering:-webkit-optimize-contrast}.leaflet-safari .leaflet-tile-container{width:1600px;height:1600px;-webkit-transform-origin:0 0}.leaflet-marker-icon,.leaflet-marker-shadow{display:block}.leaflet-container .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}.leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-shadow-pane img,.leaflet-container .leaflet-tile,.leaflet-container .leaflet-tile-pane img,.leaflet-container img.leaflet-image-layer{max-width:none!important;max-height:none!important;width:auto;padding:0}.leaflet-container img.leaflet-tile{mix-blend-mode:plus-lighter}.leaflet-container.leaflet-touch-zoom{-ms-touch-action:pan-x pan-y;touch-action:pan-x pan-y}.leaflet-container.leaflet-touch-drag{-ms-touch-action:pinch-zoom;touch-action:none;touch-action:pinch-zoom}.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom{-ms-touch-action:none;touch-action:none}.leaflet-container{-webkit-tap-highlight-color:transparent}.leaflet-container a{-webkit-tap-highlight-color:rgba(51,181,229,.4)}.leaflet-tile{filter:inherit;visibility:hidden}.leaflet-tile-loaded{visibility:inherit}.leaflet-zoom-box{width:0;height:0;-moz-box-sizing:border-box;box-sizing:border-box;z-index:800}.leaflet-overlay-pane svg{-moz-user-select:none}.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}.leaflet-map-pane canvas{z-index:100}.leaflet-map-pane svg{z-index:200}.leaflet-vml-shape{width:1px;height:1px}.lvml{behavior:url(#default#VML);display:inline-block;position:absolute}.leaflet-control{position:relative;z-index:800;pointer-events:visiblePainted;pointer-events:auto}.leaflet-bottom,.leaflet-top{position:absolute;z-index:1000;pointer-events:none}.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}.leaflet-control{float:left;clear:both}.leaflet-right .leaflet-control{float:right}.leaflet-top .leaflet-control{margin-top:10px}.leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}.leaflet-right .leaflet-control{margin-right:10px}.leaflet-fade-anim .leaflet-popup{opacity:0;-webkit-transition:opacity .2s linear;-moz-transition:opacity .2s linear;transition:opacity .2s linear}.leaflet-fade-anim .leaflet-map-pane .leaflet-popup{opacity:1}.leaflet-zoom-animated{-webkit-transform-origin:0 0;-ms-transform-origin:0 0;transform-origin:0 0}svg.leaflet-zoom-animated{will-change:transform}.leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform .25s cubic-bezier(0,0,.25,1);-moz-transition:-moz-transform .25s cubic-bezier(0,0,.25,1);transition:transform .25s cubic-bezier(0,0,.25,1)}.leaflet-pan-anim .leaflet-tile,.leaflet-zoom-anim .leaflet-tile{-webkit-transition:none;-moz-transition:none;transition:none}.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}.leaflet-interactive{cursor:pointer}.leaflet-grab{cursor:-webkit-grab;cursor:-moz-grab;cursor:grab}.leaflet-crosshair,.leaflet-crosshair .leaflet-interactive{cursor:crosshair}.leaflet-control,.leaflet-popup-pane{cursor:auto}.leaflet-dragging .leaflet-grab,.leaflet-dragging .leaflet-grab .leaflet-interactive,.leaflet-dragging .leaflet-marker-draggable{cursor:move;cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing}.leaflet-image-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}.leaflet-image-layer.leaflet-interactive,.leaflet-marker-icon.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive,svg.leaflet-image-layer.leaflet-interactive path{pointer-events:visiblePainted;pointer-events:auto}.leaflet-container{background:#ddd;outline-offset:1px}.leaflet-container a{color:#0078a8}.leaflet-zoom-box{border:2px dotted #38f;background:rgba(255,255,255,.5)}.leaflet-container{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;font-size:12px;font-size:.75rem;line-height:1.5}.leaflet-bar{box-shadow:0 1px 5px rgba(0,0,0,.65);border-radius:4px}.leaflet-bar a{background-color:#fff;border-bottom:1px solid #ccc;width:26px;height:26px;line-height:26px;display:block;text-align:center;text-decoration:none;color:#000}.leaflet-bar a,.leaflet-control-layers-toggle{background-position:50% 50%;background-repeat:no-repeat;display:block}.leaflet-bar a:focus,.leaflet-bar a:hover{background-color:#f4f4f4}.leaflet-bar a:first-child{border-top-left-radius:4px;border-top-right-radius:4px}.leaflet-bar a:last-child{border-bottom-left-radius:4px;border-bottom-right-radius:4px;border-bottom:none}.leaflet-bar a.leaflet-disabled{cursor:default;background-color:#f4f4f4;color:#bbb}.leaflet-touch .leaflet-bar a{width:30px;height:30px;line-height:30px}.leaflet-touch .leaflet-bar a:first-child{border-top-left-radius:2px;border-top-right-radius:2px}.leaflet-touch .leaflet-bar a:last-child{border-bottom-left-radius:2px;border-bottom-right-radius:2px}.leaflet-control-zoom-in,.leaflet-control-zoom-out{font:bold 18px 'Lucida Console',Monaco,monospace;text-indent:1px}.leaflet-touch .leaflet-control-zoom-in,.leaflet-touch .leaflet-control-zoom-out{font-size:22px}.leaflet-control-layers{box-shadow:0 1px 5px rgba(0,0,0,.4);background:#fff;border-radius:5px}.leaflet-control-layers-toggle{background-image:url(data:,layers.png);width:36px;height:36px}.leaflet-retina .leaflet-control-layers-toggle{background-image:url(data:,layers-2x.png);background-size:26px 26px}.leaflet-touch .leaflet-control-layers-toggle{width:44px;height:44px}.leaflet-control-layers .leaflet-control-layers-list,.leaflet-control-layers-expanded .leaflet-control-layers-toggle{display:none}.leaflet-control-layers-expanded .leaflet-control-layers-list{display:block;position:relative}.leaflet-control-layers-expanded{padding:6px 10px 6px 6px;color:#333;background:#fff}.leaflet-control-layers-scrollbar{overflow-y:scroll;overflow-x:hidden;padding-right:5px}.leaflet-control-layers-selector{margin-top:2px;position:relative;top:1px}.leaflet-control-layers label{display:block;font-size:13px;font-size:1.08333em}.leaflet-control-layers-separator{height:0;border-top:1px solid #ddd;margin:5px -10px 5px -6px}.leaflet-default-icon-path{background-image:url(data:,marker-icon.png)}.leaflet-container .leaflet-control-attribution{background:#fff;background:rgba(255,255,255,.8);margin:0}.leaflet-control-attribution,.leaflet-control-scale-line{padding:0 5px;color:#333;line-height:1.4}.leaflet-control-attribution a{text-decoration:none}.leaflet-control-attribution a:focus,.leaflet-control-attribution a:hover{text-decoration:underline}.leaflet-attribution-flag{display:inline!important;vertical-align:baseline!important;width:1em;height:.6669em}.leaflet-left .leaflet-control-scale{margin-left:5px}.leaflet-bottom .leaflet-control-scale{margin-bottom:5px}.leaflet-control-scale-line{border:2px solid #777;border-top:none;line-height:1.1;padding:2px 5px 1px;white-space:nowrap;-moz-box-sizing:border-box;box-sizing:border-box;background:rgba(255,255,255,.8);text-shadow:1px 1px #fff}.leaflet-control-scale-line:not(:first-child){border-top:2px solid #777;border-bottom:none;margin-top:-2px}.leaflet-control-scale-line:not(:first-child):not(:last-child){border-bottom:2px solid #777}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-attribution,.leaflet-touch .leaflet-control-layers{box-shadow:none}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-layers{border:2px solid rgba(0,0,0,.2);background-clip:padding-box}.leaflet-popup{position:absolute;text-align:center;margin-bottom:20px}.leaflet-popup-content-wrapper{padding:1px;text-align:left;border-radius:12px}.leaflet-popup-content{margin:13px 24px 13px 20px;line-height:1.3;font-size:13px;font-size:1.08333em;min-height:1px}.leaflet-popup-content p{margin:17px 0;margin:1.3em 0}.leaflet-popup-tip-container{width:40px;height:20px;position:absolute;left:50%;margin-top:-1px;margin-left:-20px;overflow:hidden;pointer-events:none}.leaflet-popup-tip{width:17px;height:17px;padding:1px;margin:-10px auto 0;pointer-events:auto;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg)}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#333;box-shadow:0 3px 14px rgba(0,0,0,.4)}.leaflet-container a.leaflet-popup-close-button{position:absolute;top:0;right:0;border:none;text-align:center;width:24px;height:24px;font:16px/24px Tahoma,Verdana,sans-serif;color:#757575;text-decoration:none;background:0 0}.leaflet-container a.leaflet-popup-close-button:focus,.leaflet-container a.leaflet-popup-close-button:hover{color:#585858}.leaflet-popup-scrolled{overflow:auto}.leaflet-oldie .leaflet-popup-content-wrapper{-ms-zoom:1}.leaflet-oldie .leaflet-popup-tip{width:24px;margin:0 auto}.leaflet-oldie .leaflet-control-layers,.leaflet-oldie .leaflet-control-zoom,.leaflet-oldie .leaflet-popup-content-wrapper,.leaflet-oldie .leaflet-popup-tip{border:1px solid #999}.leaflet-div-icon{background:#fff;border:1px solid #666}.leaflet-tooltip{position:absolute;padding:6px;background-color:#fff;border:1px solid #fff;border-radius:3px;color:#222;white-space:nowrap;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.4)}.leaflet-tooltip.leaflet-interactive{cursor:pointer;pointer-events:auto}.leaflet-tooltip-bottom:before,.leaflet-tooltip-left:before,.leaflet-tooltip-right:before,.leaflet-tooltip-top:before{position:absolute;pointer-events:none;border:6px solid transparent;background:0 0;content:""}.leaflet-tooltip-bottom{margin-top:6px}.leaflet-tooltip-top{margin-top:-6px}.leaflet-tooltip-bottom:before,.leaflet-tooltip-top:before{left:50%;margin-left:-6px}.leaflet-tooltip-top:before{bottom:0;margin-bottom:-12px;border-top-color:#fff}.leaflet-tooltip-bottom:before{top:0;margin-top:-12px;margin-left:-6px;border-bottom-color:#fff}.leaflet-tooltip-left{margin-left:-6px}.leaflet-tooltip-right{margin-left:6px}.leaflet-tooltip-left:before,.leaflet-tooltip-right:before{top:50%;margin-top:-6px}.leaflet-tooltip-left:before{right:0;margin-right:-12px;border-left-color:#fff}.leaflet-tooltip-right:before{left:0;margin-left:-12px;border-right-color:#fff}@media print{.leaflet-control{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-/* 구성: 왼쪽 판단 패널(브랜드 → 전략 → 후보 목록), 오른쪽 서울 전역 지도. 지도는 타일 없이 구 경계·상권만 그린 도면 */
-:root{
-  --paper:#eef0ee; --panel:#fbfcfb; --ink:#14181c; --ink2:#4a5157; --ink3:#6d747a; --line:#d5d9d6; --line2:#c2c8c4;
-  --q1:#2a78d6; --q2:#c98500; --q3:#1a9e70; --q4:#9aa0a6; --hot:#d3342f; --cand:#14181c; --candring:#fbfcfb; --sel:#2a78d6;
-  --f-sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif; --f-num:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+/*
+  google-design 토큰. 등급 [A] Material Web 2.5.0에 들어 있는 공식 토큰 v0.192(Google Material 3, Platform Web, Scheme Dynamic)를 Sass로 풀어 낸 값.
+  기본 색은 기준 보라(#6750A4) 체계다. 브랜드 색으로 바꾸려면 scripts/make-theme.mjs로 색 블록만 새로 만든다.
+  예외 하나: 서체 목록 뒤의 "Noto Sans KR"은 m3 typography 문서(Roboto가 없는 글자는 Noto Sans로 대체)를 따른 것이다 [A-doc].
+  다시 만드는 법: scripts/dump-tokens.scss (references/sources.md 참고).
+*/
+:root {
+  color-scheme: light;
+  --md-sys-color-background: #fef7ff;
+  --md-sys-color-error: #b3261e;
+  --md-sys-color-error-container: #f9dedc;
+  --md-sys-color-inverse-on-surface: #f5eff7;
+  --md-sys-color-inverse-primary: #d0bcff;
+  --md-sys-color-inverse-surface: #322f35;
+  --md-sys-color-on-background: #1d1b20;
+  --md-sys-color-on-error: #fff;
+  --md-sys-color-on-error-container: #410e0b;
+  --md-sys-color-on-primary: #fff;
+  --md-sys-color-on-primary-container: #21005d;
+  --md-sys-color-on-primary-fixed: #21005d;
+  --md-sys-color-on-primary-fixed-variant: #4f378b;
+  --md-sys-color-on-secondary: #fff;
+  --md-sys-color-on-secondary-container: #1d192b;
+  --md-sys-color-on-secondary-fixed: #1d192b;
+  --md-sys-color-on-secondary-fixed-variant: #4a4458;
+  --md-sys-color-on-surface: #1d1b20;
+  --md-sys-color-on-surface-variant: #49454f;
+  --md-sys-color-on-tertiary: #fff;
+  --md-sys-color-on-tertiary-container: #31111d;
+  --md-sys-color-on-tertiary-fixed: #31111d;
+  --md-sys-color-on-tertiary-fixed-variant: #633b48;
+  --md-sys-color-outline: #79747e;
+  --md-sys-color-outline-variant: #cac4d0;
+  --md-sys-color-primary: #6750a4;
+  --md-sys-color-primary-container: #eaddff;
+  --md-sys-color-primary-fixed: #eaddff;
+  --md-sys-color-primary-fixed-dim: #d0bcff;
+  --md-sys-color-scrim: #000;
+  --md-sys-color-secondary: #625b71;
+  --md-sys-color-secondary-container: #e8def8;
+  --md-sys-color-secondary-fixed: #e8def8;
+  --md-sys-color-secondary-fixed-dim: #ccc2dc;
+  --md-sys-color-shadow: #000;
+  --md-sys-color-surface: #fef7ff;
+  --md-sys-color-surface-bright: #fef7ff;
+  --md-sys-color-surface-container: #f3edf7;
+  --md-sys-color-surface-container-high: #ece6f0;
+  --md-sys-color-surface-container-highest: #e6e0e9;
+  --md-sys-color-surface-container-low: #f7f2fa;
+  --md-sys-color-surface-container-lowest: #fff;
+  --md-sys-color-surface-dim: #ded8e1;
+  --md-sys-color-surface-tint: #6750a4;
+  --md-sys-color-surface-variant: #e7e0ec;
+  --md-sys-color-tertiary: #7d5260;
+  --md-sys-color-tertiary-container: #ffd8e4;
+  --md-sys-color-tertiary-fixed: #ffd8e4;
+  --md-sys-color-tertiary-fixed-dim: #efb8c8;
+  --md-sys-typescale-body-large: var(--md-sys-typescale-body-large-weight) var(--md-sys-typescale-body-large-size) / var(--md-sys-typescale-body-large-line-height) var(--md-sys-typescale-body-large-font);
+  --md-sys-typescale-body-large-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-body-large-line-height: 1.5rem;
+  --md-sys-typescale-body-large-size: 1rem;
+  --md-sys-typescale-body-large-tracking: 0.03125rem;
+  --md-sys-typescale-body-large-weight: 400;
+  --md-sys-typescale-body-medium: var(--md-sys-typescale-body-medium-weight) var(--md-sys-typescale-body-medium-size) / var(--md-sys-typescale-body-medium-line-height) var(--md-sys-typescale-body-medium-font);
+  --md-sys-typescale-body-medium-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-body-medium-line-height: 1.25rem;
+  --md-sys-typescale-body-medium-size: 0.875rem;
+  --md-sys-typescale-body-medium-tracking: 0.015625rem;
+  --md-sys-typescale-body-medium-weight: 400;
+  --md-sys-typescale-body-small: var(--md-sys-typescale-body-small-weight) var(--md-sys-typescale-body-small-size) / var(--md-sys-typescale-body-small-line-height) var(--md-sys-typescale-body-small-font);
+  --md-sys-typescale-body-small-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-body-small-line-height: 1rem;
+  --md-sys-typescale-body-small-size: 0.75rem;
+  --md-sys-typescale-body-small-tracking: 0.025rem;
+  --md-sys-typescale-body-small-weight: 400;
+  --md-sys-typescale-display-large: var(--md-sys-typescale-display-large-weight) var(--md-sys-typescale-display-large-size) / var(--md-sys-typescale-display-large-line-height) var(--md-sys-typescale-display-large-font);
+  --md-sys-typescale-display-large-font: var(--md-ref-typeface-brand);
+  --md-sys-typescale-display-large-line-height: 4rem;
+  --md-sys-typescale-display-large-size: 3.5625rem;
+  --md-sys-typescale-display-large-tracking: -0.015625rem;
+  --md-sys-typescale-display-large-weight: 400;
+  --md-sys-typescale-display-medium: var(--md-sys-typescale-display-medium-weight) var(--md-sys-typescale-display-medium-size) / var(--md-sys-typescale-display-medium-line-height) var(--md-sys-typescale-display-medium-font);
+  --md-sys-typescale-display-medium-font: var(--md-ref-typeface-brand);
+  --md-sys-typescale-display-medium-line-height: 3.25rem;
+  --md-sys-typescale-display-medium-size: 2.8125rem;
+  --md-sys-typescale-display-medium-tracking: 0rem;
+  --md-sys-typescale-display-medium-weight: 400;
+  --md-sys-typescale-display-small: var(--md-sys-typescale-display-small-weight) var(--md-sys-typescale-display-small-size) / var(--md-sys-typescale-display-small-line-height) var(--md-sys-typescale-display-small-font);
+  --md-sys-typescale-display-small-font: var(--md-ref-typeface-brand);
+  --md-sys-typescale-display-small-line-height: 2.75rem;
+  --md-sys-typescale-display-small-size: 2.25rem;
+  --md-sys-typescale-display-small-tracking: 0rem;
+  --md-sys-typescale-display-small-weight: 400;
+  --md-sys-typescale-headline-large: var(--md-sys-typescale-headline-large-weight) var(--md-sys-typescale-headline-large-size) / var(--md-sys-typescale-headline-large-line-height) var(--md-sys-typescale-headline-large-font);
+  --md-sys-typescale-headline-large-font: var(--md-ref-typeface-brand);
+  --md-sys-typescale-headline-large-line-height: 2.5rem;
+  --md-sys-typescale-headline-large-size: 2rem;
+  --md-sys-typescale-headline-large-tracking: 0rem;
+  --md-sys-typescale-headline-large-weight: 400;
+  --md-sys-typescale-headline-medium: var(--md-sys-typescale-headline-medium-weight) var(--md-sys-typescale-headline-medium-size) / var(--md-sys-typescale-headline-medium-line-height) var(--md-sys-typescale-headline-medium-font);
+  --md-sys-typescale-headline-medium-font: var(--md-ref-typeface-brand);
+  --md-sys-typescale-headline-medium-line-height: 2.25rem;
+  --md-sys-typescale-headline-medium-size: 1.75rem;
+  --md-sys-typescale-headline-medium-tracking: 0rem;
+  --md-sys-typescale-headline-medium-weight: 400;
+  --md-sys-typescale-headline-small: var(--md-sys-typescale-headline-small-weight) var(--md-sys-typescale-headline-small-size) / var(--md-sys-typescale-headline-small-line-height) var(--md-sys-typescale-headline-small-font);
+  --md-sys-typescale-headline-small-font: var(--md-ref-typeface-brand);
+  --md-sys-typescale-headline-small-line-height: 2rem;
+  --md-sys-typescale-headline-small-size: 1.5rem;
+  --md-sys-typescale-headline-small-tracking: 0rem;
+  --md-sys-typescale-headline-small-weight: 400;
+  --md-sys-typescale-label-large: var(--md-sys-typescale-label-large-weight) var(--md-sys-typescale-label-large-size) / var(--md-sys-typescale-label-large-line-height) var(--md-sys-typescale-label-large-font);
+  --md-sys-typescale-label-large-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-label-large-line-height: 1.25rem;
+  --md-sys-typescale-label-large-size: 0.875rem;
+  --md-sys-typescale-label-large-tracking: 0.00625rem;
+  --md-sys-typescale-label-large-weight: 500;
+  --md-sys-typescale-label-large-weight-prominent: 700;
+  --md-sys-typescale-label-medium: var(--md-sys-typescale-label-medium-weight) var(--md-sys-typescale-label-medium-size) / var(--md-sys-typescale-label-medium-line-height) var(--md-sys-typescale-label-medium-font);
+  --md-sys-typescale-label-medium-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-label-medium-line-height: 1rem;
+  --md-sys-typescale-label-medium-size: 0.75rem;
+  --md-sys-typescale-label-medium-tracking: 0.03125rem;
+  --md-sys-typescale-label-medium-weight: 500;
+  --md-sys-typescale-label-medium-weight-prominent: 700;
+  --md-sys-typescale-label-small: var(--md-sys-typescale-label-small-weight) var(--md-sys-typescale-label-small-size) / var(--md-sys-typescale-label-small-line-height) var(--md-sys-typescale-label-small-font);
+  --md-sys-typescale-label-small-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-label-small-line-height: 1rem;
+  --md-sys-typescale-label-small-size: 0.6875rem;
+  --md-sys-typescale-label-small-tracking: 0.03125rem;
+  --md-sys-typescale-label-small-weight: 500;
+  --md-sys-typescale-title-large: var(--md-sys-typescale-title-large-weight) var(--md-sys-typescale-title-large-size) / var(--md-sys-typescale-title-large-line-height) var(--md-sys-typescale-title-large-font);
+  --md-sys-typescale-title-large-font: var(--md-ref-typeface-brand);
+  --md-sys-typescale-title-large-line-height: 1.75rem;
+  --md-sys-typescale-title-large-size: 1.375rem;
+  --md-sys-typescale-title-large-tracking: 0rem;
+  --md-sys-typescale-title-large-weight: 400;
+  --md-sys-typescale-title-medium: var(--md-sys-typescale-title-medium-weight) var(--md-sys-typescale-title-medium-size) / var(--md-sys-typescale-title-medium-line-height) var(--md-sys-typescale-title-medium-font);
+  --md-sys-typescale-title-medium-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-title-medium-line-height: 1.5rem;
+  --md-sys-typescale-title-medium-size: 1rem;
+  --md-sys-typescale-title-medium-tracking: 0.009375rem;
+  --md-sys-typescale-title-medium-weight: 500;
+  --md-sys-typescale-title-small: var(--md-sys-typescale-title-small-weight) var(--md-sys-typescale-title-small-size) / var(--md-sys-typescale-title-small-line-height) var(--md-sys-typescale-title-small-font);
+  --md-sys-typescale-title-small-font: var(--md-ref-typeface-plain);
+  --md-sys-typescale-title-small-line-height: 1.25rem;
+  --md-sys-typescale-title-small-size: 0.875rem;
+  --md-sys-typescale-title-small-tracking: 0.00625rem;
+  --md-sys-typescale-title-small-weight: 500;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-extra-large-top: 28px 28px 0px 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-extra-small-top: 4px 4px 0px 0px;
+  --md-sys-shape-corner-full: 9999px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-large-end: 0px 16px 16px 0px;
+  --md-sys-shape-corner-large-start: 16px 0px 0px 16px;
+  --md-sys-shape-corner-large-top: 16px 16px 0px 0px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-elevation-level0: 0;
+  --md-sys-elevation-level1: 1;
+  --md-sys-elevation-level2: 3;
+  --md-sys-elevation-level3: 6;
+  --md-sys-elevation-level4: 8;
+  --md-sys-elevation-level5: 12;
+  --md-sys-motion-duration-extra-long1: 700ms;
+  --md-sys-motion-duration-extra-long2: 800ms;
+  --md-sys-motion-duration-extra-long3: 900ms;
+  --md-sys-motion-duration-extra-long4: 1000ms;
+  --md-sys-motion-duration-long1: 450ms;
+  --md-sys-motion-duration-long2: 500ms;
+  --md-sys-motion-duration-long3: 550ms;
+  --md-sys-motion-duration-long4: 600ms;
+  --md-sys-motion-duration-medium1: 250ms;
+  --md-sys-motion-duration-medium2: 300ms;
+  --md-sys-motion-duration-medium3: 350ms;
+  --md-sys-motion-duration-medium4: 400ms;
+  --md-sys-motion-duration-short1: 50ms;
+  --md-sys-motion-duration-short2: 100ms;
+  --md-sys-motion-duration-short3: 150ms;
+  --md-sys-motion-duration-short4: 200ms;
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --md-sys-motion-easing-legacy: cubic-bezier(0.4, 0, 0.2, 1);
+  --md-sys-motion-easing-legacy-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  --md-sys-motion-easing-legacy-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --md-sys-motion-easing-linear: cubic-bezier(0, 0, 1, 1);
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+  --md-sys-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+  --md-sys-state-dragged-state-layer-opacity: 0.16;
+  --md-sys-state-focus-state-layer-opacity: 0.12;
+  --md-sys-state-hover-state-layer-opacity: 0.08;
+  --md-sys-state-pressed-state-layer-opacity: 0.12;
+  --md-ref-typeface-brand: Roboto, "Noto Sans KR", system-ui, sans-serif;
+  --md-ref-typeface-plain: Roboto, "Noto Sans KR", system-ui, sans-serif;
+  --md-ref-typeface-weight-bold: 700;
+  --md-ref-typeface-weight-medium: 500;
+  --md-ref-typeface-weight-regular: 400;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#161a1d; --panel:#1d2226; --ink:#e9ece9; --ink2:#b9c0bd; --ink3:#9ba39f; --line:#2e3539; --line2:#3a4247;
-  --q1:#3f8ee6; --q2:#d99a12; --q3:#2bb886; --q4:#6c7378; --hot:#ef5a52; --cand:#f2f4f1; --candring:#161a1d; --sel:#5aa0ee; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --paper:#161a1d; --panel:#1d2226; --ink:#e9ece9; --ink2:#b9c0bd; --ink3:#9ba39f; --line:#2e3539; --line2:#3a4247;
-  --q1:#3f8ee6; --q2:#d99a12; --q3:#2bb886; --q4:#6c7378; --hot:#ef5a52; --cand:#f2f4f1; --candring:#161a1d; --sel:#5aa0ee; color-scheme:dark}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --md-sys-color-background: #141218;
+    --md-sys-color-error: #f2b8b5;
+    --md-sys-color-error-container: #8c1d18;
+    --md-sys-color-inverse-on-surface: #322f35;
+    --md-sys-color-inverse-primary: #6750a4;
+    --md-sys-color-inverse-surface: #e6e0e9;
+    --md-sys-color-on-background: #e6e0e9;
+    --md-sys-color-on-error: #601410;
+    --md-sys-color-on-error-container: #f9dedc;
+    --md-sys-color-on-primary: #381e72;
+    --md-sys-color-on-primary-container: #eaddff;
+    --md-sys-color-on-primary-fixed: #21005d;
+    --md-sys-color-on-primary-fixed-variant: #4f378b;
+    --md-sys-color-on-secondary: #332d41;
+    --md-sys-color-on-secondary-container: #e8def8;
+    --md-sys-color-on-secondary-fixed: #1d192b;
+    --md-sys-color-on-secondary-fixed-variant: #4a4458;
+    --md-sys-color-on-surface: #e6e0e9;
+    --md-sys-color-on-surface-variant: #cac4d0;
+    --md-sys-color-on-tertiary: #492532;
+    --md-sys-color-on-tertiary-container: #ffd8e4;
+    --md-sys-color-on-tertiary-fixed: #31111d;
+    --md-sys-color-on-tertiary-fixed-variant: #633b48;
+    --md-sys-color-outline: #938f99;
+    --md-sys-color-outline-variant: #49454f;
+    --md-sys-color-primary: #d0bcff;
+    --md-sys-color-primary-container: #4f378b;
+    --md-sys-color-primary-fixed: #eaddff;
+    --md-sys-color-primary-fixed-dim: #d0bcff;
+    --md-sys-color-scrim: #000;
+    --md-sys-color-secondary: #ccc2dc;
+    --md-sys-color-secondary-container: #4a4458;
+    --md-sys-color-secondary-fixed: #e8def8;
+    --md-sys-color-secondary-fixed-dim: #ccc2dc;
+    --md-sys-color-shadow: #000;
+    --md-sys-color-surface: #141218;
+    --md-sys-color-surface-bright: #3b383e;
+    --md-sys-color-surface-container: #211f26;
+    --md-sys-color-surface-container-high: #2b2930;
+    --md-sys-color-surface-container-highest: #36343b;
+    --md-sys-color-surface-container-low: #1d1b20;
+    --md-sys-color-surface-container-lowest: #0f0d13;
+    --md-sys-color-surface-dim: #141218;
+    --md-sys-color-surface-tint: #d0bcff;
+    --md-sys-color-surface-variant: #49454f;
+    --md-sys-color-tertiary: #efb8c8;
+    --md-sys-color-tertiary-container: #633b48;
+    --md-sys-color-tertiary-fixed: #ffd8e4;
+    --md-sys-color-tertiary-fixed-dim: #efb8c8;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --md-sys-color-background: #141218;
+  --md-sys-color-error: #f2b8b5;
+  --md-sys-color-error-container: #8c1d18;
+  --md-sys-color-inverse-on-surface: #322f35;
+  --md-sys-color-inverse-primary: #6750a4;
+  --md-sys-color-inverse-surface: #e6e0e9;
+  --md-sys-color-on-background: #e6e0e9;
+  --md-sys-color-on-error: #601410;
+  --md-sys-color-on-error-container: #f9dedc;
+  --md-sys-color-on-primary: #381e72;
+  --md-sys-color-on-primary-container: #eaddff;
+  --md-sys-color-on-primary-fixed: #21005d;
+  --md-sys-color-on-primary-fixed-variant: #4f378b;
+  --md-sys-color-on-secondary: #332d41;
+  --md-sys-color-on-secondary-container: #e8def8;
+  --md-sys-color-on-secondary-fixed: #1d192b;
+  --md-sys-color-on-secondary-fixed-variant: #4a4458;
+  --md-sys-color-on-surface: #e6e0e9;
+  --md-sys-color-on-surface-variant: #cac4d0;
+  --md-sys-color-on-tertiary: #492532;
+  --md-sys-color-on-tertiary-container: #ffd8e4;
+  --md-sys-color-on-tertiary-fixed: #31111d;
+  --md-sys-color-on-tertiary-fixed-variant: #633b48;
+  --md-sys-color-outline: #938f99;
+  --md-sys-color-outline-variant: #49454f;
+  --md-sys-color-primary: #d0bcff;
+  --md-sys-color-primary-container: #4f378b;
+  --md-sys-color-primary-fixed: #eaddff;
+  --md-sys-color-primary-fixed-dim: #d0bcff;
+  --md-sys-color-scrim: #000;
+  --md-sys-color-secondary: #ccc2dc;
+  --md-sys-color-secondary-container: #4a4458;
+  --md-sys-color-secondary-fixed: #e8def8;
+  --md-sys-color-secondary-fixed-dim: #ccc2dc;
+  --md-sys-color-shadow: #000;
+  --md-sys-color-surface: #141218;
+  --md-sys-color-surface-bright: #3b383e;
+  --md-sys-color-surface-container: #211f26;
+  --md-sys-color-surface-container-high: #2b2930;
+  --md-sys-color-surface-container-highest: #36343b;
+  --md-sys-color-surface-container-low: #1d1b20;
+  --md-sys-color-surface-container-lowest: #0f0d13;
+  --md-sys-color-surface-dim: #141218;
+  --md-sys-color-surface-tint: #d0bcff;
+  --md-sys-color-surface-variant: #49454f;
+  --md-sys-color-tertiary: #efb8c8;
+  --md-sys-color-tertiary-container: #633b48;
+  --md-sys-color-tertiary-fixed: #ffd8e4;
+  --md-sys-color-tertiary-fixed-dim: #efb8c8;
+}
+
+/* 간격 [A-db]: m3 토큰 DB의 md.sys.measurement. 8dp 단위, space100 = 8 */
+:root {
+  --md-sys-measurement-space0: 0px; --md-sys-measurement-space25: 2px; --md-sys-measurement-space50: 4px; --md-sys-measurement-space75: 6px;
+  --md-sys-measurement-space100: 8px; --md-sys-measurement-space125: 10px; --md-sys-measurement-space150: 12px; --md-sys-measurement-space175: 14px;
+  --md-sys-measurement-space200: 16px; --md-sys-measurement-space250: 20px; --md-sys-measurement-space300: 24px; --md-sys-measurement-space400: 32px;
+  --md-sys-measurement-space500: 40px; --md-sys-measurement-space600: 48px; --md-sys-measurement-space800: 64px; --md-sys-measurement-space900: 72px;
+}
+/* 움직임 물리(스프링)의 웹 변환 [A-doc: m3 motion overview "Web: Convert springs to curves" 표]. 스프링을 곡선+길이로 바꾼 공식 값 */
+:root {
+  --md-sys-motion-spring-fast-spatial: cubic-bezier(0.27, 1.06, 0.18, 1.00) 350ms;
+  --md-sys-motion-spring-default-spatial: cubic-bezier(0.27, 1.06, 0.18, 1.00) 500ms;
+  --md-sys-motion-spring-slow-spatial: cubic-bezier(0.27, 1.06, 0.18, 1.00) 750ms;
+  --md-sys-motion-spring-fast-effects: cubic-bezier(0.31, 0.94, 0.34, 1.00) 150ms;
+  --md-sys-motion-spring-default-effects: cubic-bezier(0.34, 0.80, 0.34, 1.00) 200ms;
+  --md-sys-motion-spring-slow-effects: cubic-bezier(0.34, 0.88, 0.34, 1.00) 300ms;
+}
+
+/* 바탕 글자. 형 단계의 기준 크기는 14(body-medium)다 [A-doc: m3 typography "key base size 14"] */
+body { margin: 0; background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface);
+  font: var(--md-sys-typescale-body-medium); letter-spacing: var(--md-sys-typescale-body-medium-tracking); -webkit-font-smoothing: antialiased;
+  word-break: keep-all; overflow-wrap: anywhere; }   /* 한국어는 낱말 중간에서 줄을 바꾸지 않는다. 긴 영문·주소는 넘치지 않게 끊는다 [D] */
+
+/*
+  Material Web에 없는 컴포넌트의 공식 토큰 [A] v0.192. google.css가 이 변수를 쓴다.
+  색, 모양, 글자는 --md-sys-* 를 가리키므로 테마를 바꾸면 따라 바뀐다. 숫자(높이, 폭, 여백)는 원본 그대로다.
+*/
+:root {
+  /* navigation-bar */
+  --md-comp-navigation-bar-active-indicator-color: var(--md-sys-color-secondary-container);
+  --md-comp-navigation-bar-active-indicator-height: 32px;
+  --md-comp-navigation-bar-active-indicator-shape: var(--md-sys-shape-corner-full);
+  --md-comp-navigation-bar-active-indicator-width: 64px;
+  --md-comp-navigation-bar-active-focus-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-bar-active-focus-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-active-focus-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-active-hover-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-bar-active-hover-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-active-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-active-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-bar-active-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-active-label-text-weight: var(--md-sys-typescale-label-medium-weight-prominent);
+  --md-comp-navigation-bar-active-pressed-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-bar-active-pressed-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-active-pressed-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-container-color: var(--md-sys-color-surface-container);
+  --md-comp-navigation-bar-container-elevation: var(--md-sys-elevation-level2);
+  --md-comp-navigation-bar-container-height: 80px;
+  --md-comp-navigation-bar-container-shape: var(--md-sys-shape-corner-none);
+  --md-comp-navigation-bar-focus-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-navigation-bar-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-navigation-bar-icon-size: 24px;
+  --md-comp-navigation-bar-inactive-focus-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-inactive-focus-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-inactive-focus-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-inactive-hover-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-inactive-hover-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-inactive-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-inactive-icon-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-navigation-bar-inactive-label-text-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-navigation-bar-inactive-pressed-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-inactive-pressed-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-inactive-pressed-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-bar-label-text-font: var(--md-sys-typescale-label-medium-font);
+  --md-comp-navigation-bar-label-text-line-height: var(--md-sys-typescale-label-medium-line-height);
+  --md-comp-navigation-bar-label-text-size: var(--md-sys-typescale-label-medium-size);
+  --md-comp-navigation-bar-label-text-tracking: var(--md-sys-typescale-label-medium-tracking);
+  --md-comp-navigation-bar-label-text-type: var(--md-sys-typescale-label-medium-weight) var(--md-sys-typescale-label-medium-size) / var(--md-sys-typescale-label-medium-line-height) var(--md-sys-typescale-label-medium-font);
+  --md-comp-navigation-bar-label-text-weight: var(--md-sys-typescale-label-medium-weight);
+  --md-comp-navigation-bar-pressed-state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  /* navigation-rail */
+  --md-comp-navigation-rail-active-indicator-color: var(--md-sys-color-secondary-container);
+  --md-comp-navigation-rail-active-indicator-height: 32px;
+  --md-comp-navigation-rail-active-indicator-shape: var(--md-sys-shape-corner-full);
+  --md-comp-navigation-rail-active-indicator-width: 56px;
+  --md-comp-navigation-rail-active-focus-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-rail-active-focus-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-active-focus-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-active-hover-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-rail-active-hover-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-active-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-active-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-rail-active-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-active-label-text-weight: var(--md-sys-typescale-label-medium-weight-prominent);
+  --md-comp-navigation-rail-active-pressed-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-rail-active-pressed-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-active-pressed-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-container-color: var(--md-sys-color-surface);
+  --md-comp-navigation-rail-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-navigation-rail-container-shape: var(--md-sys-shape-corner-none);
+  --md-comp-navigation-rail-container-width: 80px;
+  --md-comp-navigation-rail-focus-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-navigation-rail-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-navigation-rail-icon-size: 24px;
+  --md-comp-navigation-rail-inactive-focus-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-inactive-focus-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-inactive-focus-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-inactive-hover-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-inactive-hover-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-inactive-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-inactive-icon-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-navigation-rail-inactive-label-text-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-navigation-rail-inactive-pressed-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-inactive-pressed-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-inactive-pressed-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-rail-label-text-font: var(--md-sys-typescale-label-medium-font);
+  --md-comp-navigation-rail-label-text-line-height: var(--md-sys-typescale-label-medium-line-height);
+  --md-comp-navigation-rail-label-text-size: var(--md-sys-typescale-label-medium-size);
+  --md-comp-navigation-rail-label-text-tracking: var(--md-sys-typescale-label-medium-tracking);
+  --md-comp-navigation-rail-label-text-type: var(--md-sys-typescale-label-medium-weight) var(--md-sys-typescale-label-medium-size) / var(--md-sys-typescale-label-medium-line-height) var(--md-sys-typescale-label-medium-font);
+  --md-comp-navigation-rail-label-text-weight: var(--md-sys-typescale-label-medium-weight);
+  --md-comp-navigation-rail-no-label-active-indicator-height: 56px;
+  --md-comp-navigation-rail-no-label-active-indicator-shape: var(--md-sys-shape-corner-full);
+  --md-comp-navigation-rail-pressed-state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  /* navigation-drawer */
+  --md-comp-navigation-drawer-active-indicator-color: var(--md-sys-color-secondary-container);
+  --md-comp-navigation-drawer-active-indicator-height: 56px;
+  --md-comp-navigation-drawer-active-indicator-shape: var(--md-sys-shape-corner-full);
+  --md-comp-navigation-drawer-active-indicator-width: 336px;
+  --md-comp-navigation-drawer-active-focus-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-active-focus-label-text-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-active-focus-state-layer-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-active-hover-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-active-hover-label-text-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-active-hover-state-layer-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-active-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-active-label-text-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-active-label-text-weight: var(--md-sys-typescale-label-large-weight-prominent);
+  --md-comp-navigation-drawer-active-pressed-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-active-pressed-label-text-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-active-pressed-state-layer-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-bottom-container-shape: var(--md-sys-shape-corner-large-top);
+  --md-comp-navigation-drawer-container-height: 100%;
+  --md-comp-navigation-drawer-container-shape: var(--md-sys-shape-corner-large-end);
+  --md-comp-navigation-drawer-container-width: 360px;
+  --md-comp-navigation-drawer-focus-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-navigation-drawer-headline-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-navigation-drawer-headline-font: var(--md-sys-typescale-title-small-font);
+  --md-comp-navigation-drawer-headline-line-height: var(--md-sys-typescale-title-small-line-height);
+  --md-comp-navigation-drawer-headline-size: var(--md-sys-typescale-title-small-size);
+  --md-comp-navigation-drawer-headline-tracking: var(--md-sys-typescale-title-small-tracking);
+  --md-comp-navigation-drawer-headline-type: var(--md-sys-typescale-title-small-weight) var(--md-sys-typescale-title-small-size) / var(--md-sys-typescale-title-small-line-height) var(--md-sys-typescale-title-small-font);
+  --md-comp-navigation-drawer-headline-weight: var(--md-sys-typescale-title-small-weight);
+  --md-comp-navigation-drawer-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-navigation-drawer-icon-size: 24px;
+  --md-comp-navigation-drawer-inactive-focus-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-drawer-inactive-focus-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-drawer-inactive-focus-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-drawer-inactive-hover-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-drawer-inactive-hover-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-drawer-inactive-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-drawer-inactive-icon-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-navigation-drawer-inactive-label-text-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-navigation-drawer-inactive-pressed-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-drawer-inactive-pressed-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-navigation-drawer-inactive-pressed-state-layer-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-navigation-drawer-label-text-font: var(--md-sys-typescale-label-large-font);
+  --md-comp-navigation-drawer-label-text-line-height: var(--md-sys-typescale-label-large-line-height);
+  --md-comp-navigation-drawer-label-text-size: var(--md-sys-typescale-label-large-size);
+  --md-comp-navigation-drawer-label-text-tracking: var(--md-sys-typescale-label-large-tracking);
+  --md-comp-navigation-drawer-label-text-type: var(--md-sys-typescale-label-large-weight) var(--md-sys-typescale-label-large-size) / var(--md-sys-typescale-label-large-line-height) var(--md-sys-typescale-label-large-font);
+  --md-comp-navigation-drawer-label-text-weight: var(--md-sys-typescale-label-large-weight);
+  --md-comp-navigation-drawer-large-badge-label-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-navigation-drawer-large-badge-label-font: var(--md-sys-typescale-label-large-font);
+  --md-comp-navigation-drawer-large-badge-label-line-height: var(--md-sys-typescale-label-large-line-height);
+  --md-comp-navigation-drawer-large-badge-label-size: var(--md-sys-typescale-label-large-size);
+  --md-comp-navigation-drawer-large-badge-label-tracking: var(--md-sys-typescale-label-large-tracking);
+  --md-comp-navigation-drawer-large-badge-label-type: var(--md-sys-typescale-label-large-weight) var(--md-sys-typescale-label-large-size) / var(--md-sys-typescale-label-large-line-height) var(--md-sys-typescale-label-large-font);
+  --md-comp-navigation-drawer-large-badge-label-weight: var(--md-sys-typescale-label-large-weight);
+  --md-comp-navigation-drawer-modal-container-color: var(--md-sys-color-surface-container-low);
+  --md-comp-navigation-drawer-modal-container-elevation: var(--md-sys-elevation-level1);
+  --md-comp-navigation-drawer-pressed-state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  --md-comp-navigation-drawer-standard-container-color: var(--md-sys-color-surface);
+  --md-comp-navigation-drawer-standard-container-elevation: var(--md-sys-elevation-level0);
+  /* top-app-bar-small */
+  --md-comp-top-app-bar-small-container-color: var(--md-sys-color-surface);
+  --md-comp-top-app-bar-small-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-top-app-bar-small-container-height: 64px;
+  --md-comp-top-app-bar-small-container-shape: var(--md-sys-shape-corner-none);
+  --md-comp-top-app-bar-small-headline-color: var(--md-sys-color-on-surface);
+  --md-comp-top-app-bar-small-headline-font: var(--md-sys-typescale-title-large-font);
+  --md-comp-top-app-bar-small-headline-line-height: var(--md-sys-typescale-title-large-line-height);
+  --md-comp-top-app-bar-small-headline-size: var(--md-sys-typescale-title-large-size);
+  --md-comp-top-app-bar-small-headline-tracking: var(--md-sys-typescale-title-large-tracking);
+  --md-comp-top-app-bar-small-headline-type: var(--md-sys-typescale-title-large-weight) var(--md-sys-typescale-title-large-size) / var(--md-sys-typescale-title-large-line-height) var(--md-sys-typescale-title-large-font);
+  --md-comp-top-app-bar-small-headline-weight: var(--md-sys-typescale-title-large-weight);
+  --md-comp-top-app-bar-small-leading-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-top-app-bar-small-leading-icon-size: 24px;
+  --md-comp-top-app-bar-small-on-scroll-container-color: var(--md-sys-color-surface-container);
+  --md-comp-top-app-bar-small-on-scroll-container-elevation: var(--md-sys-elevation-level2);
+  --md-comp-top-app-bar-small-trailing-icon-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-top-app-bar-small-trailing-icon-size: 24px;
+  /* top-app-bar-medium */
+  --md-comp-top-app-bar-medium-container-color: var(--md-sys-color-surface);
+  --md-comp-top-app-bar-medium-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-top-app-bar-medium-container-height: 112px;
+  --md-comp-top-app-bar-medium-container-shape: var(--md-sys-shape-corner-none);
+  --md-comp-top-app-bar-medium-headline-color: var(--md-sys-color-on-surface);
+  --md-comp-top-app-bar-medium-headline-font: var(--md-sys-typescale-headline-small-font);
+  --md-comp-top-app-bar-medium-headline-line-height: var(--md-sys-typescale-headline-small-line-height);
+  --md-comp-top-app-bar-medium-headline-size: var(--md-sys-typescale-headline-small-size);
+  --md-comp-top-app-bar-medium-headline-tracking: var(--md-sys-typescale-headline-small-tracking);
+  --md-comp-top-app-bar-medium-headline-type: var(--md-sys-typescale-headline-small-weight) var(--md-sys-typescale-headline-small-size) / var(--md-sys-typescale-headline-small-line-height) var(--md-sys-typescale-headline-small-font);
+  --md-comp-top-app-bar-medium-headline-weight: var(--md-sys-typescale-headline-small-weight);
+  --md-comp-top-app-bar-medium-leading-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-top-app-bar-medium-leading-icon-size: 24px;
+  --md-comp-top-app-bar-medium-trailing-icon-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-top-app-bar-medium-trailing-icon-size: 24px;
+  /* top-app-bar-large */
+  --md-comp-top-app-bar-large-container-color: var(--md-sys-color-surface);
+  --md-comp-top-app-bar-large-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-top-app-bar-large-container-height: 152px;
+  --md-comp-top-app-bar-large-container-shape: var(--md-sys-shape-corner-none);
+  --md-comp-top-app-bar-large-headline-color: var(--md-sys-color-on-surface);
+  --md-comp-top-app-bar-large-headline-font: var(--md-sys-typescale-headline-medium-font);
+  --md-comp-top-app-bar-large-headline-line-height: var(--md-sys-typescale-headline-medium-line-height);
+  --md-comp-top-app-bar-large-headline-size: var(--md-sys-typescale-headline-medium-size);
+  --md-comp-top-app-bar-large-headline-tracking: var(--md-sys-typescale-headline-medium-tracking);
+  --md-comp-top-app-bar-large-headline-type: var(--md-sys-typescale-headline-medium-weight) var(--md-sys-typescale-headline-medium-size) / var(--md-sys-typescale-headline-medium-line-height) var(--md-sys-typescale-headline-medium-font);
+  --md-comp-top-app-bar-large-headline-weight: var(--md-sys-typescale-headline-medium-weight);
+  --md-comp-top-app-bar-large-leading-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-top-app-bar-large-leading-icon-size: 24px;
+  --md-comp-top-app-bar-large-trailing-icon-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-top-app-bar-large-trailing-icon-size: 24px;
+  /* elevated-card */
+  --md-comp-elevated-card-container-color: var(--md-sys-color-surface-container-low);
+  --md-comp-elevated-card-container-elevation: var(--md-sys-elevation-level1);
+  --md-comp-elevated-card-container-shadow-color: var(--md-sys-color-shadow);
+  --md-comp-elevated-card-container-shape: var(--md-sys-shape-corner-medium);
+  --md-comp-elevated-card-disabled-container-color: var(--md-sys-color-surface);
+  --md-comp-elevated-card-disabled-container-elevation: var(--md-sys-elevation-level1);
+  --md-comp-elevated-card-disabled-container-opacity: 0.38;
+  --md-comp-elevated-card-dragged-container-elevation: var(--md-sys-elevation-level4);
+  --md-comp-elevated-card-dragged-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-elevated-card-dragged-state-layer-opacity: var(--md-sys-state-dragged-state-layer-opacity);
+  --md-comp-elevated-card-focus-container-elevation: var(--md-sys-elevation-level1);
+  --md-comp-elevated-card-focus-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-elevated-card-focus-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-elevated-card-hover-container-elevation: var(--md-sys-elevation-level2);
+  --md-comp-elevated-card-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-elevated-card-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-elevated-card-icon-color: var(--md-sys-color-primary);
+  --md-comp-elevated-card-icon-size: 24px;
+  --md-comp-elevated-card-pressed-container-elevation: var(--md-sys-elevation-level1);
+  --md-comp-elevated-card-pressed-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-elevated-card-pressed-state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  /* filled-card */
+  --md-comp-filled-card-container-color: var(--md-sys-color-surface-container-highest);
+  --md-comp-filled-card-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-filled-card-container-shadow-color: var(--md-sys-color-shadow);
+  --md-comp-filled-card-container-shape: var(--md-sys-shape-corner-medium);
+  --md-comp-filled-card-disabled-container-color: var(--md-sys-color-surface-variant);
+  --md-comp-filled-card-disabled-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-filled-card-disabled-container-opacity: 0.38;
+  --md-comp-filled-card-dragged-container-elevation: var(--md-sys-elevation-level3);
+  --md-comp-filled-card-dragged-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-filled-card-dragged-state-layer-opacity: var(--md-sys-state-dragged-state-layer-opacity);
+  --md-comp-filled-card-focus-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-filled-card-focus-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-filled-card-focus-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-filled-card-hover-container-elevation: var(--md-sys-elevation-level1);
+  --md-comp-filled-card-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-filled-card-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-filled-card-icon-color: var(--md-sys-color-primary);
+  --md-comp-filled-card-icon-size: 24px;
+  --md-comp-filled-card-pressed-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-filled-card-pressed-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-filled-card-pressed-state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  /* outlined-card */
+  --md-comp-outlined-card-container-color: var(--md-sys-color-surface);
+  --md-comp-outlined-card-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-outlined-card-container-shadow-color: var(--md-sys-color-shadow);
+  --md-comp-outlined-card-container-shape: var(--md-sys-shape-corner-medium);
+  --md-comp-outlined-card-disabled-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-outlined-card-disabled-outline-color: var(--md-sys-color-outline);
+  --md-comp-outlined-card-disabled-outline-opacity: 0.12;
+  --md-comp-outlined-card-dragged-container-elevation: var(--md-sys-elevation-level3);
+  --md-comp-outlined-card-dragged-outline-color: var(--md-sys-color-outline-variant);
+  --md-comp-outlined-card-dragged-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-card-dragged-state-layer-opacity: var(--md-sys-state-dragged-state-layer-opacity);
+  --md-comp-outlined-card-focus-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-outlined-card-focus-outline-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-card-focus-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-card-focus-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-outlined-card-hover-container-elevation: var(--md-sys-elevation-level1);
+  --md-comp-outlined-card-hover-outline-color: var(--md-sys-color-outline-variant);
+  --md-comp-outlined-card-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-card-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-outlined-card-icon-color: var(--md-sys-color-primary);
+  --md-comp-outlined-card-icon-size: 24px;
+  --md-comp-outlined-card-outline-color: var(--md-sys-color-outline-variant);
+  --md-comp-outlined-card-outline-width: 1px;
+  --md-comp-outlined-card-pressed-container-elevation: var(--md-sys-elevation-level0);
+  --md-comp-outlined-card-pressed-outline-color: var(--md-sys-color-outline-variant);
+  --md-comp-outlined-card-pressed-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-card-pressed-state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  /* snackbar */
+  --md-comp-snackbar-action-focus-label-text-color: var(--md-sys-color-inverse-primary);
+  --md-comp-snackbar-action-focus-state-layer-color: var(--md-sys-color-inverse-primary);
+  --md-comp-snackbar-action-focus-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-snackbar-action-hover-label-text-color: var(--md-sys-color-inverse-primary);
+  --md-comp-snackbar-action-hover-state-layer-color: var(--md-sys-color-inverse-primary);
+  --md-comp-snackbar-action-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-snackbar-action-label-text-color: var(--md-sys-color-inverse-primary);
+  --md-comp-snackbar-action-label-text-font: var(--md-sys-typescale-label-large-font);
+  --md-comp-snackbar-action-label-text-line-height: var(--md-sys-typescale-label-large-line-height);
+  --md-comp-snackbar-action-label-text-size: var(--md-sys-typescale-label-large-size);
+  --md-comp-snackbar-action-label-text-tracking: var(--md-sys-typescale-label-large-tracking);
+  --md-comp-snackbar-action-label-text-type: var(--md-sys-typescale-label-large-weight) var(--md-sys-typescale-label-large-size) / var(--md-sys-typescale-label-large-line-height) var(--md-sys-typescale-label-large-font);
+  --md-comp-snackbar-action-label-text-weight: var(--md-sys-typescale-label-large-weight);
+  --md-comp-snackbar-action-pressed-label-text-color: var(--md-sys-color-inverse-primary);
+  --md-comp-snackbar-action-pressed-state-layer-color: var(--md-sys-color-inverse-primary);
+  --md-comp-snackbar-action-pressed-state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  --md-comp-snackbar-container-color: var(--md-sys-color-inverse-surface);
+  --md-comp-snackbar-container-elevation: var(--md-sys-elevation-level3);
+  --md-comp-snackbar-container-shadow-color: var(--md-sys-color-shadow);
+  --md-comp-snackbar-container-shape: var(--md-sys-shape-corner-extra-small);
+  --md-comp-snackbar-icon-color: var(--md-sys-color-inverse-on-surface);
+  --md-comp-snackbar-icon-focus-icon-color: var(--md-sys-color-inverse-on-surface);
+  --md-comp-snackbar-icon-focus-state-layer-color: var(--md-sys-color-inverse-on-surface);
+  --md-comp-snackbar-icon-focus-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-snackbar-icon-hover-icon-color: var(--md-sys-color-inverse-on-surface);
+  --md-comp-snackbar-icon-hover-state-layer-color: var(--md-sys-color-inverse-on-surface);
+  --md-comp-snackbar-icon-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-snackbar-icon-pressed-icon-color: var(--md-sys-color-inverse-on-surface);
+  --md-comp-snackbar-icon-pressed-state-layer-color: var(--md-sys-color-inverse-on-surface);
+  --md-comp-snackbar-icon-pressed-state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  --md-comp-snackbar-icon-size: 24px;
+  --md-comp-snackbar-supporting-text-color: var(--md-sys-color-inverse-on-surface);
+  --md-comp-snackbar-supporting-text-font: var(--md-sys-typescale-body-medium-font);
+  --md-comp-snackbar-supporting-text-line-height: var(--md-sys-typescale-body-medium-line-height);
+  --md-comp-snackbar-supporting-text-size: var(--md-sys-typescale-body-medium-size);
+  --md-comp-snackbar-supporting-text-tracking: var(--md-sys-typescale-body-medium-tracking);
+  --md-comp-snackbar-supporting-text-type: var(--md-sys-typescale-body-medium-weight) var(--md-sys-typescale-body-medium-size) / var(--md-sys-typescale-body-medium-line-height) var(--md-sys-typescale-body-medium-font);
+  --md-comp-snackbar-supporting-text-weight: var(--md-sys-typescale-body-medium-weight);
+  --md-comp-snackbar-with-single-line-container-height: 48px;
+  --md-comp-snackbar-with-two-lines-container-height: 68px;
+  /* sheet-bottom */
+  --md-comp-sheet-bottom-docked-container-color: var(--md-sys-color-surface-container-low);
+  --md-comp-sheet-bottom-docked-container-shape: var(--md-sys-shape-corner-extra-large-top);
+  --md-comp-sheet-bottom-docked-drag-handle-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-sheet-bottom-docked-drag-handle-height: 4px;
+  --md-comp-sheet-bottom-docked-drag-handle-width: 32px;
+  --md-comp-sheet-bottom-docked-minimized-container-shape: var(--md-sys-shape-corner-none);
+  --md-comp-sheet-bottom-docked-modal-container-elevation: var(--md-sys-elevation-level1);
+  --md-comp-sheet-bottom-docked-standard-container-elevation: var(--md-sys-elevation-level1);
+  /* sheet-side */
+  --md-comp-sheet-side-detached-container-shape: var(--md-sys-shape-corner-large);
+  --md-comp-sheet-side-docked-action-focus-label-text-color: var(--md-sys-color-primary);
+  --md-comp-sheet-side-docked-action-focus-state-layer-color: var(--md-sys-color-primary);
+  --md-comp-sheet-side-docked-action-focus-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-sheet-side-docked-action-hover-label-text-color: var(--md-sys-color-primary);
+  --md-comp-sheet-side-docked-action-hover-state-layer-color: var(--md-sys-color-primary);
+  --md-comp-sheet-side-docked-action-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-sheet-side-docked-action-pressed-label-text-color: var(--md-sys-color-primary);
+  --md-comp-sheet-side-docked-action-pressed-state-layer-color: var(--md-sys-color-primary);
+  --md-comp-sheet-side-docked-action-pressed-state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  --md-comp-sheet-side-docked-container-height: 100%;
+  --md-comp-sheet-side-docked-container-shape: var(--md-sys-shape-corner-none);
+  --md-comp-sheet-side-docked-container-width: 256px;
+  --md-comp-sheet-side-docked-divider-color: var(--md-sys-color-outline);
+  --md-comp-sheet-side-docked-headline-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-sheet-side-docked-headline-font: var(--md-sys-typescale-title-large-font);
+  --md-comp-sheet-side-docked-headline-line-height: var(--md-sys-typescale-title-large-line-height);
+  --md-comp-sheet-side-docked-headline-size: var(--md-sys-typescale-title-large-size);
+  --md-comp-sheet-side-docked-headline-tracking: var(--md-sys-typescale-title-large-tracking);
+  --md-comp-sheet-side-docked-headline-type: var(--md-sys-typescale-title-large-weight) var(--md-sys-typescale-title-large-size) / var(--md-sys-typescale-title-large-line-height) var(--md-sys-typescale-title-large-font);
+  --md-comp-sheet-side-docked-headline-weight: var(--md-sys-typescale-title-large-weight);
+  --md-comp-sheet-side-docked-modal-container-color: var(--md-sys-color-surface-container-low);
+  --md-comp-sheet-side-docked-modal-container-elevation: var(--md-sys-elevation-level1);
+  --md-comp-sheet-side-docked-modal-container-shape: var(--md-sys-shape-corner-large-start);
+  --md-comp-sheet-side-docked-standard-container-color: var(--md-sys-color-surface);
+  --md-comp-sheet-side-docked-standard-container-elevation: var(--md-sys-elevation-level0);
+  /* badge */
+  --md-comp-badge-color: var(--md-sys-color-error);
+  --md-comp-badge-large-color: var(--md-sys-color-error);
+  --md-comp-badge-large-label-text-color: var(--md-sys-color-on-error);
+  --md-comp-badge-large-label-text-font: var(--md-sys-typescale-label-small-font);
+  --md-comp-badge-large-label-text-line-height: var(--md-sys-typescale-label-small-line-height);
+  --md-comp-badge-large-label-text-size: var(--md-sys-typescale-label-small-size);
+  --md-comp-badge-large-label-text-tracking: var(--md-sys-typescale-label-small-tracking);
+  --md-comp-badge-large-label-text-type: var(--md-sys-typescale-label-small-weight) var(--md-sys-typescale-label-small-size) / var(--md-sys-typescale-label-small-line-height) var(--md-sys-typescale-label-small-font);
+  --md-comp-badge-large-label-text-weight: var(--md-sys-typescale-label-small-weight);
+  --md-comp-badge-large-shape: var(--md-sys-shape-corner-full);
+  --md-comp-badge-large-size: 16px;
+  --md-comp-badge-shape: var(--md-sys-shape-corner-full);
+  --md-comp-badge-size: 6px;
+  /* search-bar */
+  --md-comp-search-bar-avatar-shape: var(--md-sys-shape-corner-full);
+  --md-comp-search-bar-avatar-size: 30px;
+  --md-comp-search-bar-container-color: var(--md-sys-color-surface-container-high);
+  --md-comp-search-bar-container-elevation: var(--md-sys-elevation-level3);
+  --md-comp-search-bar-container-height: 56px;
+  --md-comp-search-bar-container-shape: var(--md-sys-shape-corner-full);
+  --md-comp-search-bar-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-search-bar-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-search-bar-hover-supporting-text-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-search-bar-input-text-color: var(--md-sys-color-on-surface);
+  --md-comp-search-bar-input-text-font: var(--md-sys-typescale-body-large-font);
+  --md-comp-search-bar-input-text-line-height: var(--md-sys-typescale-body-large-line-height);
+  --md-comp-search-bar-input-text-size: var(--md-sys-typescale-body-large-size);
+  --md-comp-search-bar-input-text-tracking: var(--md-sys-typescale-body-large-tracking);
+  --md-comp-search-bar-input-text-type: var(--md-sys-typescale-body-large-weight) var(--md-sys-typescale-body-large-size) / var(--md-sys-typescale-body-large-line-height) var(--md-sys-typescale-body-large-font);
+  --md-comp-search-bar-input-text-weight: var(--md-sys-typescale-body-large-weight);
+  --md-comp-search-bar-leading-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-search-bar-pressed-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-search-bar-pressed-state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  --md-comp-search-bar-pressed-supporting-text-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-search-bar-supporting-text-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-search-bar-supporting-text-font: var(--md-sys-typescale-body-large-font);
+  --md-comp-search-bar-supporting-text-line-height: var(--md-sys-typescale-body-large-line-height);
+  --md-comp-search-bar-supporting-text-size: var(--md-sys-typescale-body-large-size);
+  --md-comp-search-bar-supporting-text-tracking: var(--md-sys-typescale-body-large-tracking);
+  --md-comp-search-bar-supporting-text-type: var(--md-sys-typescale-body-large-weight) var(--md-sys-typescale-body-large-size) / var(--md-sys-typescale-body-large-line-height) var(--md-sys-typescale-body-large-font);
+  --md-comp-search-bar-supporting-text-weight: var(--md-sys-typescale-body-large-weight);
+  --md-comp-search-bar-trailing-icon-color: var(--md-sys-color-on-surface-variant);
+  /* plain-tooltip */
+  --md-comp-plain-tooltip-container-color: var(--md-sys-color-inverse-surface);
+  --md-comp-plain-tooltip-container-shape: var(--md-sys-shape-corner-extra-small);
+  --md-comp-plain-tooltip-supporting-text-color: var(--md-sys-color-inverse-on-surface);
+  --md-comp-plain-tooltip-supporting-text-font: var(--md-sys-typescale-body-small-font);
+  --md-comp-plain-tooltip-supporting-text-line-height: var(--md-sys-typescale-body-small-line-height);
+  --md-comp-plain-tooltip-supporting-text-size: var(--md-sys-typescale-body-small-size);
+  --md-comp-plain-tooltip-supporting-text-tracking: var(--md-sys-typescale-body-small-tracking);
+  --md-comp-plain-tooltip-supporting-text-type: var(--md-sys-typescale-body-small-weight) var(--md-sys-typescale-body-small-size) / var(--md-sys-typescale-body-small-line-height) var(--md-sys-typescale-body-small-font);
+  --md-comp-plain-tooltip-supporting-text-weight: var(--md-sys-typescale-body-small-weight);
+  /* rich-tooltip */
+  --md-comp-rich-tooltip-action-focus-label-text-color: var(--md-sys-color-primary);
+  --md-comp-rich-tooltip-action-focus-state-layer-color: var(--md-sys-color-primary);
+  --md-comp-rich-tooltip-action-focus-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-rich-tooltip-action-hover-label-text-color: var(--md-sys-color-primary);
+  --md-comp-rich-tooltip-action-hover-state-layer-color: var(--md-sys-color-primary);
+  --md-comp-rich-tooltip-action-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-rich-tooltip-action-label-text-color: var(--md-sys-color-primary);
+  --md-comp-rich-tooltip-action-label-text-font: var(--md-sys-typescale-label-large-font);
+  --md-comp-rich-tooltip-action-label-text-line-height: var(--md-sys-typescale-label-large-line-height);
+  --md-comp-rich-tooltip-action-label-text-size: var(--md-sys-typescale-label-large-size);
+  --md-comp-rich-tooltip-action-label-text-tracking: var(--md-sys-typescale-label-large-tracking);
+  --md-comp-rich-tooltip-action-label-text-type: var(--md-sys-typescale-label-large-weight) var(--md-sys-typescale-label-large-size) / var(--md-sys-typescale-label-large-line-height) var(--md-sys-typescale-label-large-font);
+  --md-comp-rich-tooltip-action-label-text-weight: var(--md-sys-typescale-label-large-weight);
+  --md-comp-rich-tooltip-action-pressed-label-text-color: var(--md-sys-color-primary);
+  --md-comp-rich-tooltip-action-pressed-state-layer-color: var(--md-sys-color-primary);
+  --md-comp-rich-tooltip-action-pressed-state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  --md-comp-rich-tooltip-container-color: var(--md-sys-color-surface-container);
+  --md-comp-rich-tooltip-container-elevation: var(--md-sys-elevation-level2);
+  --md-comp-rich-tooltip-container-shadow-color: var(--md-sys-color-shadow);
+  --md-comp-rich-tooltip-container-shape: var(--md-sys-shape-corner-medium);
+  --md-comp-rich-tooltip-subhead-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-rich-tooltip-subhead-font: var(--md-sys-typescale-title-small-font);
+  --md-comp-rich-tooltip-subhead-line-height: var(--md-sys-typescale-title-small-line-height);
+  --md-comp-rich-tooltip-subhead-size: var(--md-sys-typescale-title-small-size);
+  --md-comp-rich-tooltip-subhead-tracking: var(--md-sys-typescale-title-small-tracking);
+  --md-comp-rich-tooltip-subhead-type: var(--md-sys-typescale-title-small-weight) var(--md-sys-typescale-title-small-size) / var(--md-sys-typescale-title-small-line-height) var(--md-sys-typescale-title-small-font);
+  --md-comp-rich-tooltip-subhead-weight: var(--md-sys-typescale-title-small-weight);
+  --md-comp-rich-tooltip-supporting-text-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-rich-tooltip-supporting-text-font: var(--md-sys-typescale-body-medium-font);
+  --md-comp-rich-tooltip-supporting-text-line-height: var(--md-sys-typescale-body-medium-line-height);
+  --md-comp-rich-tooltip-supporting-text-size: var(--md-sys-typescale-body-medium-size);
+  --md-comp-rich-tooltip-supporting-text-tracking: var(--md-sys-typescale-body-medium-tracking);
+  --md-comp-rich-tooltip-supporting-text-type: var(--md-sys-typescale-body-medium-weight) var(--md-sys-typescale-body-medium-size) / var(--md-sys-typescale-body-medium-line-height) var(--md-sys-typescale-body-medium-font);
+  --md-comp-rich-tooltip-supporting-text-weight: var(--md-sys-typescale-body-medium-weight);
+  /* outlined-segmented-button */
+  --md-comp-outlined-segmented-button-container-height: 40px;
+  --md-comp-outlined-segmented-button-disabled-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-disabled-icon-opacity: 0.38;
+  --md-comp-outlined-segmented-button-disabled-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-disabled-label-text-opacity: 0.38;
+  --md-comp-outlined-segmented-button-disabled-outline-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-disabled-outline-opacity: 0.12;
+  --md-comp-outlined-segmented-button-focus-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-outlined-segmented-button-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-outlined-segmented-button-label-text-font: var(--md-sys-typescale-label-large-font);
+  --md-comp-outlined-segmented-button-label-text-line-height: var(--md-sys-typescale-label-large-line-height);
+  --md-comp-outlined-segmented-button-label-text-size: var(--md-sys-typescale-label-large-size);
+  --md-comp-outlined-segmented-button-label-text-tracking: var(--md-sys-typescale-label-large-tracking);
+  --md-comp-outlined-segmented-button-label-text-type: var(--md-sys-typescale-label-large-weight) var(--md-sys-typescale-label-large-size) / var(--md-sys-typescale-label-large-line-height) var(--md-sys-typescale-label-large-font);
+  --md-comp-outlined-segmented-button-label-text-weight: var(--md-sys-typescale-label-large-weight);
+  --md-comp-outlined-segmented-button-outline-color: var(--md-sys-color-outline);
+  --md-comp-outlined-segmented-button-outline-width: 1px;
+  --md-comp-outlined-segmented-button-pressed-state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  --md-comp-outlined-segmented-button-selected-container-color: var(--md-sys-color-secondary-container);
+  --md-comp-outlined-segmented-button-selected-focus-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-outlined-segmented-button-selected-focus-label-text-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-outlined-segmented-button-selected-focus-state-layer-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-outlined-segmented-button-selected-hover-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-outlined-segmented-button-selected-hover-label-text-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-outlined-segmented-button-selected-hover-state-layer-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-outlined-segmented-button-selected-label-text-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-outlined-segmented-button-selected-pressed-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-outlined-segmented-button-selected-pressed-label-text-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-outlined-segmented-button-selected-pressed-state-layer-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-outlined-segmented-button-selected-with-icon-icon-color: var(--md-sys-color-on-secondary-container);
+  --md-comp-outlined-segmented-button-shape: var(--md-sys-shape-corner-full);
+  --md-comp-outlined-segmented-button-unselected-focus-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-unselected-focus-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-unselected-focus-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-unselected-hover-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-unselected-hover-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-unselected-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-unselected-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-unselected-pressed-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-unselected-pressed-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-unselected-pressed-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-unselected-with-icon-icon-color: var(--md-sys-color-on-surface);
+  --md-comp-outlined-segmented-button-with-icon-icon-size: 18px;
+  /* data-table */
+  --md-comp-data-table-container-shape: var(--md-sys-shape-corner-extra-small);
+  --md-comp-data-table-footer-container-color: var(--md-sys-color-surface);
+  --md-comp-data-table-footer-container-height: 52px;
+  --md-comp-data-table-footer-supporting-text-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-data-table-footer-supporting-text-font: var(--md-sys-typescale-body-medium-font);
+  --md-comp-data-table-footer-supporting-text-line-height: var(--md-sys-typescale-body-medium-line-height);
+  --md-comp-data-table-footer-supporting-text-size: var(--md-sys-typescale-body-medium-size);
+  --md-comp-data-table-footer-supporting-text-tracking: var(--md-sys-typescale-body-medium-tracking);
+  --md-comp-data-table-footer-supporting-text-weight: var(--md-sys-typescale-body-medium-weight);
+  --md-comp-data-table-header-container-color: var(--md-sys-color-surface);
+  --md-comp-data-table-header-container-height: 56px;
+  --md-comp-data-table-header-headline-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-data-table-header-headline-font: var(--md-sys-typescale-title-small-font);
+  --md-comp-data-table-header-headline-line-height: var(--md-sys-typescale-title-small-line-height);
+  --md-comp-data-table-header-headline-size: var(--md-sys-typescale-title-small-size);
+  --md-comp-data-table-header-headline-tracking: var(--md-sys-typescale-title-small-tracking);
+  --md-comp-data-table-header-headline-weight: var(--md-sys-typescale-title-small-weight);
+  --md-comp-data-table-header-hover-headline-color: var(--md-sys-color-on-surface);
+  --md-comp-data-table-header-hover-sorting-icon-button-color: var(--md-sys-color-on-surface);
+  --md-comp-data-table-outline-color: var(--md-sys-color-outline-variant);
+  --md-comp-data-table-outline-width: 1px;
+  --md-comp-data-table-row-item-container-height: 52px;
+  --md-comp-data-table-row-item-disabled-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-data-table-row-item-disabled-label-text-opacity: 0.38;
+  --md-comp-data-table-row-item-label-text-color: var(--md-sys-color-on-surface);
+  --md-comp-data-table-row-item-label-text-font: var(--md-sys-typescale-body-medium-font);
+  --md-comp-data-table-row-item-label-text-line-height: var(--md-sys-typescale-body-medium-line-height);
+  --md-comp-data-table-row-item-label-text-size: var(--md-sys-typescale-body-medium-size);
+  --md-comp-data-table-row-item-label-text-tracking: var(--md-sys-typescale-body-medium-tracking);
+  --md-comp-data-table-row-item-label-text-weight: var(--md-sys-typescale-body-medium-weight);
+  --md-comp-data-table-row-item-outline-color: var(--md-sys-color-outline-variant);
+  --md-comp-data-table-row-item-outline-width: 1px;
+  --md-comp-data-table-row-item-selected-container-color: var(--md-sys-color-surface-container-highest);
+  --md-comp-data-table-row-item-selected-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-data-table-row-item-selected-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  --md-comp-data-table-row-item-unselected-container-color: var(--md-sys-color-surface);
+  --md-comp-data-table-row-item-unselected-hover-state-layer-color: var(--md-sys-color-on-surface);
+  --md-comp-data-table-row-item-unselected-hover-state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  /* scrim */
+  --md-comp-scrim-container-color: var(--md-sys-color-scrim);
+  --md-comp-scrim-container-opacity: 0.32;
+  /* banner */
+  --md-comp-banner-container-color: var(--md-sys-color-surface-container-low);
+  --md-comp-banner-container-elevation: var(--md-sys-elevation-level1);
+  --md-comp-banner-container-shape: var(--md-sys-shape-corner-none);
+  --md-comp-banner-desktop-with-single-line-container-height: 52px;
+  --md-comp-banner-desktop-with-three-lines-container-height: 90px;
+  --md-comp-banner-desktop-with-two-lines-with-image-container-height: 72px;
+  --md-comp-banner-mobile-with-single-line-container-height: 54px;
+  --md-comp-banner-mobile-with-two-lines-container-height: 112px;
+  --md-comp-banner-mobile-with-two-lines-with-image-container-height: 120px;
+  --md-comp-banner-supporting-text-color: var(--md-sys-color-on-surface-variant);
+  --md-comp-banner-supporting-text-font: var(--md-sys-typescale-body-medium-font);
+  --md-comp-banner-supporting-text-line-height: var(--md-sys-typescale-body-medium-line-height);
+  --md-comp-banner-supporting-text-size: var(--md-sys-typescale-body-medium-size);
+  --md-comp-banner-supporting-text-tracking: var(--md-sys-typescale-body-medium-tracking);
+  --md-comp-banner-supporting-text-type: var(--md-sys-typescale-body-medium-weight) var(--md-sys-typescale-body-medium-size) / var(--md-sys-typescale-body-medium-line-height) var(--md-sys-typescale-body-medium-font);
+  --md-comp-banner-supporting-text-weight: var(--md-sys-typescale-body-medium-weight);
+  --md-comp-banner-with-image-image-shape: var(--md-sys-shape-corner-full);
+  --md-comp-banner-with-image-image-size: 40px;
+}
+
+/*
+  google-design: Material Web(2.5.0)에 없는 컴포넌트와 화면 틀.
+  값의 출처
+  - 색, 모양, 글자, 높이, 폭: component-tokens.css의 공식 토큰 [A] (v0.192). 이 파일은 그 변수만 가리킨다.
+  - 안쪽 여백과 간격처럼 토큰에 없는 숫자: [D] 추정. m3 사양 그림의 4dp 단위 규칙을 따랐다. 줄 끝에 [D]를 적었다.
+  - 그림자는 직접 만들지 않는다. 공식 <md-elevation>을 안에 넣고 --md-elevation-level(0~5)만 정한다.
+  - 누름 물결과 포커스 고리도 공식 <md-ripple>, <md-focus-ring>을 안에 넣는다.
+  전제: tokens.css, component-tokens.css를 먼저 불러온다.
+*/
+
+/* ── 공통: 상호작용 요소 ── */
+.m3-interactive { position: relative; cursor: pointer; -webkit-tap-highlight-color: transparent; outline: none; }
+.m3-interactive md-focus-ring { --md-focus-ring-shape: inherit; }
+
+/* ── 상단 앱 바 [A 높이·색·글자] ── */
+.m3-top-app-bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 0;   /* 아이콘 버튼 사이 0 [A-db app-bar.icon-button-space] */
+  height: var(--md-comp-top-app-bar-small-container-height); padding: 0 4px;                               /* 앞뒤 4 [A-db app-bar.leading-space, trailing-space] */
+  background: var(--md-comp-top-app-bar-small-container-color); color: var(--md-comp-top-app-bar-small-headline-color);
+  transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard); }
+.m3-top-app-bar.is-scrolled { background: var(--md-comp-top-app-bar-small-on-scroll-container-color); }   /* 스크롤되면 색이 바뀐다 [A] */
+.m3-top-app-bar .headline { flex: 1; min-width: 0; margin: 0 0 0 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;   /* [D] */
+  font: var(--md-comp-top-app-bar-small-headline-type); letter-spacing: var(--md-sys-typescale-title-large-tracking); }
+.m3-top-app-bar .trailing { display: flex; gap: 0; color: var(--md-comp-top-app-bar-small-trailing-icon-color); }
+.m3-top-app-bar > .headline:first-child { margin-left: 12px; }   /* 앞 아이콘이 없으면 글자 시작을 본문 여백(16)에 맞춘다 [D] */
+@media (min-width: 600px) { .m3-top-app-bar > .headline:first-child { margin-left: 20px; } }   /* 본문 여백 24에 맞춤 [D] */
+.m3-top-app-bar.center .headline { text-align: center; margin: 0; }
+/* 중간·큰 앱 바: 제목이 아래 줄로 내려온다 */
+.m3-top-app-bar.medium, .m3-top-app-bar.large { flex-wrap: wrap; align-content: flex-start; padding-top: 8px; }   /* [D] */
+.m3-top-app-bar.medium { height: var(--md-comp-top-app-bar-medium-container-height); }
+.m3-top-app-bar.large { height: var(--md-comp-top-app-bar-large-container-height); }
+.m3-top-app-bar.medium .headline, .m3-top-app-bar.large .headline { order: 9; flex-basis: 100%; margin: 0; padding: 0 16px; white-space: normal; }   /* [D] */
+.m3-top-app-bar.medium .headline { font: var(--md-comp-top-app-bar-medium-headline-type); margin-top: 20px; }   /* [D] */
+.m3-top-app-bar.large .headline { font: var(--md-comp-top-app-bar-large-headline-type); margin-top: 36px; }     /* [D] */
+.m3-top-app-bar.medium .spacer, .m3-top-app-bar.large .spacer { flex: 1; }
+
+/* ── 내비게이션 바 (좁은 화면, 아래) [A] ── */
+.m3-navigation-bar { position: fixed; inset: auto 0 0 0; z-index: 20; display: flex; justify-content: space-around;
+  height: var(--md-comp-navigation-bar-container-height); padding-bottom: env(safe-area-inset-bottom);
+  background: var(--md-comp-navigation-bar-container-color); --md-elevation-level: 2; }                      /* level2 [A] */
+.m3-navigation-bar a, .m3-navigation-bar button { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;   /* 표시와 글자 사이 4 [A-db nav-bar.item.vertical.active-indicator.icon-label-space] */
+  border: 0; background: none; text-decoration: none; color: var(--md-comp-navigation-bar-inactive-label-text-color);
+  font: var(--md-sys-typescale-label-medium); letter-spacing: var(--md-sys-typescale-label-medium-tracking); }
+.m3-nav-indicator { position: relative; display: grid; place-items: center; border-radius: var(--md-sys-shape-corner-full);
+  width: var(--md-comp-navigation-bar-active-indicator-width); height: var(--md-comp-navigation-bar-active-indicator-height);
+  color: var(--md-comp-navigation-bar-inactive-icon-color); --md-ripple-hover-color: var(--md-sys-color-on-surface); }
+.m3-nav-indicator md-icon { --md-icon-size: var(--md-comp-navigation-bar-icon-size); }
+[aria-current="page"] > .m3-nav-indicator { background: var(--md-comp-navigation-bar-active-indicator-color); color: var(--md-comp-navigation-bar-active-icon-color); }
+.m3-navigation-bar [aria-current="page"] { color: var(--md-comp-navigation-bar-active-label-text-color); font-weight: var(--md-comp-navigation-bar-active-label-text-weight); }
+[aria-current="page"] > .m3-nav-indicator md-icon { font-variation-settings: 'FILL' 1; }   /* 선택된 내비 아이콘은 채운 모양 [A-doc icons] */
+.m3-navigation-bar md-focus-ring, .m3-navigation-rail md-focus-ring { --md-focus-ring-shape: var(--md-sys-shape-corner-full); }
+
+/* ── 내비게이션 레일 (중간 이상, 왼쪽) [A] ── */
+.m3-navigation-rail { position: sticky; top: 0; height: 100vh; flex: none; display: flex; flex-direction: column; align-items: center; gap: 4px;   /* 항목 사이 4 [A-db nav-rail.collapsed.item.vertical-space] */
+  width: var(--md-comp-navigation-rail-container-width); padding: 44px 0 12px;                                                                    /* 위 44 [A-db nav-rail.collapsed.top-space], 아래 [D] */
+  background: var(--md-comp-navigation-rail-container-color); box-sizing: border-box; }
+.m3-navigation-rail .fab-slot { margin: -32px 0 40px; }   /* 메뉴·FAB는 위 여백 안에서 시작 [D], 아래 항목까지 40 [A-db nav-rail.item.header-space-minimum] */
+.m3-navigation-rail a, .m3-navigation-rail button:not(.fab-slot *) { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; min-height: 56px;   /* 표시-글자 4 [A-db nav-rail.item.vertical.icon-label-space], 높이 56 [A-db nav-rail.item.short.container.height] */
+  border: 0; background: none; text-decoration: none; color: var(--md-comp-navigation-rail-inactive-label-text-color);
+  font: var(--md-comp-navigation-rail-label-text-type); letter-spacing: var(--md-sys-typescale-label-medium-tracking); }
+.m3-navigation-rail .m3-nav-indicator { width: var(--md-comp-navigation-rail-active-indicator-width); height: var(--md-comp-navigation-rail-active-indicator-height); color: var(--md-comp-navigation-rail-inactive-icon-color); }
+.m3-navigation-rail [aria-current="page"] > .m3-nav-indicator { background: var(--md-comp-navigation-rail-active-indicator-color); color: var(--md-comp-navigation-rail-active-icon-color); }
+.m3-navigation-rail [aria-current="page"] { color: var(--md-comp-navigation-rail-active-label-text-color); }
+
+/* ── 내비게이션 서랍 (넓은 화면 고정, 또는 모달) [A] ── */
+.m3-navigation-drawer { flex: none; width: var(--md-comp-navigation-drawer-container-width); max-width: calc(100vw - 56px); box-sizing: border-box;   /* 모달일 때 오른쪽에 56 남김 [D] */
+  padding: 12px; background: var(--md-comp-navigation-drawer-standard-container-color); overflow: auto; }                                        /* [D] */
+.m3-navigation-drawer .headline { margin: 18px 16px 8px; color: var(--md-comp-navigation-drawer-headline-color); font: var(--md-comp-navigation-drawer-headline-type); }   /* [D] */
+.m3-navigation-drawer a, .m3-navigation-drawer button { display: flex; align-items: center; gap: 12px; width: 100%; box-sizing: border-box;              /* [D] */
+  height: var(--md-comp-navigation-drawer-active-indicator-height); padding: 0 24px 0 16px; border: 0; border-radius: var(--md-comp-navigation-drawer-active-indicator-shape);   /* [D] */
+  background: none; text-decoration: none; color: var(--md-comp-navigation-drawer-inactive-label-text-color); font: var(--md-comp-navigation-drawer-label-text-type);
+  --md-focus-ring-shape: var(--md-sys-shape-corner-full); }
+.m3-navigation-drawer a md-icon, .m3-navigation-drawer button md-icon { color: var(--md-comp-navigation-drawer-inactive-icon-color); --md-icon-size: var(--md-comp-navigation-drawer-icon-size); }
+.m3-navigation-drawer [aria-current="page"] { background: var(--md-comp-navigation-drawer-active-indicator-color); color: var(--md-comp-navigation-drawer-active-label-text-color); }
+.m3-navigation-drawer [aria-current="page"] md-icon { color: var(--md-comp-navigation-drawer-active-icon-color); }
+.m3-navigation-drawer .badge { margin-left: auto; color: var(--md-comp-navigation-drawer-large-badge-label-color); font: var(--md-comp-navigation-drawer-large-badge-label-type); }
+.m3-navigation-drawer md-divider { margin: 8px 16px; width: auto; }   /* [D] */
+nav.m3-navigation-drawer { position: sticky; top: 0; height: 100vh; }   /* 고정 서랍은 화면 높이에 붙어 있다 [D] */
+/* 모달 서랍: <dialog class="m3-navigation-drawer modal"> */
+dialog.m3-navigation-drawer.modal { position: fixed; inset: 0 auto 0 0; height: 100%; max-height: none; margin: 0; border: 0;
+  background: var(--md-comp-navigation-drawer-modal-container-color); border-radius: var(--md-comp-navigation-drawer-container-shape); color: inherit; }
+dialog.m3-navigation-drawer.modal::backdrop, dialog.m3-sheet::backdrop { background: color-mix(in srgb, var(--md-comp-scrim-container-color) calc(var(--md-comp-scrim-container-opacity) * 100%), transparent); }   /* 32% [A] */
+
+/* ── 카드 [A] ── */
+.m3-card { position: relative; display: block; box-sizing: border-box; border-radius: var(--md-comp-elevated-card-container-shape); padding: 16px; color: var(--md-sys-color-on-surface); text-decoration: none; }   /* 안쪽 16 [D] */
+.m3-card.elevated { background: var(--md-comp-elevated-card-container-color); --md-elevation-level: 1; }   /* level1 [A] */
+.m3-card.filled { background: var(--md-comp-filled-card-container-color); }
+.m3-card.outlined { background: var(--md-comp-outlined-card-container-color); border: var(--md-comp-outlined-card-outline-width) solid var(--md-comp-outlined-card-outline-color); }
+.m3-card > md-icon { color: var(--md-comp-elevated-card-icon-color); }
+.m3-card .media { display: block; margin: -16px -16px 16px; border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0; overflow: hidden; }   /* [D] */
+.m3-card .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }   /* [D] */
+
+/* ── 스낵바 [A] ── */
+.m3-snackbar { position: fixed; left: 50%; bottom: 16px; z-index: 50; display: flex; align-items: center; gap: 4px;   /* [D] */
+  min-height: var(--md-comp-snackbar-with-single-line-container-height); max-width: min(560px, calc(100vw - 32px)); box-sizing: border-box; padding: 4px 8px 4px 16px;   /* [D] */
+  border-radius: var(--md-comp-snackbar-container-shape); background: var(--md-comp-snackbar-container-color); color: var(--md-comp-snackbar-supporting-text-color);
+  font: var(--md-comp-snackbar-supporting-text-type); --md-elevation-level: 3;                                     /* level3 [A] */
+  transform: translate(-50%, 24px); opacity: 0; pointer-events: none;
+  transition: transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate), opacity var(--md-sys-motion-duration-short4) linear; }
+.m3-snackbar.open { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+.m3-snackbar .text { flex: 1; padding: 10px 0; }   /* [D] */
+.m3-snackbar md-text-button { --md-text-button-label-text-color: var(--md-comp-snackbar-action-label-text-color); --md-text-button-hover-label-text-color: var(--md-comp-snackbar-action-label-text-color); --md-text-button-focus-label-text-color: var(--md-comp-snackbar-action-label-text-color); --md-text-button-pressed-label-text-color: var(--md-comp-snackbar-action-label-text-color); }
+.m3-snackbar md-icon-button { --md-icon-button-icon-color: var(--md-comp-snackbar-icon-color); --md-icon-button-hover-icon-color: var(--md-comp-snackbar-icon-color); }
+@media (min-width: 600px) { .m3-snackbar { left: 24px; transform: translate(0, 24px); } .m3-snackbar.open { transform: none; } }   /* 넓으면 왼쪽 아래 [D] */
+.m3-navigation-bar ~ .m3-snackbar, .has-navigation-bar .m3-snackbar { bottom: calc(var(--md-comp-navigation-bar-container-height) + 16px); }   /* 내비 바 위로 [D] */
+
+/* ── 시트: <dialog class="m3-sheet bottom|side"> ── */
+dialog.m3-sheet { border: 0; padding: 0; margin: 0; max-width: none; max-height: none; color: var(--md-sys-color-on-surface); }
+dialog.m3-sheet.bottom { inset: auto 0 0 0; width: 100%; max-width: 640px; margin-inline: auto; max-height: calc(100% - 72px); box-sizing: border-box; padding: 0 16px 24px;   /* 위 72 남김, 최대 640 [D] */
+  border-radius: var(--md-comp-sheet-bottom-docked-container-shape); background: var(--md-comp-sheet-bottom-docked-container-color); }
+dialog.m3-sheet.bottom .handle { display: block; width: var(--md-comp-sheet-bottom-docked-drag-handle-width); height: var(--md-comp-sheet-bottom-docked-drag-handle-height);
+  margin: 22px auto; border-radius: 2px; background: var(--md-comp-sheet-bottom-docked-drag-handle-color); opacity: 0.4; }   /* 위아래 22 [D], 투명도 [D] */
+dialog.m3-sheet.side { inset: 0 0 0 auto; height: 100%; width: min(400px, 100vw); box-sizing: border-box; padding: 12px 24px 24px;   /* 최대 400 [A-doc], 여백 [D] */
+  border-radius: var(--md-comp-sheet-side-docked-modal-container-shape); background: var(--md-comp-sheet-side-docked-modal-container-color); }
+dialog.m3-sheet.side header { display: flex; align-items: center; gap: 8px; min-height: 64px; }   /* [D] */
+dialog.m3-sheet.side h2 { flex: 1; margin: 0; color: var(--md-comp-sheet-side-docked-headline-color); font: var(--md-comp-sheet-side-docked-headline-type); }
+
+/* ── 배지 [A] ── */
+.m3-badge-anchor { position: relative; display: inline-flex; }
+.m3-badge { position: absolute; top: 0; right: 0; transform: translate(40%, -30%); box-sizing: border-box;   /* 위치 [D] */
+  min-width: var(--md-comp-badge-size); height: var(--md-comp-badge-size); border-radius: var(--md-comp-badge-shape); background: var(--md-comp-badge-color); }
+.m3-badge.large { min-width: var(--md-comp-badge-large-size); height: var(--md-comp-badge-large-size); padding: 0 4px; background: var(--md-comp-badge-large-color);   /* [D] */
+  color: var(--md-comp-badge-large-label-text-color); font: var(--md-comp-badge-large-label-text-type); text-align: center; }
+
+/* ── 검색 바 [A] ── */
+.m3-search-bar { position: relative; display: flex; align-items: center; gap: 0; height: var(--md-comp-search-bar-container-height); padding: 0 4px 0 16px;   /* 앞 16 [A-db search-bar.leading-space], 뒤 아이콘 버튼 쪽 4·사이 0 [A-db search-bar.contained.trailing-actions] */
+  border-radius: var(--md-comp-search-bar-container-shape); background: var(--md-comp-search-bar-container-color); }
+.m3-search-bar > md-icon { margin-right: 16px; color: var(--md-comp-search-bar-leading-icon-color); }   /* [D] */
+.m3-search-bar input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: none; color: var(--md-comp-search-bar-input-text-color); font: var(--md-comp-search-bar-input-text-type); }
+.m3-search-bar input::placeholder { color: var(--md-comp-search-bar-supporting-text-color); }
+.m3-search-bar:focus-within { outline: 2px solid var(--md-sys-color-secondary); outline-offset: 2px; }   /* md-focus-ring 대신 [D] */
+
+/* ── 일반 툴팁 [A]: 아이콘 버튼처럼 이름이 보이지 않는 요소에만 ── */
+.m3-tooltip-anchor { position: relative; display: inline-flex; }
+.m3-tooltip { position: absolute; left: 50%; top: calc(100% + 4px); z-index: 60; transform: translateX(-50%); white-space: nowrap; pointer-events: none;   /* [D] */
+  min-height: 24px; box-sizing: border-box; padding: 4px 8px; border-radius: var(--md-comp-plain-tooltip-container-shape);                     /* [D] */
+  background: var(--md-comp-plain-tooltip-container-color); color: var(--md-comp-plain-tooltip-supporting-text-color); font: var(--md-comp-plain-tooltip-supporting-text-type);
+  opacity: 0; transition: opacity var(--md-sys-motion-duration-short4) linear; }
+.m3-tooltip-anchor:hover .m3-tooltip, .m3-tooltip-anchor:focus-within .m3-tooltip { opacity: 1; transition-delay: 500ms; }   /* 지연 [D] */
+
+/* ── 분할 버튼(세그먼트) [A] ── */
+.m3-segmented { display: inline-flex; height: var(--md-comp-outlined-segmented-button-container-height); }
+.m3-segmented button { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 48px; padding: 0 12px;   /* [D] */
+  border: var(--md-comp-outlined-segmented-button-outline-width) solid var(--md-comp-outlined-segmented-button-outline-color); margin-left: calc(-1 * var(--md-comp-outlined-segmented-button-outline-width));
+  background: none; color: var(--md-comp-outlined-segmented-button-unselected-label-text-color); font: var(--md-comp-outlined-segmented-button-label-text-type); cursor: pointer; }
+.m3-segmented button:first-child { margin-left: 0; border-radius: var(--md-comp-outlined-segmented-button-shape) 0 0 var(--md-comp-outlined-segmented-button-shape); padding-left: 16px; }   /* [D] */
+.m3-segmented button:last-child { border-radius: 0 var(--md-comp-outlined-segmented-button-shape) var(--md-comp-outlined-segmented-button-shape) 0; padding-right: 16px; }
+.m3-segmented button[aria-pressed="true"] { background: var(--md-comp-outlined-segmented-button-selected-container-color); color: var(--md-comp-outlined-segmented-button-selected-label-text-color); }
+.m3-segmented button[aria-pressed="true"]::before { content: "check"; font-family: var(--md-icon-font, "Material Symbols Outlined"); font-size: var(--md-comp-outlined-segmented-button-with-icon-icon-size); line-height: 1; }   /* 선택 표시 [A] */
+.m3-segmented button md-focus-ring { --md-focus-ring-shape: inherit; }
+
+/* ── 화면 FAB 위치: <md-fab class="m3-fab-fixed"> ── */
+.m3-fab-fixed { position: fixed; right: 16px; bottom: 16px; z-index: 15; }   /* compact 16 [D] */
+@media (min-width: 600px) { .m3-fab-fixed { right: 24px; bottom: 24px; } }   /* medium 이상 24, 바깥 여백과 같게 [D] */
+@media (max-width: 599px) { .has-navigation-bar .m3-fab-fixed { bottom: calc(var(--md-comp-navigation-bar-container-height) + 16px); } }   /* 내비 바 위 [D] */
+/* 스낵바는 FAB를 가리지 않게 위로 민다 [A-doc 스낵바] */
+.has-fab .m3-snackbar { bottom: calc(56px + 32px); }
+@media (max-width: 599px) { .has-fab.has-navigation-bar .m3-snackbar { bottom: calc(var(--md-comp-navigation-bar-container-height) + 56px + 32px); } }
+
+/* ── 상태 표시 (Material에 없음 [D]). 색 역할 짝만 쓴다. tertiary는 기준 색에서 분홍이라 상태 뜻으로 쓰지 않는다 ── */
+.m3-status { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: var(--md-sys-shape-corner-small); font: var(--md-sys-typescale-label-medium); white-space: nowrap; }
+.m3-status.neutral { background: var(--md-sys-color-surface-container-highest); color: var(--md-sys-color-on-surface-variant); }   /* 대기, 초안 */
+.m3-status.active { background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); }        /* 진행 중 */
+.m3-status.done { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }      /* 완료 */
+.m3-status.error { background: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); }             /* 지연, 실패 */
+
+/* ── 설정 행: 글 + 오른쪽 컨트롤(스위치 등) [D] ── */
+.m3-setting-row { display: flex; align-items: center; gap: 16px; min-height: 72px; padding: 8px 0; border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+.m3-setting-row:last-child { border-bottom: 0; }
+.m3-setting-row .text { flex: 1; min-width: 0; }
+.m3-setting-row .title { margin: 0; font: var(--md-sys-typescale-body-large); letter-spacing: var(--md-sys-typescale-body-large-tracking); }
+.m3-setting-row .sub { margin: 2px 0 0; color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-body-medium); }
+
+/* ── 표 (Material Web에 없음. 목록 색과 글자를 따른다 [D]) ── */
+.m3-table-wrap { overflow-x: auto; border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-sys-shape-corner-medium); }
+.m3-table { width: 100%; border-collapse: collapse; font: var(--md-sys-typescale-body-medium); }
+.m3-table th { height: 56px; padding: 0 16px; text-align: left; color: var(--md-sys-color-on-surface-variant); font: var(--md-sys-typescale-title-small); border-bottom: 1px solid var(--md-sys-color-outline-variant); }   /* [D] */
+.m3-table td { height: 52px; padding: 0 16px; border-bottom: 1px solid var(--md-sys-color-outline-variant); }   /* [D] */
+.m3-table tr:last-child td { border-bottom: 0; }
+.m3-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ── 화면 틀: 창 크기 구간 [A-doc] compact <600, medium 600~839, expanded 840~1199, large 1200~1599, extra-large ≥1600 ── */
+.m3-app { display: flex; min-height: 100vh; }
+.m3-app > main { flex: 1; min-width: 0; }
+.m3-pane { box-sizing: border-box; padding: 0 16px; }                                 /* compact 여백 16 [A-doc] */
+@media (min-width: 600px) { .m3-pane { padding: 0 24px; } }                          /* medium 이상 여백 24 [A-doc] */
+.m3-panes { display: grid; gap: 24px; }                                              /* 창 사이 간격 24 [A-doc] */
+@media (min-width: 840px) { .m3-panes.list-detail { grid-template-columns: 360px 1fr; } }    /* 고정 창 360 [A-doc] */
+@media (min-width: 1200px) { .m3-panes.list-detail { grid-template-columns: 412px 1fr; } }   /* 고정 창 412 [A-doc] */
+/* 구간별 내비 바꾸기 [A-doc]: compact = 내비 바, medium = 레일, expanded 이상 = 레일 또는 서랍 */
+.m3-show-compact { display: none !important; }
+@media (max-width: 599px) { .m3-hide-compact { display: none !important; } .m3-show-compact { display: flex !important; } body.has-navigation-bar { padding-bottom: var(--md-comp-navigation-bar-container-height); } }
+@media (max-width: 1199px) { .m3-show-large { display: none !important; } }
+@media (min-width: 1200px) { .m3-hide-large { display: none !important; } }
+
+/* 움직임 줄이기 */
+@media (prefers-reduced-motion: reduce) { .m3-snackbar, .m3-tooltip, .m3-top-app-bar { transition: none; } }
+
+.leaflet-image-layer,.leaflet-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane,.leaflet-pane>canvas,.leaflet-pane>svg,.leaflet-tile,.leaflet-tile-container,.leaflet-zoom-box{position:absolute;left:0;top:0}.leaflet-container{overflow:hidden}.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}.leaflet-tile::selection{background:0 0}.leaflet-safari .leaflet-tile{image-rendering:-webkit-optimize-contrast}.leaflet-safari .leaflet-tile-container{width:1600px;height:1600px;-webkit-transform-origin:0 0}.leaflet-marker-icon,.leaflet-marker-shadow{display:block}.leaflet-container .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}.leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-shadow-pane img,.leaflet-container .leaflet-tile,.leaflet-container .leaflet-tile-pane img,.leaflet-container img.leaflet-image-layer{max-width:none!important;max-height:none!important;width:auto;padding:0}.leaflet-container img.leaflet-tile{mix-blend-mode:plus-lighter}.leaflet-container.leaflet-touch-zoom{-ms-touch-action:pan-x pan-y;touch-action:pan-x pan-y}.leaflet-container.leaflet-touch-drag{-ms-touch-action:pinch-zoom;touch-action:none;touch-action:pinch-zoom}.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom{-ms-touch-action:none;touch-action:none}.leaflet-container{-webkit-tap-highlight-color:transparent}.leaflet-container a{-webkit-tap-highlight-color:rgba(51,181,229,.4)}.leaflet-tile{filter:inherit;visibility:hidden}.leaflet-tile-loaded{visibility:inherit}.leaflet-zoom-box{width:0;height:0;-moz-box-sizing:border-box;box-sizing:border-box;z-index:800}.leaflet-overlay-pane svg{-moz-user-select:none}.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}.leaflet-map-pane canvas{z-index:100}.leaflet-map-pane svg{z-index:200}.leaflet-vml-shape{width:1px;height:1px}.lvml{behavior:url(#default#VML);display:inline-block;position:absolute}.leaflet-control{position:relative;z-index:800;pointer-events:visiblePainted;pointer-events:auto}.leaflet-bottom,.leaflet-top{position:absolute;z-index:1000;pointer-events:none}.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}.leaflet-control{float:left;clear:both}.leaflet-right .leaflet-control{float:right}.leaflet-top .leaflet-control{margin-top:10px}.leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}.leaflet-right .leaflet-control{margin-right:10px}.leaflet-fade-anim .leaflet-popup{opacity:0;-webkit-transition:opacity .2s linear;-moz-transition:opacity .2s linear;transition:opacity .2s linear}.leaflet-fade-anim .leaflet-map-pane .leaflet-popup{opacity:1}.leaflet-zoom-animated{-webkit-transform-origin:0 0;-ms-transform-origin:0 0;transform-origin:0 0}svg.leaflet-zoom-animated{will-change:transform}.leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform .25s cubic-bezier(0,0,.25,1);-moz-transition:-moz-transform .25s cubic-bezier(0,0,.25,1);transition:transform .25s cubic-bezier(0,0,.25,1)}.leaflet-pan-anim .leaflet-tile,.leaflet-zoom-anim .leaflet-tile{-webkit-transition:none;-moz-transition:none;transition:none}.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}.leaflet-interactive{cursor:pointer}.leaflet-grab{cursor:-webkit-grab;cursor:-moz-grab;cursor:grab}.leaflet-crosshair,.leaflet-crosshair .leaflet-interactive{cursor:crosshair}.leaflet-control,.leaflet-popup-pane{cursor:auto}.leaflet-dragging .leaflet-grab,.leaflet-dragging .leaflet-grab .leaflet-interactive,.leaflet-dragging .leaflet-marker-draggable{cursor:move;cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing}.leaflet-image-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}.leaflet-image-layer.leaflet-interactive,.leaflet-marker-icon.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive,svg.leaflet-image-layer.leaflet-interactive path{pointer-events:visiblePainted;pointer-events:auto}.leaflet-container{background:#ddd;outline-offset:1px}.leaflet-container a{color:#0078a8}.leaflet-zoom-box{border:2px dotted #38f;background:rgba(255,255,255,.5)}.leaflet-container{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;font-size:12px;font-size:.75rem;line-height:1.5}.leaflet-bar{box-shadow:0 1px 5px rgba(0,0,0,.65);border-radius:4px}.leaflet-bar a{background-color:#fff;border-bottom:1px solid #ccc;width:26px;height:26px;line-height:26px;display:block;text-align:center;text-decoration:none;color:#000}.leaflet-bar a,.leaflet-control-layers-toggle{background-position:50% 50%;background-repeat:no-repeat;display:block}.leaflet-bar a:focus,.leaflet-bar a:hover{background-color:#f4f4f4}.leaflet-bar a:first-child{border-top-left-radius:4px;border-top-right-radius:4px}.leaflet-bar a:last-child{border-bottom-left-radius:4px;border-bottom-right-radius:4px;border-bottom:none}.leaflet-bar a.leaflet-disabled{cursor:default;background-color:#f4f4f4;color:#bbb}.leaflet-touch .leaflet-bar a{width:30px;height:30px;line-height:30px}.leaflet-touch .leaflet-bar a:first-child{border-top-left-radius:2px;border-top-right-radius:2px}.leaflet-touch .leaflet-bar a:last-child{border-bottom-left-radius:2px;border-bottom-right-radius:2px}.leaflet-control-zoom-in,.leaflet-control-zoom-out{font:bold 18px 'Lucida Console',Monaco,monospace;text-indent:1px}.leaflet-touch .leaflet-control-zoom-in,.leaflet-touch .leaflet-control-zoom-out{font-size:22px}.leaflet-control-layers{box-shadow:0 1px 5px rgba(0,0,0,.4);background:#fff;border-radius:5px}.leaflet-control-layers-toggle{background-image:url(images/layers.png);width:36px;height:36px}.leaflet-retina .leaflet-control-layers-toggle{background-image:url(images/layers-2x.png);background-size:26px 26px}.leaflet-touch .leaflet-control-layers-toggle{width:44px;height:44px}.leaflet-control-layers .leaflet-control-layers-list,.leaflet-control-layers-expanded .leaflet-control-layers-toggle{display:none}.leaflet-control-layers-expanded .leaflet-control-layers-list{display:block;position:relative}.leaflet-control-layers-expanded{padding:6px 10px 6px 6px;color:#333;background:#fff}.leaflet-control-layers-scrollbar{overflow-y:scroll;overflow-x:hidden;padding-right:5px}.leaflet-control-layers-selector{margin-top:2px;position:relative;top:1px}.leaflet-control-layers label{display:block;font-size:13px;font-size:1.08333em}.leaflet-control-layers-separator{height:0;border-top:1px solid #ddd;margin:5px -10px 5px -6px}.leaflet-default-icon-path{background-image:url(images/marker-icon.png)}.leaflet-container .leaflet-control-attribution{background:#fff;background:rgba(255,255,255,.8);margin:0}.leaflet-control-attribution,.leaflet-control-scale-line{padding:0 5px;color:#333;line-height:1.4}.leaflet-control-attribution a{text-decoration:none}.leaflet-control-attribution a:focus,.leaflet-control-attribution a:hover{text-decoration:underline}.leaflet-attribution-flag{display:inline!important;vertical-align:baseline!important;width:1em;height:.6669em}.leaflet-left .leaflet-control-scale{margin-left:5px}.leaflet-bottom .leaflet-control-scale{margin-bottom:5px}.leaflet-control-scale-line{border:2px solid #777;border-top:none;line-height:1.1;padding:2px 5px 1px;white-space:nowrap;-moz-box-sizing:border-box;box-sizing:border-box;background:rgba(255,255,255,.8);text-shadow:1px 1px #fff}.leaflet-control-scale-line:not(:first-child){border-top:2px solid #777;border-bottom:none;margin-top:-2px}.leaflet-control-scale-line:not(:first-child):not(:last-child){border-bottom:2px solid #777}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-attribution,.leaflet-touch .leaflet-control-layers{box-shadow:none}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-layers{border:2px solid rgba(0,0,0,.2);background-clip:padding-box}.leaflet-popup{position:absolute;text-align:center;margin-bottom:20px}.leaflet-popup-content-wrapper{padding:1px;text-align:left;border-radius:12px}.leaflet-popup-content{margin:13px 24px 13px 20px;line-height:1.3;font-size:13px;font-size:1.08333em;min-height:1px}.leaflet-popup-content p{margin:17px 0;margin:1.3em 0}.leaflet-popup-tip-container{width:40px;height:20px;position:absolute;left:50%;margin-top:-1px;margin-left:-20px;overflow:hidden;pointer-events:none}.leaflet-popup-tip{width:17px;height:17px;padding:1px;margin:-10px auto 0;pointer-events:auto;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg)}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#333;box-shadow:0 3px 14px rgba(0,0,0,.4)}.leaflet-container a.leaflet-popup-close-button{position:absolute;top:0;right:0;border:none;text-align:center;width:24px;height:24px;font:16px/24px Tahoma,Verdana,sans-serif;color:#757575;text-decoration:none;background:0 0}.leaflet-container a.leaflet-popup-close-button:focus,.leaflet-container a.leaflet-popup-close-button:hover{color:#585858}.leaflet-popup-scrolled{overflow:auto}.leaflet-oldie .leaflet-popup-content-wrapper{-ms-zoom:1}.leaflet-oldie .leaflet-popup-tip{width:24px;margin:0 auto}.leaflet-oldie .leaflet-control-layers,.leaflet-oldie .leaflet-control-zoom,.leaflet-oldie .leaflet-popup-content-wrapper,.leaflet-oldie .leaflet-popup-tip{border:1px solid #999}.leaflet-div-icon{background:#fff;border:1px solid #666}.leaflet-tooltip{position:absolute;padding:6px;background-color:#fff;border:1px solid #fff;border-radius:3px;color:#222;white-space:nowrap;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.4)}.leaflet-tooltip.leaflet-interactive{cursor:pointer;pointer-events:auto}.leaflet-tooltip-bottom:before,.leaflet-tooltip-left:before,.leaflet-tooltip-right:before,.leaflet-tooltip-top:before{position:absolute;pointer-events:none;border:6px solid transparent;background:0 0;content:""}.leaflet-tooltip-bottom{margin-top:6px}.leaflet-tooltip-top{margin-top:-6px}.leaflet-tooltip-bottom:before,.leaflet-tooltip-top:before{left:50%;margin-left:-6px}.leaflet-tooltip-top:before{bottom:0;margin-bottom:-12px;border-top-color:#fff}.leaflet-tooltip-bottom:before{top:0;margin-top:-12px;margin-left:-6px;border-bottom-color:#fff}.leaflet-tooltip-left{margin-left:-6px}.leaflet-tooltip-right{margin-left:6px}.leaflet-tooltip-left:before,.leaflet-tooltip-right:before{top:50%;margin-top:-6px}.leaflet-tooltip-left:before{right:0;margin-right:-12px;border-left-color:#fff}.leaflet-tooltip-right:before{left:0;margin-left:-12px;border-right-color:#fff}@media print{.leaflet-control{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+/* ── 화면 틀: 앱 바 + 두 창(왼쪽 판단 412, 오른쪽 지도) [A-doc layout] ── */
 html,body{height:100%}
-body{background:var(--paper);color:var(--ink);font:14px/1.5 var(--f-sans);margin:0}
-::selection{background:var(--sel);color:#fff}
-.app{display:grid;grid-template-columns:minmax(300px,380px) 1fr;height:100%}
-aside{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;display:flex;flex-direction:column;gap:20px;padding-block:20px 28px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:20px;scrollbar-color:var(--line2) transparent}
-h1{font-size:20px;line-height:1.25;margin:0;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
-.lede{margin:6px 0 0;color:var(--ink2);font-size:13px}
-.block{display:flex;flex-direction:column;gap:8px}
-.lbl{font-size:12px;font-weight:500;color:var(--ink3);letter-spacing:.02em}
-select{font:inherit;font-size:15px;font-weight:500;color:var(--ink);background:var(--paper);border:1px solid var(--line2);border-radius:6px;padding:9px 10px;width:100%}
-select:focus-visible,button:focus-visible,.row:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
-.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
-.facts div{background:var(--panel);padding:8px 8px 7px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.facts b{font:500 15px/1.2 var(--f-num);font-variant-numeric:tabular-nums}
-.facts span{font-size:12px;color:var(--ink3)}
-.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line2);border-radius:6px;overflow:hidden}
-.seg button{font:inherit;border:0;background:transparent;color:var(--ink2);padding:9px 6px;cursor:pointer;display:flex;flex-direction:column;gap:1px;text-align:left;padding-left:12px}
-.seg button b{font-size:14px;color:var(--ink)}
-.seg button small{font-size:12px;color:var(--ink3);line-height:1.35}
-.seg button[aria-pressed="true"]{background:var(--ink);}
-.seg button[aria-pressed="true"] b,.seg button[aria-pressed="true"] small{color:var(--panel)}
-.seg button+button{border-left:1px solid var(--line2)}
-.rule{font-size:12.5px;color:var(--ink2);margin:0}
-.layers{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font:inherit;font-size:12.5px;border:1px solid var(--line2);background:transparent;color:var(--ink2);border-radius:999px;padding:5px 11px 5px 9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.chip i{width:10px;height:10px;border-radius:2px;display:inline-block}
-.chip[aria-pressed="false"]{opacity:.55}
-.chip[aria-pressed="false"] i{background:transparent!important;outline:1px solid var(--line2)}
-.legend{display:grid;grid-template-columns:auto 1fr;gap:5px 8px;font-size:12px;color:var(--ink2);align-items:center}
-.legend i{width:14px;height:10px;border-radius:2px;display:inline-block}
-.head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-.count{font:500 22px/1 var(--f-num);font-variant-numeric:tabular-nums}
-.list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
-.row{display:grid;grid-template-columns:22px 1fr auto;gap:2px 8px;padding:8px 2px;border-bottom:1px solid var(--line);cursor:pointer;align-items:baseline}
-.row:hover{background:var(--paper)}
-.row .n{font:400 12px var(--f-num);color:var(--ink3)}
-.row .nm{font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row .v{font:500 13px var(--f-num);font-variant-numeric:tabular-nums}
-.row .sub{grid-column:2/4;font-size:12px;color:var(--ink3);font-variant-numeric:tabular-nums}
-.empty{color:var(--ink3);font-size:13px;padding:12px 0}
-.note{font-size:12px;color:var(--ink3);line-height:1.55;border-top:1px solid var(--line);padding-top:12px;margin:0}
-main{position:relative;min-width:0}
-#map{position:absolute;inset:0;background:var(--paper)}
-.leaflet-container{font:inherit;background:var(--paper)}
-.leaflet-control-zoom a{background:var(--panel)!important;color:var(--ink)!important;border-color:var(--line)!important}
-.gu-label{font:500 12px var(--f-sans);color:var(--ink3);white-space:nowrap;text-shadow:0 0 3px var(--paper),0 0 3px var(--paper);pointer-events:none}
-.leaflet-tooltip{background:var(--panel);color:var(--ink);border:1px solid var(--line2);border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.12);font:12.5px/1.45 var(--f-sans);padding:7px 9px}
-.leaflet-tooltip b{font-weight:700}
-.leaflet-tooltip .m{font-family:var(--f-num);font-variant-numeric:tabular-nums}
-.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink3);font-size:13px}
-@media (max-width:760px){
-  .app{grid-template-columns:1fr;grid-template-rows:56vh auto;height:auto}
-  main{order:-1;height:56vh}
-  aside{border-right:0;border-top:1px solid var(--line);overflow:visible;padding-right:max(16px,env(safe-area-inset-right,0px));padding-left:max(16px,env(safe-area-inset-left,0px))}
+[hidden]{display:none!important}
+body{display:flex;flex-direction:column;font:var(--md-sys-typescale-body-medium)}
+.m3-top-app-bar{flex:none}
+.wrap{flex:1;min-height:0;display:grid;gap:var(--md-sys-measurement-space300);padding:0 var(--md-sys-measurement-space300) var(--md-sys-measurement-space300)}
+@media (min-width:840px){.wrap{grid-template-columns:360px 1fr}}
+@media (min-width:1200px){.wrap{grid-template-columns:412px 1fr}}
+.side{overflow-y:auto;display:flex;flex-direction:column;gap:var(--md-sys-measurement-space200);padding:var(--md-sys-measurement-space100) 0 var(--md-sys-measurement-space300);min-width:0}
+.mapbox{position:relative;min-height:0;border-radius:var(--md-sys-shape-corner-large);overflow:hidden;border:1px solid var(--md-sys-color-outline-variant);background:var(--md-sys-color-surface-container-low)}
+#map{position:absolute;inset:0;background:var(--md-sys-color-surface-container-low)}
+@media (max-width:839px){
+  body{display:block}
+  .wrap{display:flex;flex-direction:column;padding:0 var(--md-sys-measurement-space200) var(--md-sys-measurement-space200)}
+  .mapbox{order:-1;height:60vh;flex:none}
+  .side{overflow:visible}
 }
+/* ── 판단 패널 ── */
+h2.sec{margin:0;font:var(--md-sys-typescale-title-small);color:var(--md-sys-color-on-surface-variant)}
+.field{display:flex;flex-direction:column;gap:var(--md-sys-measurement-space50)}
+.flabel{font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant)}
+.field select{font:var(--md-sys-typescale-body-large);color:var(--md-sys-color-on-surface);background:var(--md-sys-color-surface);border:1px solid var(--md-sys-color-outline);border-radius:var(--md-sys-shape-corner-extra-small);padding:var(--md-sys-measurement-space200);min-height:56px;width:100%;cursor:pointer}
+.field select:focus-visible{outline:2px solid var(--md-sys-color-primary);outline-offset:-1px;border-color:var(--md-sys-color-primary)}
+.fsup{font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant);padding-left:var(--md-sys-measurement-space200)}
+.brandcard{display:flex;flex-direction:column;gap:var(--md-sys-measurement-space150)}
+.brandcard .top{display:flex;align-items:center;justify-content:space-between;gap:var(--md-sys-measurement-space100)}
+.brandcard h3{margin:0;font:var(--md-sys-typescale-title-large)}
+.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--md-sys-measurement-space150) var(--md-sys-measurement-space200);margin:0}
+.facts div{display:flex;flex-direction:column;min-width:0}
+.facts dt{font:var(--md-sys-typescale-label-medium);color:var(--md-sys-color-on-surface-variant);order:2}
+.facts dd{margin:0;font:var(--md-sys-typescale-title-medium);font-variant-numeric:tabular-nums;order:1}
+.say{margin:0;font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant)}
+.say b{color:var(--md-sys-color-on-surface);font-weight:500}
+.warn{display:flex;gap:var(--md-sys-measurement-space150);align-items:flex-start;background:var(--md-sys-color-error-container);color:var(--md-sys-color-on-error-container);border-radius:var(--md-sys-shape-corner-medium);padding:var(--md-sys-measurement-space150) var(--md-sys-measurement-space200);font:var(--md-sys-typescale-body-medium)}
+.warn md-icon{flex:none}
+.m3-segmented{display:flex}
+.m3-segmented button{flex:1}
+.rule{margin:var(--md-sys-measurement-space100) 0 0;font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant)}
+.head{display:flex;align-items:baseline;justify-content:space-between}
+.count{font:var(--md-sys-typescale-title-medium);font-variant-numeric:tabular-nums}
+md-list{background:transparent;padding:0;--md-list-item-leading-space:var(--md-sys-measurement-space100);--md-list-item-trailing-space:var(--md-sys-measurement-space100)}
+.rank{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface-variant);width:24px;text-align:center;font-variant-numeric:tabular-nums}
+.tr-sales{font:var(--md-sys-typescale-label-large);font-variant-numeric:tabular-nums;color:var(--md-sys-color-on-surface)}
+.empty{font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);padding:var(--md-sys-measurement-space200) 0;margin:0}
+.checks{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--md-sys-measurement-space150)}
+.checks li{display:grid;grid-template-columns:24px 1fr;gap:var(--md-sys-measurement-space150);font:var(--md-sys-typescale-body-medium)}
+.checks md-icon{color:var(--md-sys-color-primary)}
+.checks small{display:block;font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant)}
+.note{margin:0;font:var(--md-sys-typescale-body-small);color:var(--md-sys-color-on-surface-variant)}
+/* ── 지도 위 범례 (지도 내용물이라 크기는 4의 배수 숫자) ── */
+.legend{position:absolute;left:var(--md-sys-measurement-space150);bottom:var(--md-sys-measurement-space150);z-index:500;background:var(--md-sys-color-surface-container);color:var(--md-sys-color-on-surface);border-radius:var(--md-sys-shape-corner-medium);padding:var(--md-sys-measurement-space150) var(--md-sys-measurement-space200);display:grid;grid-template-columns:auto 1fr;gap:var(--md-sys-measurement-space100) var(--md-sys-measurement-space150);align-items:center;font:var(--md-sys-typescale-label-medium);--md-elevation-level:2;max-width:260px}
+.legend i{display:inline-block;width:16px;height:12px;border-radius:var(--md-sys-shape-corner-extra-small)}
+.legend i.dot{width:12px;height:12px;border-radius:var(--md-sys-shape-corner-full);margin-left:2px}
+.layers{position:absolute;right:var(--md-sys-measurement-space150);top:var(--md-sys-measurement-space150);z-index:500;background:var(--md-sys-color-surface-container);border-radius:var(--md-sys-shape-corner-medium);padding:var(--md-sys-measurement-space100);--md-elevation-level:2;max-width:calc(100% - 96px)}
+.loading{position:absolute;inset:0;display:grid;place-items:center;font:var(--md-sys-typescale-body-medium);color:var(--md-sys-color-on-surface-variant);z-index:600}
+/* Leaflet 부품을 토큰 색으로 */
+.leaflet-container{font:inherit;background:var(--md-sys-color-surface-container-low)}
+.leaflet-control-zoom{border:0!important;border-radius:var(--md-sys-shape-corner-medium)!important;overflow:hidden}
+.leaflet-control-zoom a{background:var(--md-sys-color-surface-container)!important;color:var(--md-sys-color-on-surface)!important;border-color:var(--md-sys-color-outline-variant)!important}
+.leaflet-tooltip{background:var(--md-sys-color-inverse-surface);color:var(--md-sys-color-inverse-on-surface);border:0;border-radius:var(--md-sys-shape-corner-extra-small);box-shadow:none;font:var(--md-sys-typescale-body-small);padding:var(--md-sys-measurement-space100) var(--md-sys-measurement-space150);max-width:280px;white-space:normal}
+.leaflet-tooltip::before{display:none}
+.leaflet-tooltip b{font-weight:500}
+.gu-label{font:var(--md-sys-typescale-label-small);color:var(--md-sys-color-on-surface-variant);white-space:nowrap;pointer-events:none;text-shadow:0 0 2px var(--md-sys-color-surface-container-low),0 0 2px var(--md-sys-color-surface-container-low)}
+.cand-n{display:grid;place-items:center;border-radius:var(--md-sys-shape-corner-full);background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);font:var(--md-sys-typescale-label-small);font-variant-numeric:tabular-nums;border:2px solid var(--md-sys-color-surface-container-low);box-sizing:border-box}
+.cand-n.sel{background:var(--md-sys-color-tertiary);color:var(--md-sys-color-on-tertiary)}
+@media (max-width:599px){.legend{display:none}}   /* 좁은 화면에서는 범례가 지도를 가려 숨긴다. 층 칩 이름이 대신 설명한다 [D] */
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+</head>
+<body>
+<header class="m3-top-app-bar">
+  <h1 class="headline">서울 치킨 창업 지도</h1>
+  <div class="trailing"><md-icon-button id="info-btn" aria-label="근거와 자료"><md-icon>info</md-icon></md-icon-button></div>
+</header>
 
-<div class="app">
-  <aside>
+<div class="wrap">
+  <section class="side" aria-label="판단 패널">
+    <!-- md-outlined-select는 이 화면(Leaflet과 함께)에서 메뉴가 열리지 않아 기본 select를 외곽선 입력란 모양으로 둔다 [D] -->
+    <label class="field"><span class="flabel">브랜드</span><select id="brand"></select><span class="fsup">서울 3년 폐업이 낮은 순</span></label>
+
+    <article class="m3-card filled brandcard" id="brandcard" aria-live="polite"></article>
+    <div class="warn" id="warn" hidden><md-icon>warning</md-icon><span id="warntext"></span></div>
+
     <div>
-      <h1>서울 치킨 창업 지도</h1>
-      <p class="lede">브랜드를 고르면, 서울 전역에서 그 브랜드로 낼 만한 250m 칸을 보여줍니다.</p>
-    </div>
-
-    <div class="block">
-      <label class="lbl" for="brand">브랜드</label>
-      <select id="brand"></select>
-      <div class="facts" id="facts"></div>
-    </div>
-
-    <div class="block">
-      <span class="lbl" id="stratlbl">전략</span>
-      <div class="seg" role="group" aria-labelledby="stratlbl">
-        <button id="s-long" aria-pressed="true"><b>가늘고 길게</b><small>장사가 되는 상권 중 가게가 덜 바뀌고 덜 붐비는 칸</small></button>
-        <button id="s-short" aria-pressed="false"><b>굵고 짧게</b><small>장사가 되는 상권이면 경쟁이 있어도 포함</small></button>
+      <h2 class="sec" id="stratlbl">후보 칸 조건</h2>
+      <div class="m3-segmented" role="group" aria-labelledby="stratlbl" style="margin-top:var(--md-sys-measurement-space100)">
+        <button id="s-long" aria-pressed="true"><md-focus-ring></md-focus-ring><md-ripple></md-ripple>가늘고 길게</button>
+        <button id="s-short" aria-pressed="false"><md-focus-ring></md-focus-ring><md-ripple></md-ripple>굵고 짧게</button>
       </div>
       <p class="rule" id="rule"></p>
     </div>
 
-    <div class="block">
-      <span class="lbl">지도에 보이기</span>
-      <div class="layers">
-        <button class="chip" id="l-trdar" aria-pressed="true"><i style="background:var(--q1)"></i>상권 매출×폐업</button>
-        <button class="chip" id="l-hot" aria-pressed="true"><i style="background:var(--hot)"></i>이 브랜드가 몰린 곳</button>
-        <button class="chip" id="l-cand" aria-pressed="true"><i style="background:var(--cand)"></i>후보 칸</button>
-      </div>
-      <div class="legend">
-        <i style="background:var(--q1)"></i><span>① 잘 팔리고 덜 망하는 상권</span>
-        <i style="background:var(--q2)"></i><span>② 잘 팔리지만 많이 망하는 상권</span>
-        <i style="background:var(--q3)"></i><span>③ 덜 팔리지만 덜 망하는 상권</span>
-        <i style="background:var(--q4)"></i><span>④ 덜 팔리고 많이 망하는 상권</span>
-        <i style="background:var(--hot)"></i><span>이 브랜드 점포가 500m 칸에 2곳 이상 (진할수록 많음)</span>
-        <i style="background:var(--cand);border-radius:50%;width:10px;height:10px;margin-left:2px;box-shadow:0 0 0 1.5px var(--candring),0 0 0 2.5px var(--line2)"></i><span>후보 칸 (250m 칸의 중심)</span>
-      </div>
+    <div>
+      <div class="head"><h2 class="sec">후보 상권 · 점포당 매출 높은 순</h2><span class="count" id="count">–</span></div>
+      <md-list id="list" aria-label="후보 상권"></md-list>
+      <p class="empty" id="empty" hidden></p>
     </div>
 
-    <div class="block">
-      <div class="head"><span class="lbl">후보 칸 · 점포당 매출 높은 순</span><span class="count" id="count">–</span></div>
-      <div class="list" id="list"><div class="empty">데이터를 불러오는 중입니다.</div></div>
-    </div>
+    <article class="m3-card outlined">
+      <h2 class="sec" style="margin-bottom:var(--md-sys-measurement-space150)">자리를 볼 때 (검증된 것만)</h2>
+      <ul class="checks">
+        <li><md-icon>stairs</md-icon><span>지하 매장은 피한다<small>프랜차이즈 3년 폐업 26.2% vs 1층 12.3% (지하 269곳뿐)</small></span></li>
+        <li><md-icon>sync_problem</md-icon><span>직전 가게가 1년을 못 버틴 자리는 피한다<small>치킨집 3년 폐업 30.5% vs 24.4%</small></span></li>
+        <li><md-icon>event_upcoming</md-icon><span>2–3년차가 고비다<small>개인 치킨집 연 14.9%로 가장 높고, 넘겨도 안전 구간은 없다</small></span></li>
+      </ul>
+    </article>
 
-    <p class="note" id="note">
-      검증(2023년 말 상태로 칸을 나누고 2024–26년 실제 폐업과 비교): 상권 점포당 매출 상위 25%에 있던 치킨집은 폐업 14.2%, 나머지 21.4% (p=0.003). 같은 기준이 개인 치킨집에서는 뚜렷하지만(15.4% vs 25.9%) 프랜차이즈 안에서는 차이가 없었습니다. 프랜차이즈는 어느 칸이냐보다 어느 브랜드냐가 폐업을 가릅니다. '경쟁이 적은 칸'은 프랜차이즈에서 오히려 폐업이 많아(23.2% vs 11.8%) 기준에서 뺐습니다. 같은 브랜드 1km 밖 조건은 가맹 영업구역 관행을 따른 것이고 검증된 효과는 아닙니다.<br><br>
-      자료: 서울 인허가 치킨집(2026-11-04), 서울시 상권분석서비스 상권 추정매출·점포(2024Q1–2026Q2), 공정위 가맹정보 2024. 매출은 카드 결제 기반 추정이며 이익이 아닙니다.
-    </p>
-  </aside>
-  <main><div id="map" role="region" aria-label="서울 지도"></div><div class="loading" id="loading">지도를 그리는 중입니다.</div></main>
+    <p class="note">입지는 보조 규칙이다. 같은 방법으로 비교하면 치킨은 한식·커피보다 동네 효과가 약하고(동네 과거 폐업률 AUC 0.50 vs 0.57), 폐업을 가르는 것은 주로 브랜드다.</p>
+  </section>
+
+  <main class="mapbox">
+    <div id="map" role="region" aria-label="서울 지도"></div>
+    <div class="layers"><md-chip-set aria-label="지도 층">
+      <md-filter-chip id="l-trdar" label="매출 상위 상권" selected></md-filter-chip>
+      <md-filter-chip id="l-cand" label="후보 칸" selected></md-filter-chip>
+      <md-filter-chip id="l-hot" label="이미 몰린 곳"></md-filter-chip>
+    </md-chip-set></div>
+    <div class="legend" aria-label="범례"><md-elevation></md-elevation>
+      <i id="lg-top"></i><span>치킨 점포당 매출 상위 25% 상권</span>
+      <i id="lg-rest"></i><span>나머지 상권 (매출 자료 있음)</span>
+      <i class="dot" id="lg-cand"></i><span>후보 칸 (숫자 = 그 상권의 칸 수)</span>
+      <i id="lg-hot"></i><span>이 브랜드 점포 2곳 이상인 500m 칸</span>
+    </div>
+    <div class="loading" id="loading">지도를 그리는 중입니다.</div>
+  </main>
 </div>
+
+<md-dialog id="info">
+  <div slot="headline">이 지도의 근거</div>
+  <div slot="content" class="note" style="font:var(--md-sys-typescale-body-medium)">
+    <p>후보 칸 = 250m 칸 중 ① 그 칸이 속한 상권의 치킨 점포당 매출이 서울 상위 25%(점포분기 20 이상 상권만), ② 같은 브랜드 점포가 1km 밖. '가늘고 길게'는 여기에 ③ 최근 5년 가게 회전 상위 25%가 아님을 더한다.</p>
+    <p>①은 검증됨: 2023년 말 상위 25% 상권의 치킨집은 2024–26 폐업 14.2%, 나머지 21.4%(p=0.003). 단 차이는 개인 치킨집에서 나오고 프랜차이즈 안에서는 없다. ②는 가맹 영업구역 관행이고 효과는 검증되지 않았다. ③은 결과를 본 뒤 정한 사후 조건이다. '경쟁 적은 칸'은 프랜차이즈에서 오히려 폐업이 많아(23.2% vs 11.8%) 넣지 않았다.</p>
+    <p>브랜드 수치: 서울 3년 폐업은 서울 인허가 2015–22 개업(점주 교체 제외), 이탈률·신규/인수 비율은 공정위 가맹점 현황 2024년 실적(전국), 평균매출·창업비는 공정위 2024(전국, 창업비에 임차보증금 없음). 매출은 카드 결제 기반 추정이며 이익이 아니다.</p>
+    <p>자료: 서울 인허가 치킨집(2026-11-04), 서울시 상권분석서비스 상권 추정매출·점포(2024Q1–2026Q2), 공정위 가맹정보.</p>
+  </div>
+  <div slot="actions"><md-text-button id="info-close">닫기</md-text-button></div>
+</md-dialog>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const $=id=>document.getElementById(id);
-const st={brand:null,strat:'long',layers:{trdar:true,hot:true,cand:true}};
-let D,map,L_gu,L_tr,L_hot,L_cand,trIndex={};
-const QN={1:'①',2:'②',3:'③',4:'④'};
+const st={brand:null,strat:'long',layers:{trdar:true,cand:true,hot:false},sel:null};
+let D,map,ren,L_gu,L_tr,L_hot,L_cand,trIndex={};
 const fmt=(x,d=1)=>x==null?'–':x.toLocaleString('ko-KR',{maximumFractionDigits:d,minimumFractionDigits:d});
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-fetch('data.json').then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(init).catch(e=>{
-  $('loading').textContent='지도 데이터(data.json)를 불러오지 못했습니다. 페이지를 새로 고쳐 주세요.';$('list').innerHTML='<div class="empty">데이터를 불러오지 못했습니다.</div>';
+fetch('data.json').then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(init).catch(()=>{
+  $('loading').textContent='지도 데이터를 불러오지 못했습니다. 페이지를 새로 고쳐 주세요.';
 });
 
 function init(data){
   D=data; $('loading').hidden=true;
   D.trdar.forEach(t=>trIndex[t.code]=t);
   map=L.map('map',{zoomControl:true,preferCanvas:true,attributionControl:false,zoomSnap:.25}).setView([37.5565,126.99],11);
-  const ren=L.canvas({padding:.3});
-  L_gu=L.layerGroup().addTo(map);
-  D.gu.forEach(g=>{
-    const lay=L.geoJSON(g.geom,{renderer:ren,interactive:false,style:{color:css('--line2'),weight:1.2,fill:true,fillColor:css('--panel'),fillOpacity:1}}).addTo(L_gu);
-    const c=lay.getBounds().getCenter();
-    L.marker(c,{interactive:false,icon:L.divIcon({className:'gu-label',html:g.name,iconSize:null})}).addTo(L_gu);
-  });
-  L_tr=L.geoJSON({type:'FeatureCollection',features:D.trdar.map(t=>({type:'Feature',geometry:t.geom,properties:t}))},{renderer:ren,style:trStyle,onEachFeature:(f,l)=>l.bindTooltip(trTip(f.properties),{sticky:true})}).addTo(map);
-  L_hot=L.layerGroup().addTo(map); L_cand=L.layerGroup().addTo(map);
+  ren=L.canvas({padding:.3});
+  L_gu=L.layerGroup().addTo(map); L_tr=L.layerGroup().addTo(map); L_hot=L.layerGroup(); L_cand=L.layerGroup().addTo(map);
+  drawBase();
   const seoul=L.geoJSON(D.gu.map(g=>g.geom)).getBounds();
-  const fit=()=>{map.invalidateSize(false); const s=map.getSize(); if(s.x>0&&s.y>0) map.fitBounds(seoul,{padding:[12,12],animate:false}); else map.setView([37.5565,126.99],11,{animate:false})};
+  const fit=()=>{map.invalidateSize(false);const s=map.getSize();if(s.x>0&&s.y>0)map.fitBounds(seoul,{padding:[16,16],animate:false})};
   requestAnimationFrame(fit); new ResizeObserver(()=>map.invalidateSize(false)).observe($('map'));
+  map.on('zoomend',()=>{drawTrdar()});
+  // 브랜드: 서울 3년 폐업 낮은 순(자료 없는 브랜드는 뒤)
+  const bs=[...D.brands].sort((a,b)=>(a.close3??999)-(b.close3??999)||b.stores-a.stores);
   const sel=$('brand');
-  const order=['교촌','bhc','60계','굽네','지코바','처갓집','푸라닭','BBQ'];
-  const bs=[...D.brands].sort((a,b)=>(order.indexOf(a.name)<0?99:order.indexOf(a.name))-(order.indexOf(b.name)<0?99:order.indexOf(b.name))||b.stores-a.stores);
-  sel.innerHTML=bs.map(b=>`<option value="${b.name}">${b.name}${b.quad?'  ·  사분면 '+b.quad:''}</option>`).join('');
+  sel.innerHTML=bs.map(b=>`<option value="${esc(b.name)}">${esc(b.name)} · 서울 3년 폐업 ${b.close3==null?'자료 없음':fmt(b.close3)+'%'}</option>`).join('');
   st.brand=bs[0].name;
-  sel.addEventListener('change',e=>{st.brand=e.target.value;render()});
+  sel.addEventListener('change',()=>{st.brand=sel.value;st.sel=null;render()});
   $('s-long').onclick=()=>{st.strat='long';render()}; $('s-short').onclick=()=>{st.strat='short';render()};
-  for(const k of ['trdar','hot','cand']) $('l-'+k).onclick=()=>{st.layers[k]=!st.layers[k];$('l-'+k).setAttribute('aria-pressed',st.layers[k]);applyLayers()};
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{L_tr.setStyle(trStyle);render()});
+  for(const k of ['trdar','cand','hot']) $('l-'+k).addEventListener('click',()=>{st.layers[k]=$('l-'+k).selected;applyLayers()});
+  $('info-btn').onclick=()=>$('info').show(); $('info-close').onclick=()=>$('info').close();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{drawBase();render()});
   render();
 }
-function trStyle(f){
-  const p=f.properties; const col=p.q?css('--q'+p.q):css('--line2');
-  return {color:p.both1?css('--q1'):col,weight:p.both1?1.6:.6,fillColor:col,fillOpacity:p.q?(p.q===1?.42:.28):.06,opacity:p.q?.9:.4};
+function drawBase(){
+  L_gu.clearLayers();
+  D.gu.forEach(g=>{
+    const lay=L.geoJSON(g.geom,{renderer:ren,interactive:false,style:{color:css('--md-sys-color-outline-variant'),weight:1,fill:true,fillColor:css('--md-sys-color-surface-container-lowest'),fillOpacity:1}}).addTo(L_gu);
+    L.marker(lay.getBounds().getCenter(),{interactive:false,icon:L.divIcon({className:'gu-label',html:esc(g.name),iconSize:null})}).addTo(L_gu);
+  });
+  ['top','rest','cand','hot'].forEach(k=>{const e=$('lg-'+k);
+    e.style.background={top:css('--md-sys-color-primary-container'),rest:'transparent',cand:css('--md-sys-color-primary'),hot:css('--md-sys-color-error')}[k];
+    e.style.outline=k==='rest'?`1px solid ${css('--md-sys-color-outline')}`:k==='top'?`1px solid ${css('--md-sys-color-primary')}`:'none';
+    if(k==='hot')e.style.opacity=.45});
+  drawTrdar();
 }
-function trTip(p){
-  if(!p.q) return `<b>${p.name}</b><br>${p.gu} · ${p.type}<br>치킨 매출 자료 없음`;
-  return `<b>${p.name}</b> <span>${QN[p.q]}</span><br>${p.gu} · ${p.type}<br>치킨집 점포당 연매출 <span class="m">${fmt(p.sales,2)}</span>억 <span style="color:var(--ink3)">(2021–23: ${fmt(p.sales0,2)})</span><br>연 실제 폐업률 <span class="m">${fmt(p.close)}</span>% <span style="color:var(--ink3)">(2021–23: ${fmt(p.close0)}%)</span>${p.both1?'<br>두 기간 모두 ①':''}`;
+// 상권: 매출 축만 그린다(폐업률 축은 다음 기간에 이어지지 않음, quadrant.py). 상위 25%만 채우고 나머지는 확대했을 때 윤곽만
+function drawTrdar(){
+  if(!map)return; L_tr.clearLayers(); const z=map.getZoom();
+  const top=css('--md-sys-color-primary-container'),topl=css('--md-sys-color-primary'),line=css('--md-sys-color-outline');
+  D.trdar.forEach(t=>{
+    if(t.pct==null) return;
+    const isTop=t.pct>=.75; if(!isTop&&z<13) return;
+    L.geoJSON(t.geom,{renderer:ren,style:isTop?{color:topl,weight:.8,opacity:.7,fillColor:top,fillOpacity:.75}:{color:line,weight:.6,opacity:.6,fill:true,fillOpacity:0}})
+     .bindTooltip(trTip(t),{sticky:true}).addTo(L_tr);
+  });
+  applyLayers();
+}
+function trTip(t){
+  return `<b>${esc(t.name)}</b> · ${esc(t.gu)}<br>치킨 점포당 연매출 ${fmt(t.sales,2)}억 (서울 상위 ${Math.max(1,Math.round((1-t.pct)*100))}%)<br>2021–23년에는 ${fmt(t.sales0,2)}억`;
 }
 function cells(){
-  const C=D.cells, dist=D.dist[st.brand], out=[];
+  const C=D.cells,dist=D.dist[st.brand],out=[];
   for(let i=0;i<C.lat.length;i++){
     if(C.pct[i]==null||C.pct[i]<.75||dist[i]<=1000) continue;
-    if(st.strat==='long'&&(C.turn[i]>=D.meta.turn75||C.chk[i]>D.meta.q50)) continue;
+    if(st.strat==='long'&&C.turn[i]>=D.meta.turn75) continue;
     out.push(i);
   }
-  return out.sort((a,b)=>C.sales[b]-C.sales[a]||C.chk[a]-C.chk[b]);
+  return out;
+}
+// 칸을 상권별로 묶는다: 지도에는 상권마다 점 하나(칸 수 표시), 목록도 상권 단위
+function groups(ids){
+  const C=D.cells,g={};
+  ids.forEach(i=>{const k=C.tr[i]; (g[k]=g[k]||{code:k,ids:[],sales:C.sales[i]}).ids.push(i)});
+  return Object.values(g).map(x=>{const la=x.ids.reduce((s,i)=>s+C.lat[i],0)/x.ids.length,lo=x.ids.reduce((s,i)=>s+C.lon[i],0)/x.ids.length;
+    const near=Math.min(...x.ids.map(i=>D.dist[st.brand][i])); return {...x,lat:la,lon:lo,near,t:trIndex[x.code]||{}}}).sort((a,b)=>b.sales-a.sales);
 }
 function render(){
   const b=D.brands.find(x=>x.name===st.brand);
   $('s-long').setAttribute('aria-pressed',st.strat==='long'); $('s-short').setAttribute('aria-pressed',st.strat==='short');
-  $('facts').innerHTML=[[b.close3==null?'–':fmt(b.close3)+'%','서울 3년 폐업'],[b.sales==null?'–':fmt(b.sales,1)+'억','연 평균매출'],[b.cost==null?'–':fmt(b.cost,2)+'억','창업비'],[b.stores.toLocaleString('ko-KR'),'서울 영업 중']].map(([v,k])=>`<div><b>${v}</b><span>${k}</span></div>`).join('');
-  $('rule').textContent=(st.strat==='long'
-    ?`조건: 상권 점포당 매출 상위 25% · 같은 ${st.brand} 1km 밖 · 최근 5년 가게 회전 상위 25% 아님 · 500m 치킨집 ${D.meta.q50}곳 이하`
-    :`조건: 상권 점포당 매출 상위 25% · 같은 ${st.brand} 1km 밖`);
+  // 브랜드 카드. 위험 단계 기준(서울 3년 폐업 5% 이하 낮음, 15% 초과 높음)은 표 분포를 보고 정한 표시용 구간 [추정]
+  const lv=b.close3==null?['neutral','자료 부족']:b.close3<=5?['done','폐업 낮음']:b.close3<=15?['neutral','폐업 보통']:['error','폐업 높음'];
+  let entry='';
+  if(b.entry!=null) entry=b.entry<.5?`<p class="say">신규 개점 1곳에 기존 점포 인수(명의변경) <b>${fmt(1/b.entry,0)}곳</b>. 새로 내기보다 <b>인수가 주된 길</b>이다.</p>`
+                                    :`<p class="say">신규 개점 1곳에 기존 점포 인수 ${fmt(1/b.entry,1)}곳. 새 점포를 받는 브랜드다.</p>`;
+  $('brandcard').innerHTML=`<div class="top"><h3>${esc(b.name)}</h3><span class="m3-status ${lv[0]}">${lv[1]}</span></div>
+    <dl class="facts">
+      <div><dd>${b.close3==null?'–':fmt(b.close3)+'%'}</dd><dt>서울 3년 폐업</dt></div>
+      <div><dd>${b.exit==null?'–':fmt(b.exit)+'%'}</dd><dt>전국 연 이탈률 (2024)</dt></div>
+      <div><dd>${b.sales==null?'–':fmt(b.sales,1)+'억'}</dd><dt>가맹점 평균 연매출</dt></div>
+      <div><dd>${b.cost==null?'–':fmt(b.cost,2)+'억'}</dd><dt>창업비 (보증금 제외)</dt></div>
+    </dl>${entry}<p class="say">서울 영업 중 ${b.stores.toLocaleString('ko-KR')}곳</p>`;
+  const hi=b.close3!=null&&b.close3>15;
+  $('warn').hidden=!hi; if(hi) $('warntext').textContent=`${b.name}의 서울 3년 폐업은 ${fmt(b.close3)}%다. 이 정도 차이는 자리로 메울 수 없다(입지 변수 20개를 더해도 예측이 늘지 않음). 브랜드부터 다시 보길 권한다.`;
+  $('rule').textContent=st.strat==='long'
+    ?`상권 매출 상위 25% · 같은 ${st.brand} 1km 밖 · 최근 5년 가게 회전 상위 25% 아님`
+    :`상권 매출 상위 25% · 같은 ${st.brand} 1km 밖`;
   // 밀집
-  L_hot.clearLayers(); const hot=css('--hot'); const dn=D.dens[st.brand]||[]; const mx=Math.max(2,...dn.map(d=>d[2]));
+  L_hot.clearLayers(); const hot=css('--md-sys-color-error'); const dn=D.dens[st.brand]||[]; const mx=Math.max(2,...dn.map(d=>d[2]));
   dn.forEach(([la,lo,n])=>{const dla=250/111320,dlo=250/(111320*Math.cos(la*Math.PI/180));
-    L.rectangle([[la-dla,lo-dlo],[la+dla,lo+dlo]],{stroke:false,fillColor:hot,fillOpacity:.25+.55*Math.min(1,(n-1)/(mx-1))}).bindTooltip(`<b>${st.brand}</b> ${n}곳이 이 500m 칸에 영업 중`,{sticky:true}).addTo(L_hot)});
-  // 후보
-  L_cand.clearLayers(); const ids=cells(), C=D.cells, cc=css('--cand'), ring=css('--candring');
-  ids.forEach((i,k)=>{const t=trIndex[C.tr[i]]||{};
-    L.circleMarker([C.lat[i],C.lon[i]],{radius:5.5,color:ring,weight:1.5,fillColor:cc,fillOpacity:1}).bindTooltip(candTip(i,k,t),{sticky:true}).addTo(L_cand)});
-  $('count').textContent=ids.length.toLocaleString('ko-KR')+'칸';
-  $('list').innerHTML=ids.length?ids.slice(0,60).map((i,k)=>{const t=trIndex[C.tr[i]]||{};
-    return `<div class="row" tabindex="0" data-i="${i}"><span class="n">${k+1}</span><span class="nm">${t.gu||''} ${t.name||''}</span><span class="v">${fmt(C.sales[i],2)}억</span><span class="sub">500m 치킨집 ${C.chk[i]}곳 · 같은 브랜드 ${D.dist[st.brand][i]>=9999?'없음':(D.dist[st.brand][i]/1000).toFixed(1)+'km'} · 가게 회전 ${Math.round(C.turn[i]*100)}%</span></div>`}).join('')+(ids.length>60?`<div class="empty">상위 60칸만 보여줍니다. 나머지 ${ids.length-60}칸은 지도에 있습니다.</div>`:'')
-    :'<div class="empty">조건을 모두 만족하는 칸이 없습니다. "굵고 짧게"로 바꿔 보세요.</div>';
-  $('list').querySelectorAll('.row').forEach(r=>{const go=()=>{const i=+r.dataset.i;map.setView([C.lat[i],C.lon[i]],15);L_cand.eachLayer(l=>{const p=l.getLatLng();if(Math.abs(p.lat-C.lat[i])<1e-6&&Math.abs(p.lng-C.lon[i])<1e-6)l.openTooltip()})};r.onclick=go;r.onkeydown=e=>{if(e.key==='Enter')go()}});
+    L.rectangle([[la-dla,lo-dlo],[la+dla,lo+dlo]],{renderer:ren,stroke:false,fillColor:hot,fillOpacity:.2+.4*Math.min(1,(n-1)/(mx-1))}).bindTooltip(`<b>${esc(st.brand)}</b> ${n}곳이 이 500m 칸에 영업 중`,{sticky:true}).addTo(L_hot)});
+  // 후보: 상권별 점 하나
+  const G=groups(cells()); L_cand.clearLayers();
+  G.forEach((g,k)=>{const n=g.ids.length,sz=n>=10?28:n>=4?24:20;
+    const m=L.marker([g.lat,g.lon],{icon:L.divIcon({className:'',html:`<div class="cand-n${st.sel===g.code?' sel':''}" style="width:${sz}px;height:${sz}px">${n}</div>`,iconSize:[sz,sz]}),keyboard:false})
+      .bindTooltip(candTip(g,k),{direction:'top',offset:[0,-sz/2]}).addTo(L_cand);
+    m.on('click',()=>focus(g));});
+  $('count').textContent=`${G.length}곳 · ${G.reduce((s,g)=>s+g.ids.length,0)}칸`;
+  const top=G.slice(0,40);
+  $('list').innerHTML=top.map((g,k)=>`<md-list-item type="button" data-code="${esc(g.code)}">
+      <span slot="start" class="rank">${k+1}</span>
+      <div slot="headline">${esc(g.t.name||'상권 밖')}</div>
+      <div slot="supporting-text">${esc(g.t.gu||'')} · 후보 ${g.ids.length}칸 · 가장 가까운 ${esc(st.brand)} ${g.near>=9999?'없음':(g.near/1000).toFixed(1)+'km'}</div>
+      <span slot="end" class="tr-sales">${fmt(g.sales,2)}억</span></md-list-item>`).join('');
+  $('empty').hidden=G.length>0&&G.length<=40;
+  $('empty').textContent=G.length?`상위 40곳만 목록에 둡니다. 나머지 ${G.length-40}곳은 지도에 있습니다.`:'조건을 모두 만족하는 칸이 없습니다. "굵고 짧게"로 바꿔 보세요.';
+  $('list').querySelectorAll('md-list-item').forEach(el=>el.addEventListener('click',()=>focus(G.find(g=>g.code===el.dataset.code))));
   applyLayers();
 }
-function candTip(i,k,t){const C=D.cells,d=D.dist[st.brand][i];
-  return `<b>후보 ${k+1}</b> · ${t.gu||''} ${t.name||''} ${t.q?QN[t.q]:''}<br>상권 점포당 연매출 <span class="m">${fmt(C.sales[i],2)}</span>억 (서울 상위 ${Math.max(1,Math.round((1-C.pct[i])*100))}%)<br>500m 안 치킨집 <span class="m">${C.chk[i]}</span>곳 · 칸 안 음식점 <span class="m">${C.food[i]}</span>곳<br>가장 가까운 ${st.brand} <span class="m">${d>=9999?'없음':(d/1000).toFixed(1)+'km'}</span> · 최근 5년 가게 회전 <span class="m">${Math.round(C.turn[i]*100)}%</span>`}
+function focus(g){ if(!g) return; st.sel=g.code; map.setView([g.lat,g.lon],15); render(); }
+function candTip(g,k){
+  const C=D.cells, i=g.ids.reduce((a,j)=>C.turn[j]<C.turn[a]?j:a,g.ids[0]);
+  return `<b>${k+1}. ${esc(g.t.name||'상권 밖')}</b> · ${esc(g.t.gu||'')}<br>치킨 점포당 연매출 ${fmt(g.sales,2)}억 · 후보 ${g.ids.length}칸<br>500m 치킨집 ${C.chk[i]}곳 · 최근 5년 2년 못 간 음식점 ${C.dead[i]}곳 (현재 ${C.food[i]}곳)<br>가장 가까운 ${esc(st.brand)} ${g.near>=9999?'없음':(g.near/1000).toFixed(1)+'km'}`;
+}
 function applyLayers(){
   for(const [k,l] of [['trdar',L_tr],['hot',L_hot],['cand',L_cand]]){ if(st.layers[k]&&!map.hasLayer(l)) l.addTo(map); if(!st.layers[k]&&map.hasLayer(l)) map.removeLayer(l); }
-  if(map.hasLayer(L_hot)) L_hot.eachLayer(l=>l.bringToFront()); if(map.hasLayer(L_cand)) L_cand.eachLayer(l=>l.bringToFront());
 }
 </script>
+</body>
+</html>

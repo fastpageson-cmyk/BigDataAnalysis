@@ -1,6 +1,6 @@
 # 웹 지도(web/index.html)용 데이터 → web/data.json, data/processed/grid_candidates_v2.csv
 #  구 경계(행정동 경계를 구로 합침), 상권 폴리곤 + 매출×폐업 사분면(quadrant.py), 250m 칸(음식점 10곳 이상, 현재 2026-11-04 기준)
-#  후보 규칙(웹과 같음): 같은 브랜드 1km 밖 + 상권 점포당 매출 상위 25%. '가늘고 길게'는 여기에 가게 회전 상위 25% 아님 + 500m 치킨집 중앙값 이하
+#  후보 규칙(웹과 같음): 같은 브랜드 1km 밖 + 상권 점포당 매출 상위 25%(점포분기 20 이상 상권 중). '가늘고 길게'는 여기에 가게 회전 상위 25% 아님
 #  칸 변수: 500m 치킨집 수, 칸 중심이 속한 상권의 점포당 매출(최근 2024–26H1)·사분면, 가게 회전(최근 5년 2년 못 간 음식점 폐업 / 현재 음식점), 브랜드별 같은 브랜드 최근접 거리
 #  브랜드 밀집: 브랜드별 현재 영업 점포를 500m 칸으로 센 값(2곳 이상 칸만). 점포 좌표는 내보내지 않음
 import os,io,json,contextlib,importlib.util,numpy as np,pandas as pd,warnings; warnings.filterwarnings('ignore')
@@ -33,14 +33,15 @@ W=pd.read_csv(f'{P}/quadrant_trdar.csv',dtype={'상권코드':str}).set_index('�
 mx,my=W.점포당매출_뒤.median(),W.폐업률_뒤.median()
 W['q']=np.select([(W.점포당매출_뒤>=mx)&(W.폐업률_뒤<my),(W.점포당매출_뒤>=mx),(W.폐업률_뒤<my)],[1,2,3],4)
 W['both1']=(W.사분면.str.startswith('①')&(W.q==1)).astype(int)
-W['매출분위']=W.점포당매출_뒤.rank(pct=True)
+W['ok']=W.점포분기_뒤>=20   # 11/12: 점포분기 20 미만(약 5곳·1년 미만) 상권은 점포당 매출이 들쭉날쭉해 순위에서 뺌(73/555곳)
+W['매출분위']=W.점포당매출_뒤.where(W.ok).rank(pct=True)
 tA=Transformer.from_crs(5181,4326,always_xy=True).transform
 TR=[]
 for i,geom in enumerate(aa.G):
     code=str(A.상권코드.iloc[i]); w=W.loc[code] if code in W.index else None
     TR.append({'code':code,'name':A.상권명.iloc[i],'type':A.상권유형.iloc[i],'gu':A.구명.iloc[i],'geom':r5(stf(tA,geom).simplify(0.00008)),
                **({'q':int(w.q),'both1':int(w.both1),'sales':round(float(w.점포당매출_뒤)/1e4,2),'sales0':round(float(w.점포당매출_앞)/1e4,2),
-                   'close':round(float(w.폐업률_뒤)*100,1),'close0':round(float(w.폐업률_앞)*100,1),'pct':round(float(w.매출분위),3)} if w is not None else {})})
+                   'close':round(float(w.폐업률_뒤)*100,1),'close0':round(float(w.폐업률_앞)*100,1),'pct':(None if pd.isna(w.매출분위) else round(float(w.매출분위),3)),'nq':int(w.점포분기_뒤)} if w is not None else {})})
 
 # 3. 칸
 live=al[(al.o<=END)&(al.c>END)]; gx,gy=(live.X//S).astype(int),(live.Y//S).astype(int)
@@ -55,7 +56,7 @@ gi,_,_=aa.assign(cell.X.values,cell.Y.values); cell['상권코드']=np.where(gi>
 cell=cell.join(W[['점포당매출_뒤','q','매출분위']],on='상권코드')
 cell['lon'],cell['lat']=t4.transform(cell.X.values,cell.Y.values)
 bc=alive.브랜드.value_counts(); BR=[b for b in bc.index if bc[b]>=20]
-ft=pd.read_csv(f'{P}/chicken_brand_table.csv').set_index('브랜드'); qb=pd.read_csv(f'{P}/quadrant_brand.csv').set_index('브랜드')
+ft=pd.read_csv(f'{P}/chicken_brand_table.csv').set_index('브랜드'); fe=pd.read_csv(f'{P}/brand_entry.csv').set_index('브랜드'); qb=pd.read_csv(f'{P}/quadrant_brand.csv').set_index('브랜드')
 dist={}; dens={}
 for b in BR:
     s=alive[alive.브랜드==b]; dist[b]=np.minimum(cKDTree(s[['X','Y']].values).query(cell[['X','Y']].values)[0],9999).round(-1).astype(int).tolist()
@@ -66,9 +67,12 @@ q25,q50=cell.치킨500.quantile(.25),cell.치킨500.quantile(.5); turn75=cell.�
 brands=[{'name':b,'stores':int(bc[b]),'close3':(round(float(ft.loc[b,'서울3년실제폐업'])*100,1) if b in ft.index else None),
          'sales':(round(float(ft.loc[b,'평균매출24_천원'])/1e5,2) if b in ft.index and pd.notna(ft.loc[b,'평균매출24_천원']) else None),
          'cost':(round(float(ft.loc[b,'창업비_천원'])/1e5,2) if b in ft.index and pd.notna(ft.loc[b,'창업비_천원']) else None),
-         'quad':(qb.loc[b,'사분면_뒤'] if b in qb.index else None)} for b in BR]
+         'quad':(qb.loc[b,'사분면_뒤'] if b in qb.index else None),
+         # brand_signal.py: 공정위 2024 실적 전국 이탈률(계약종료+해지÷연초 가맹점), 신규 개점÷명의변경
+         'exit':(round(float(fe.loc[b,'이탈률'])*100,1) if b in fe.index and pd.notna(fe.loc[b,'이탈률']) else None),
+         'entry':(round(float(fe.loc[b,'신규/명의변경']),2) if b in fe.index else None)} for b in BR]
 CELLS={'lat':cell.lat.round(5).tolist(),'lon':cell.lon.round(5).tolist(),'food':cell.음식점.astype(int).tolist(),'chk':cell.치킨500.astype(int).tolist(),
-       'turn':cell.회전율.round(3).tolist(),'tr':cell.상권코드.fillna('').tolist(),'sales':[None if pd.isna(x) else round(x/1e4,2) for x in cell.점포당매출_뒤],
+       'turn':cell.회전율.round(3).tolist(),'dead':cell.단명폐업.astype(int).tolist(),'tr':cell.상권코드.fillna('').tolist(),'sales':[None if pd.isna(x) else round(x/1e4,2) for x in cell.점포당매출_뒤],
        'pct':[None if pd.isna(x) else round(x,3) for x in cell.매출분위],'q':[None if pd.isna(x) else int(x) for x in cell.q]}
 meta={'asof':'2026-11-04','q25':float(q25),'q50':float(q50),'turn75':round(float(turn75),3),'cells':len(cell)}
 json.dump({'meta':meta,'gu':GU,'trdar':TR,'cells':CELLS,'brands':brands,'dist':dist,'dens':dens},open(f'{WEB}/data.json','w'),ensure_ascii=False,separators=(',',':'))
@@ -79,7 +83,7 @@ rows=[]
 for b in BR:
     d=np.array(dist[b]); base=(d>1000)&cell.q.notna().values
     # grid_v2_backtest.py 결과: 상권 매출 상위 25%만 검증됨(2024–26 폐업 14.2% vs 21.4%, p=0.003). 경쟁 하위 25%는 프랜차이즈에서 폐업↑라 뺌
-    stable=base&(cell.매출분위.values>=.75)&(cell.회전율.values<turn75)&(cell.치킨500.values<=q50)   # 가늘고 길게
+    stable=base&(cell.매출분위.values>=.75)&(cell.회전율.values<turn75)   # 가늘고 길게. 11/12: '500m 치킨집 중앙값 이하' 조건은 뺌(경쟁 적은 칸이 프랜차이즈에서 오히려 폐업↑, grid_v2_backtest.py)
     bold=base&(cell.매출분위.values>=.75)                                                          # 굵고 짧게
     for nm,m in [('가늘고 길게',stable),('굵고 짧게',bold)]:
         t=cell[m].assign(브랜드=b,전략=nm,동브랜드최근접m=d[m]); rows.append(t)
