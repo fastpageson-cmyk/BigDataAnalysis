@@ -1,0 +1,20 @@
+.env
+.venv/
+__pycache__/
+.DS_Store
+
+# 제안서: 팀원 학번 포함
+제안서/
+
+# 대용량·재생성 가능 원천 데이터 (받는 곳은 data/SOURCES.md, 받는 법은 README)
+data/raw/인허가/
+data/raw/상권_행정동/
+data/raw/상권영역/
+data/raw/도로망/
+data/raw/생활인구/
+data/raw/막시무스/
+
+# 중간 산출물: 바이너리·점포 단위·대용량
+data/processed/*.pkl
+data/processed/sbiz_dong_points.csv
+data/processed/chicken_mobility_sample.csv
