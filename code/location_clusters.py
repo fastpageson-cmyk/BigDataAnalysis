@@ -20,7 +20,7 @@ c=cw.STORES['B_넓음'].copy(); c['연']=c.open.dt.year; c['면적']=np.log1p(pd
 for H in (3,5): c[f'y{H}']=((c.close<=c.open+pd.DateOffset(years=H))&~c.재등록).astype(int)
 gi,_,_=aa.assign(c.X.values,c.Y.values); c['상권i']=gi
 c['격자500']=(c.X//500).astype(int).astype(str)+'_'+(c.Y//500).astype(int).astype(str)
-A=pd.read_pickle(f'{P}/areas.pkl')   # area_assign과 같은 순서의 상권 표
+A=aa.A   # area_assign이 shp에서 바로 만든 상권 표(assign()의 인덱스와 같은 순서)
 c['상권']=np.where(gi>=0,'A'+pd.Series(gi).astype(str),'out_'+c.격자500)
 lg=lambda x:np.log(x/(1-x))
 TE=c[c.연.between(2017,2021)].copy()   # 평가: 2017–21 개업(5년 결과가 2026-11 전에 관측됨)
