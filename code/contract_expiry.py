@@ -15,6 +15,13 @@ K={'교촌':'교촌','BBQ':'비비큐|BBQ','bhc':'비에이치씨','굽네':'굽
 T={b:int(pd.to_numeric(k[k.brandNm.str.contains(p,na=False,regex=True)].frstCtrtYycnt,errors='coerce').mode().iloc[0]) for b,p in K.items() if k.brandNm.str.contains(p,na=False,regex=True).any()}
 print('브랜드별 최초 계약연수(공정위 정보공개서):',T)
 c=c[c.브랜드.isin(T)].copy(); c['T']=c.브랜드.map(T)
+# 계약연수가 해마다 바뀐 브랜드가 있으면 개업 당시 값을 쓴다: 개업연도+1 등록분(2017–2025로 자름), 없으면 브랜드 최빈값
+TY={}
+for b,p in K.items():
+    x=k[k.brandNm.str.contains(p,na=False,regex=True)].copy(); x['t']=pd.to_numeric(x.frstCtrtYycnt,errors='coerce')
+    for yr,v in x.dropna(subset=['t']).groupby('jngBizCrtraYr').t.agg(lambda s:int(s.mode().iloc[0])).items(): TY[(b,int(yr))]=v
+chg={b:sorted({v for (bb,_),v in TY.items() if bb==b}) for b in T}; print('연도별로 계약연수가 바뀐 브랜드:',{b:v for b,v in chg.items() if len(v)>1} or '없음')
+c['T']=[TY.get((b,int(min(max(y+1,2017),2025))),T[b]) for b,y in zip(c.브랜드,c.open.dt.year)]
 END=pd.Timestamp('2026-11-04'); c['end']=c.close.fillna(END).clip(upper=END)
 c['ev']=c.close.notna()&(c.close<=END)&~c.재등록
 c['dur']=((c.end-c.open).dt.days/30.4375).clip(lower=0)

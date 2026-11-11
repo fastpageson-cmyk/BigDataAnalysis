@@ -54,7 +54,7 @@ if HASB: print('  지상층수:',tab('지상층',[0,3,5,10,200],['1–2층','3�
 print('  주소상 층:',tab('층'))
 if HASB: print('  주용도:',tab('용도'))
 print('  통제 로지스틱 (면적·연도·log 경쟁, 전체엔 프랜차이즈도):')
-for v,f in [('지가백분위','지가백분위'),('층','C(층,Treatment("1층"))')]+([('건물나이','np.log1p(건물나이)'),('지상층','np.log(지상층)'),('용도','C(용도,Treatment("근생"))')] if HASB else []):
+for v,f in [('지가백분위','지가백분위'),('층','C(층,Treatment("1층"))')]+([('건물나이','np.log1p(건물나이)'),('지상층','np.log1p(지상층)'),('용도','C(용도,Treatment("근생"))')] if HASB else []):
     out=[]
     for nm,g in [('전체',d),('개인',d[d.프랜==0]),('프랜',d[d.프랜==1])]:
         m=smf.logit(f'y3~면적+C(연)+np.log1p(치킨500)+{f}'+('+프랜' if nm=='전체' else ''),g.dropna(subset=[v])).fit(disp=0)
