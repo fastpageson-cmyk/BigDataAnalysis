@@ -4,6 +4,7 @@ AI 기반 비즈니스 데이터 분석(HUFS GBT, 2026-2) 7조 팀 프로젝트.
 발표 상황: **50대 예비 창업자가 서울에서 치킨 가맹점을 낸다면, 어떤 브랜드를 어디에 내야 오래 살아남는가.**
 
 처음 보는 사람은 이 순서로 읽으면 됨:
+0. [분석정리.md](분석정리.md): 결론과 근거를 한 문서로
 1. 이 README: 결론, 데이터, 실행 순서
 2. [인수인계.md](인수인계.md): 지금 어디까지 왔고 다음에 뭘 할지, 버린 방향과 이유
 3. [data/SOURCES.md](data/SOURCES.md): 데이터 출처·이용조건 (모두 공개 데이터)
@@ -24,6 +25,7 @@ AI 기반 비즈니스 데이터 분석(HUFS GBT, 2026-2) 7조 팀 프로젝트.
 | 예측 모델이 기준선을 넘나 | 예. 브랜드+면적+브랜드 업력 3변수 로지스틱이 2021–22 개업 평가 AUC 0.700 vs 브랜드 평균 0.655(+0.045, 95% +0.025~+0.065). 위험 상위 20% 폐업 47% vs 하위 8%. 보조지표 36개·상권 매출·변화지표를 더해도 개선 없음 | `model.py`, `indicators.py`, `trdar_test.py` |
 | 매출(인기)과 폐업을 같이 보면 | 브랜드는 사분면이 80% 유지(① 교촌·bhc·60계). 상권은 폐업률이 기간마다 섞이지만, 앞 기간 매출이 높던 상권이 뒤에 덜 망함(하위 25% 12.0% vs 상위 25% 6.9%, p=0.0001) | `quadrant.py`, `figures/quadrant_trdar.png` |
 | 건물·땅값 정보 | 지하 매장이 더 망함(프랜차이즈 26% vs 1층 12%, p=0.009). 공시지가·층·자리 이력을 더해도 예측 AUC +0.006(유의하지 않음). 건축물대장은 수집 중 | `parcel_fetch.py`, `parcel_test.py` |
+| 몇 년 버티면 안전한가 | 개인은 2–3년차가 고비(연 15%), 5년 넘기면 9–10%로 줄지만 안전 구간은 없음. 프랜차이즈는 연차와 무관하게 브랜드가 위험을 정함 | `survival_threshold.py`, `figures/survival_by_age.png` |
 | 그럼 어디를 추천하나 | 250m 격자에서 '경쟁 적음 + 같은 브랜드 1km 밖' 칸을 후보로 거름. 백테스트에선 통과 칸 폐업 11% vs 탈락 13%로 방향은 맞지만 유의하지 않음 → **"위험 요인을 피한 후보지"로만 제시** | `grid_screen.py` |
 
 y(폐업)의 정의: 개업 후 3년(또는 5년) 안에 인허가상 폐업했고, 같은 자리(30m)에서 1년 안에 치킨집이 다시 등록되지 않은 경우(=점주만 바뀐 경우 제외).
@@ -49,6 +51,7 @@ y(폐업)의 정의: 개업 후 3년(또는 5년) 안에 인허가상 폐업했�
 | 지하철 출입구·역 좌표 | ✅ `data/raw/출입구/` | |
 | 서울시 상권 영역 폴리곤 1,650개 | ✅ `data/raw/상권영역/area.*` | |
 | 상권 단위 유동·상주·직장인구 2021–26 | ✅ `data/raw/막시무스/상권/` | |
+| 상권 단위 외식 추정매출·상권변화지표 2021–26 | ✗ (76MB) | `python code/trdar_api_fetch.py` (서울 열린데이터 키) |
 | 행정동 경계, 서울 생활인구 2017–22 | ✗ (3.5GB) | `python code/get_public_data.py` (로그인 불필요) |
 | 상권분석서비스 행정동 점포·추정매출 2021–25 | ✗ (210MB) | [OA-22172](https://data.seoul.go.kr/dataList/OA-22172/S/1/datasetView.do), [OA-22175](https://data.seoul.go.kr/dataList/OA-22175/S/1/datasetView.do)에서 연도별 CSV를 받아 `data/raw/상권분석_행정동/점포/점포_행정동_YYYY.csv`, `추정매출/추정매출_행정동_YYYY.csv`로 저장 |
 | 소상공인 상가정보 2026-06 (서울) | ✗ (302MB) | [data.go.kr 15083033](https://www.data.go.kr/data/15083033/fileData.do)에서 받아 서울만 `data/raw/막시무스/상가정보/sbiz_store_info_seoul_202606.csv`로 저장 (`mobility_feats.py`만 씀) |
@@ -79,12 +82,13 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 | 9 | `brand_risk_return.py` | 브랜드 수익·위험 지도 → `figures/brand_risk_return.png` | 3 |
 | 10 | `location_max.py` | 입지 변수 전부 합친 예측 한계 + 연 단위 위험 모형 (약 6분) | 2, 상권 폴리곤, 출입구 |
 | 11 | `indicators.py` | 개업 시점 보조지표 36개 생성·검증 → `indicator_tests.csv`, `_indicators.pkl` | 2, 5의 `location_units_sample.pkl`, 공정위 |
-| 12 | `model.py` | 지표 선택(학습 2018–20)·예측 방정식·기준선 비교 → `model_equation.csv`, `model_eval.csv` | 9 |
+| 12 | `model.py` | 지표 선택(학습 2018–20)·예측 방정식·기준선 비교 → `model_equation.csv`, `model_eval.csv` | 11 |
 | 13 | `trdar_api_fetch.py` → `trdar_test.py 3` (또는 `2`) | 상권 추정매출·상권변화지표 OpenAPI 수집, 개업 직전 분기 값 검증 → `trdar_tests_3y/2y.csv` | 2, 서울 OpenAPI 키 |
+| 14 | `site_history.py` | 자리 이력(가게 회전)과 단계별 거름망 | 2 |
+| 15 | `trdar_fetch.py` → `quadrant.py` | 상권 단위 치킨 매출·점포 수집 → 매출×폐업 사분면(상권·구·유형·브랜드)과 기간 검증 | 2, 서울 열린데이터 키 |
+| 16 | `parcel_fetch.py` → `parcel_test.py` | 공시지가·건축물대장 필지 수집 → 필지 정보 폐업 검증 | 2, 서울 열린데이터·data.go.kr 키 |
+| 17 | `survival_threshold.py` | 영업 연차별 폐업 위험(마의 구간) | 2, `quadrant.py` 결과 |
 
-| 11 | `site_history.py` | 자리 이력(가게 회전)과 단계별 거름망 | 2 |
-| 12 | `trdar_fetch.py` → `quadrant.py` | 상권 단위 치킨 매출·점포 수집 → 매출×폐업 사분면(상권·구·유형·브랜드)과 기간 검증 | 2, 서울 열린데이터 키 |
-| 13 | `parcel_fetch.py` → `parcel_test.py` | 공시지가·건축물대장 필지 수집 → 필지 정보 폐업 검증 | 2, 서울 열린데이터·data.go.kr 키 |
 
 1→2만 돌리면 3, 6, 7은 바로 돌아감(각 20초 안팎). 4, 5는 생활인구가 있어야 함.
 나머지 스크립트(`fit_*`, `exit_*`, `rec_*`, `micro_feats.py` 등)는 업종 전체를 보던 이전 단계 탐색이고, 결과는 [인수인계.md](인수인계.md)의 '버린 방향'에 정리돼 있음.
