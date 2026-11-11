@@ -21,6 +21,9 @@ AI 기반 비즈니스 데이터 분석(HUFS GBT, 2026-2) 7조 팀 프로젝트.
 | 동 단위 시장은 어떤가 | 서울 치킨집 2021→25년 16% 감소, 매출은 2023년 정점 후 −22%. 동에서 치킨집이 1% 늘면 점포당 매출 −0.64%(포화). 다만 개별 점포 폐업은 동 매출로 못 가름 | `dong_market.py` |
 | 수익과 위험을 같이 보면 | 교촌·굽네·60계가 '덜 망하고 많이 파는' 쪽. 창업비가 비싸다고 덜 망하지는 않음(순위상관 −0.14) | `brand_risk_return.py`, `figures/brand_risk_return.png` |
 | 입지 변수를 전부 합치면 | 브랜드+면적 AUC 0.674에 입지 20개 변수를 더해도 0.672. 개업 후 주변 변화를 넣은 연 단위 모형도 같음. 직전 가게가 1년 못 버틴 자리만 약한 신호(32% vs 26%) | `location_max.py` |
+| 예측 모델이 기준선을 넘나 | 예. 브랜드+면적+브랜드 업력 3변수 로지스틱이 2021–22 개업 평가 AUC 0.700 vs 브랜드 평균 0.655(+0.045, 95% +0.025~+0.065). 위험 상위 20% 폐업 47% vs 하위 8%. 보조지표 36개·상권 매출·변화지표를 더해도 개선 없음 | `model.py`, `indicators.py`, `trdar_test.py` |
+| 매출(인기)과 폐업을 같이 보면 | 브랜드는 사분면이 80% 유지(① 교촌·bhc·60계). 상권은 폐업률이 기간마다 섞이지만, 앞 기간 매출이 높던 상권이 뒤에 덜 망함(하위 25% 12.0% vs 상위 25% 6.9%, p=0.0001) | `quadrant.py`, `figures/quadrant_trdar.png` |
+| 건물·땅값 정보 | 지하 매장이 더 망함(프랜차이즈 26% vs 1층 12%, p=0.009). 공시지가·층·자리 이력을 더해도 예측 AUC +0.006(유의하지 않음). 건축물대장은 수집 중 | `parcel_fetch.py`, `parcel_test.py` |
 | 그럼 어디를 추천하나 | 250m 격자에서 '경쟁 적음 + 같은 브랜드 1km 밖' 칸을 후보로 거름. 백테스트에선 통과 칸 폐업 11% vs 탈락 13%로 방향은 맞지만 유의하지 않음 → **"위험 요인을 피한 후보지"로만 제시** | `grid_screen.py` |
 
 y(폐업)의 정의: 개업 후 3년(또는 5년) 안에 인허가상 폐업했고, 같은 자리(30m)에서 1년 안에 치킨집이 다시 등록되지 않은 경우(=점주만 바뀐 경우 제외).
@@ -73,9 +76,15 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 | 6 | `location_clusters.py` | 긴 기간·사람/이동 특성 군집·KNN 검증 | 2, 상권 폴리곤·상권 인구 |
 | 7 | `grid_screen.py` | 250m 격자 선별 백테스트 + 브랜드별 현재 후보 칸 → `data/processed/grid_candidates.csv` | 2 |
 | 8 | `dong_market.py` | 상권분석서비스 동 단위 치킨 시장 현황·인허가 교차검증·포화·동 매출→폐업 → `data/processed/dong_chicken_panel.csv` | 2, 상권분석서비스 행정동, 행정동 경계 |
-
 | 9 | `brand_risk_return.py` | 브랜드 수익·위험 지도 → `figures/brand_risk_return.png` | 3 |
 | 10 | `location_max.py` | 입지 변수 전부 합친 예측 한계 + 연 단위 위험 모형 (약 6분) | 2, 상권 폴리곤, 출입구 |
+| 11 | `indicators.py` | 개업 시점 보조지표 36개 생성·검증 → `indicator_tests.csv`, `_indicators.pkl` | 2, 5의 `location_units_sample.pkl`, 공정위 |
+| 12 | `model.py` | 지표 선택(학습 2018–20)·예측 방정식·기준선 비교 → `model_equation.csv`, `model_eval.csv` | 9 |
+| 13 | `trdar_api_fetch.py` → `trdar_test.py 3` (또는 `2`) | 상권 추정매출·상권변화지표 OpenAPI 수집, 개업 직전 분기 값 검증 → `trdar_tests_3y/2y.csv` | 2, 서울 OpenAPI 키 |
+
+| 11 | `site_history.py` | 자리 이력(가게 회전)과 단계별 거름망 | 2 |
+| 12 | `trdar_fetch.py` → `quadrant.py` | 상권 단위 치킨 매출·점포 수집 → 매출×폐업 사분면(상권·구·유형·브랜드)과 기간 검증 | 2, 서울 열린데이터 키 |
+| 13 | `parcel_fetch.py` → `parcel_test.py` | 공시지가·건축물대장 필지 수집 → 필지 정보 폐업 검증 | 2, 서울 열린데이터·data.go.kr 키 |
 
 1→2만 돌리면 3, 6, 7은 바로 돌아감(각 20초 안팎). 4, 5는 생활인구가 있어야 함.
 나머지 스크립트(`fit_*`, `exit_*`, `rec_*`, `micro_feats.py` 등)는 업종 전체를 보던 이전 단계 탐색이고, 결과는 [인수인계.md](인수인계.md)의 '버린 방향'에 정리돼 있음.

@@ -10,6 +10,9 @@
 | raw/상권_행정동/stores_*.csv | 서울시 상권분석서비스(점포-행정동) (OA-22172) | 서울특별시 | https://data.seoul.go.kr/dataList/OA-22172/S/1/datasetView.do | 2026-11-06 |
 | raw/상권분석_행정동/점포/점포_행정동_2021–2025.csv | 서울시 상권분석서비스(점포-행정동) (OA-22172) | 서울특별시 | https://data.seoul.go.kr/dataList/OA-22172/S/1/datasetView.do | 2026-11-11 (팀원 제공 zip) |
 | raw/상권분석_행정동/추정매출/추정매출_행정동_2021–2025.csv | 서울시 상권분석서비스(추정매출-행정동) (OA-22175) | 서울특별시 | https://data.seoul.go.kr/dataList/OA-22175/S/1/datasetView.do | 2026-11-11 (팀원 제공 zip) |
+| raw/상권_분기/치킨_매출_상권.csv, 치킨_점포_상권.csv | 서울시 상권분석서비스(추정매출-상권 OA-15572, 점포-상권 OA-15577) OpenAPI, 치킨전문점만 | 서울특별시 | https://data.seoul.go.kr/dataList/OA-15572/S/1/datasetView.do | 2026-11-11 (API) |
+| raw/필지/jiga.csv | 서울시 개별공시지가 정보 (OA-1180) OpenAPI | 서울특별시 | https://data.seoul.go.kr/dataList/OA-1180/S/1/datasetView.do | 2026-11-11 (API) |
+| raw/필지/brtitle.csv | 국토교통부 건축HUB 건축물대장정보 서비스 표제부 (15134735) | 국토교통부 | https://www.data.go.kr/data/15134735/openapi.do | 수집 중 |
 | (DAT) seoul_commercial_*_dong*.csv, 인구·집객시설 | 서울시 상권분석서비스 행정동 시리즈 | 서울특별시 | 위 OA 시리즈 | DAT 프로젝트 수집분, 날짜 재확인 필요 |
 | (DAT) sbiz_store_info_seoul_202606.csv | 소상공인시장진흥공단 상가(상권)정보 | 소상공인시장진흥공단 | https://www.data.go.kr/data/15083033/fileData.do | 2026-06 기준, 수집일 재확인 필요 |
 | raw/ftc_eatout_2017_2025.csv | 공정위 가맹정보 브랜드 가맹사업자 통합정보 외식업종 현황 (15165094) | 공정거래위원회 | https://www.data.go.kr/data/15165094/openapi.do | 2026-11-08 (API) |
