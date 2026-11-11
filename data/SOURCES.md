@@ -8,6 +8,8 @@
 | raw/인허가/일반음식점_인허가_서울.csv | 서울시 일반음식점 인허가 정보 (OA-16094) | 서울특별시 | https://data.seoul.go.kr/dataList/OA-16094/S/1/datasetView.do | 2026-11-05 |
 | raw/상권_행정동/sales_*.csv | 서울시 상권분석서비스(추정매출-행정동) (OA-22175) | 서울특별시 | https://data.seoul.go.kr/dataList/OA-22175/S/1/datasetView.do | 2026-11-06 |
 | raw/상권_행정동/stores_*.csv | 서울시 상권분석서비스(점포-행정동) (OA-22172) | 서울특별시 | https://data.seoul.go.kr/dataList/OA-22172/S/1/datasetView.do | 2026-11-06 |
+| raw/상권분석_행정동/점포/점포_행정동_2021–2025.csv | 서울시 상권분석서비스(점포-행정동) (OA-22172) | 서울특별시 | https://data.seoul.go.kr/dataList/OA-22172/S/1/datasetView.do | 2026-11-11 (팀원 제공 zip) |
+| raw/상권분석_행정동/추정매출/추정매출_행정동_2021–2025.csv | 서울시 상권분석서비스(추정매출-행정동) (OA-22175) | 서울특별시 | https://data.seoul.go.kr/dataList/OA-22175/S/1/datasetView.do | 2026-11-11 (팀원 제공 zip) |
 | (DAT) seoul_commercial_*_dong*.csv, 인구·집객시설 | 서울시 상권분석서비스 행정동 시리즈 | 서울특별시 | 위 OA 시리즈 | DAT 프로젝트 수집분, 날짜 재확인 필요 |
 | (DAT) sbiz_store_info_seoul_202606.csv | 소상공인시장진흥공단 상가(상권)정보 | 소상공인시장진흥공단 | https://www.data.go.kr/data/15083033/fileData.do | 2026-06 기준, 수집일 재확인 필요 |
 | raw/ftc_eatout_2017_2025.csv | 공정위 가맹정보 브랜드 가맹사업자 통합정보 외식업종 현황 (15165094) | 공정거래위원회 | https://www.data.go.kr/data/15165094/openapi.do | 2026-11-08 (API) |

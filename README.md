@@ -18,6 +18,7 @@ AI 기반 비즈니스 데이터 분석(HUFS GBT, 2026-2) 7조 팀 프로젝트.
 | 입지로 폐업을 미리 가를 수 있나 | 거의 못 함. 상권 정의 6종·반경 5종·이력 15년·사람/이동 특성 군집·KNN 모두 AUC 0.50–0.54 | `location_units.py`, `location_clusters.py` |
 | 입지에서 건질 것 | 저녁 수요가 많은 곳엔 치킨집이 몰림(상관 0.40). 수요가 낮은 동네에선 경쟁 적은 곳 17% vs 많은 곳 34% (p<0.001) | `location_units.py` |
 | 브랜드마다 맞는 입지가 있나 | 프랜차이즈는 주거지 상권에서 덜 망함(18% vs 먹자골목 26%, p=0.002). 브랜드별 궁합은 검증하면 대부분 사라짐(교촌이 어디서나 낮은 것만 확인) | `brand_fit.py`, `fit_validate.py` |
+| 동 단위 시장은 어떤가 | 서울 치킨집 2021→25년 16% 감소, 매출은 2023년 정점 후 −22%. 동에서 치킨집이 1% 늘면 점포당 매출 −0.64%(포화). 다만 개별 점포 폐업은 동 매출로 못 가름 | `dong_market.py` |
 | 그럼 어디를 추천하나 | 250m 격자에서 '경쟁 적음 + 같은 브랜드 1km 밖' 칸을 후보로 거름. 백테스트에선 통과 칸 폐업 11% vs 탈락 13%로 방향은 맞지만 유의하지 않음 → **"위험 요인을 피한 후보지"로만 제시** | `grid_screen.py` |
 
 y(폐업)의 정의: 개업 후 3년(또는 5년) 안에 인허가상 폐업했고, 같은 자리(30m)에서 1년 안에 치킨집이 다시 등록되지 않은 경우(=점주만 바뀐 경우 제외).
@@ -44,6 +45,7 @@ y(폐업)의 정의: 개업 후 3년(또는 5년) 안에 인허가상 폐업했�
 | 서울시 상권 영역 폴리곤 1,650개 | ✅ `data/raw/상권영역/area.*` | |
 | 상권 단위 유동·상주·직장인구 2021–26 | ✅ `data/raw/막시무스/상권/` | |
 | 행정동 경계, 서울 생활인구 2017–22 | ✗ (3.5GB) | `python code/get_public_data.py` (로그인 불필요) |
+| 상권분석서비스 행정동 점포·추정매출 2021–25 | ✗ (210MB) | [OA-22172](https://data.seoul.go.kr/dataList/OA-22172/S/1/datasetView.do), [OA-22175](https://data.seoul.go.kr/dataList/OA-22175/S/1/datasetView.do)에서 연도별 CSV를 받아 `data/raw/상권분석_행정동/점포/점포_행정동_YYYY.csv`, `추정매출/추정매출_행정동_YYYY.csv`로 저장 |
 | 소상공인 상가정보 2026-06 (서울) | ✗ (302MB) | [data.go.kr 15083033](https://www.data.go.kr/data/15083033/fileData.do)에서 받아 서울만 `data/raw/막시무스/상가정보/sbiz_store_info_seoul_202606.csv`로 저장 (`mobility_feats.py`만 씀) |
 
 API 키는 `.env`에 둠(저장소에 올리지 않음). 이미 받아 둔 데이터만 쓸 거면 키 없이 돌아감.
@@ -68,6 +70,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 | 5 | `location_units.py` | 지역 단위·반경·수요→경쟁→폐업 경로·이동 변수 검증 | 2, 4, 행정동 경계, 상권 폴리곤 |
 | 6 | `location_clusters.py` | 긴 기간·사람/이동 특성 군집·KNN 검증 | 2, 상권 폴리곤·상권 인구 |
 | 7 | `grid_screen.py` | 250m 격자 선별 백테스트 + 브랜드별 현재 후보 칸 → `data/processed/grid_candidates.csv` | 2 |
+| 8 | `dong_market.py` | 상권분석서비스 동 단위 치킨 시장 현황·인허가 교차검증·포화·동 매출→폐업 → `data/processed/dong_chicken_panel.csv` | 2, 상권분석서비스 행정동, 행정동 경계 |
 
 1→2만 돌리면 3, 6, 7은 바로 돌아감(각 20초 안팎). 4, 5는 생활인구가 있어야 함.
 나머지 스크립트(`fit_*`, `exit_*`, `rec_*`, `micro_feats.py` 등)는 업종 전체를 보던 이전 단계 탐색이고, 결과는 [인수인계.md](인수인계.md)의 '버린 방향'에 정리돼 있음.

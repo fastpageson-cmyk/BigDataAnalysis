@@ -15,6 +15,8 @@ data/raw/생활인구/
 data/raw/막시무스/*
 !data/raw/막시무스/상권/
 data/raw/행정동경계/
+data/raw/상권분석_행정동/
+/*.zip
 
 # 중간 산출물: 바이너리·점포 단위·대용량
 data/processed/*.pkl
