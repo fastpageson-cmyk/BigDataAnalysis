@@ -34,7 +34,7 @@ KEEP=['sigunguCd','bjdongCd','bun','ji','platGbCd','mgmBldrgstPk','regstrKindCdN
 def title(key):
     sg,bj,s,b,j=key; out=[]; page=1
     while True:
-        r=get('https://apis.data.go.kr/1613000/BldRgstHubService/getBrTitleInfo?'+urllib.parse.urlencode({'serviceKey':KD,'sigunguCd':sg,'bjdongCd':bj,'platGbCd':'1' if s else '0','bun':f'{int(b):04d}','ji':f'{int(j):04d}','numOfRows':'100','pageNo':str(page),'_type':'json'}))
+        r=get('https://apis.data.go.kr/1613000/BldRgstHubService/getBrTitleInfo?'+urllib.parse.urlencode({'serviceKey':KD,'sigunguCd':sg,'bjdongCd':bj,'platGbCd':'1' if str(s)=='1' else '0','bun':f'{int(b):04d}','ji':f'{int(j):04d}','numOfRows':'100','pageNo':str(page),'_type':'json'}))
         if r is None: return [dict(sigunguCd=sg,bjdongCd=bj,bun=b,ji=j,platGbCd=s,조회실패=1)]
         body=r.get('response',{}).get('body',{}); it=(body.get('items') or {}).get('item',[]) if isinstance(body.get('items'),dict) else []
         it=[it] if isinstance(it,dict) else it; out+= [{k:x.get(k) for k in KEEP} for x in it]

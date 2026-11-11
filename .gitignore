@@ -23,3 +23,4 @@ data/raw/상권_API/
 data/processed/*.pkl
 data/processed/sbiz_dong_points.csv
 data/processed/chicken_mobility_sample.csv
+logs/

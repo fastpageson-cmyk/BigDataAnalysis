@@ -1,0 +1,216 @@
+<meta charset="utf-8">
+<title>서울 치킨 창업 지도</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/*LEAFLET_CSS*/
+/* 구성: 왼쪽 판단 패널(브랜드 → 전략 → 후보 목록), 오른쪽 서울 전역 지도. 지도는 타일 없이 구 경계·상권만 그린 도면 */
+:root{
+  --paper:#eef0ee; --panel:#fbfcfb; --ink:#14181c; --ink2:#4a5157; --ink3:#6d747a; --line:#d5d9d6; --line2:#c2c8c4;
+  --q1:#2a78d6; --q2:#c98500; --q3:#1a9e70; --q4:#9aa0a6; --hot:#d3342f; --cand:#14181c; --candring:#fbfcfb; --sel:#2a78d6;
+  --f-sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif; --f-num:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#161a1d; --panel:#1d2226; --ink:#e9ece9; --ink2:#b9c0bd; --ink3:#9ba39f; --line:#2e3539; --line2:#3a4247;
+  --q1:#3f8ee6; --q2:#d99a12; --q3:#2bb886; --q4:#6c7378; --hot:#ef5a52; --cand:#f2f4f1; --candring:#161a1d; --sel:#5aa0ee; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#161a1d; --panel:#1d2226; --ink:#e9ece9; --ink2:#b9c0bd; --ink3:#9ba39f; --line:#2e3539; --line2:#3a4247;
+  --q1:#3f8ee6; --q2:#d99a12; --q3:#2bb886; --q4:#6c7378; --hot:#ef5a52; --cand:#f2f4f1; --candring:#161a1d; --sel:#5aa0ee; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font:14px/1.5 var(--f-sans);margin:0}
+::selection{background:var(--sel);color:#fff}
+.app{display:grid;grid-template-columns:minmax(300px,380px) 1fr;height:100%}
+aside{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;display:flex;flex-direction:column;gap:20px;padding-block:20px 28px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:20px;scrollbar-color:var(--line2) transparent}
+h1{font-size:20px;line-height:1.25;margin:0;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.lede{margin:6px 0 0;color:var(--ink2);font-size:13px}
+.block{display:flex;flex-direction:column;gap:8px}
+.lbl{font-size:12px;font-weight:500;color:var(--ink3);letter-spacing:.02em}
+select{font:inherit;font-size:15px;font-weight:500;color:var(--ink);background:var(--paper);border:1px solid var(--line2);border-radius:6px;padding:9px 10px;width:100%}
+select:focus-visible,button:focus-visible,.row:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.facts div{background:var(--panel);padding:8px 8px 7px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.facts b{font:500 15px/1.2 var(--f-num);font-variant-numeric:tabular-nums}
+.facts span{font-size:12px;color:var(--ink3)}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line2);border-radius:6px;overflow:hidden}
+.seg button{font:inherit;border:0;background:transparent;color:var(--ink2);padding:9px 6px;cursor:pointer;display:flex;flex-direction:column;gap:1px;text-align:left;padding-left:12px}
+.seg button b{font-size:14px;color:var(--ink)}
+.seg button small{font-size:12px;color:var(--ink3);line-height:1.35}
+.seg button[aria-pressed="true"]{background:var(--ink);}
+.seg button[aria-pressed="true"] b,.seg button[aria-pressed="true"] small{color:var(--panel)}
+.seg button+button{border-left:1px solid var(--line2)}
+.rule{font-size:12.5px;color:var(--ink2);margin:0}
+.layers{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:12.5px;border:1px solid var(--line2);background:transparent;color:var(--ink2);border-radius:999px;padding:5px 11px 5px 9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.chip[aria-pressed="false"]{opacity:.55}
+.chip[aria-pressed="false"] i{background:transparent!important;outline:1px solid var(--line2)}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:5px 8px;font-size:12px;color:var(--ink2);align-items:center}
+.legend i{width:14px;height:10px;border-radius:2px;display:inline-block}
+.head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.count{font:500 22px/1 var(--f-num);font-variant-numeric:tabular-nums}
+.list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:22px 1fr auto;gap:2px 8px;padding:8px 2px;border-bottom:1px solid var(--line);cursor:pointer;align-items:baseline}
+.row:hover{background:var(--paper)}
+.row .n{font:400 12px var(--f-num);color:var(--ink3)}
+.row .nm{font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .v{font:500 13px var(--f-num);font-variant-numeric:tabular-nums}
+.row .sub{grid-column:2/4;font-size:12px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.empty{color:var(--ink3);font-size:13px;padding:12px 0}
+.note{font-size:12px;color:var(--ink3);line-height:1.55;border-top:1px solid var(--line);padding-top:12px;margin:0}
+main{position:relative;min-width:0}
+#map{position:absolute;inset:0;background:var(--paper)}
+.leaflet-container{font:inherit;background:var(--paper)}
+.leaflet-control-zoom a{background:var(--panel)!important;color:var(--ink)!important;border-color:var(--line)!important}
+.gu-label{font:500 12px var(--f-sans);color:var(--ink3);white-space:nowrap;text-shadow:0 0 3px var(--paper),0 0 3px var(--paper);pointer-events:none}
+.leaflet-tooltip{background:var(--panel);color:var(--ink);border:1px solid var(--line2);border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.12);font:12.5px/1.45 var(--f-sans);padding:7px 9px}
+.leaflet-tooltip b{font-weight:700}
+.leaflet-tooltip .m{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink3);font-size:13px}
+@media (max-width:760px){
+  .app{grid-template-columns:1fr;grid-template-rows:56vh auto;height:auto}
+  main{order:-1;height:56vh}
+  aside{border-right:0;border-top:1px solid var(--line);overflow:visible;padding-right:max(16px,env(safe-area-inset-right,0px));padding-left:max(16px,env(safe-area-inset-left,0px))}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <aside>
+    <div>
+      <h1>서울 치킨 창업 지도</h1>
+      <p class="lede">브랜드를 고르면, 서울 전역에서 그 브랜드로 낼 만한 250m 칸을 보여줍니다.</p>
+    </div>
+
+    <div class="block">
+      <label class="lbl" for="brand">브랜드</label>
+      <select id="brand"></select>
+      <div class="facts" id="facts"></div>
+    </div>
+
+    <div class="block">
+      <span class="lbl" id="stratlbl">전략</span>
+      <div class="seg" role="group" aria-labelledby="stratlbl">
+        <button id="s-long" aria-pressed="true"><b>가늘고 길게</b><small>장사가 되는 상권 중 가게가 덜 바뀌고 덜 붐비는 칸</small></button>
+        <button id="s-short" aria-pressed="false"><b>굵고 짧게</b><small>장사가 되는 상권이면 경쟁이 있어도 포함</small></button>
+      </div>
+      <p class="rule" id="rule"></p>
+    </div>
+
+    <div class="block">
+      <span class="lbl">지도에 보이기</span>
+      <div class="layers">
+        <button class="chip" id="l-trdar" aria-pressed="true"><i style="background:var(--q1)"></i>상권 매출×폐업</button>
+        <button class="chip" id="l-hot" aria-pressed="true"><i style="background:var(--hot)"></i>이 브랜드가 몰린 곳</button>
+        <button class="chip" id="l-cand" aria-pressed="true"><i style="background:var(--cand)"></i>후보 칸</button>
+      </div>
+      <div class="legend">
+        <i style="background:var(--q1)"></i><span>① 잘 팔리고 덜 망하는 상권</span>
+        <i style="background:var(--q2)"></i><span>② 잘 팔리지만 많이 망하는 상권</span>
+        <i style="background:var(--q3)"></i><span>③ 덜 팔리지만 덜 망하는 상권</span>
+        <i style="background:var(--q4)"></i><span>④ 덜 팔리고 많이 망하는 상권</span>
+        <i style="background:var(--hot)"></i><span>이 브랜드 점포가 500m 칸에 2곳 이상 (진할수록 많음)</span>
+        <i style="background:var(--cand);border-radius:50%;width:10px;height:10px;margin-left:2px;box-shadow:0 0 0 1.5px var(--candring),0 0 0 2.5px var(--line2)"></i><span>후보 칸 (250m 칸의 중심)</span>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="head"><span class="lbl">후보 칸 · 점포당 매출 높은 순</span><span class="count" id="count">–</span></div>
+      <div class="list" id="list"><div class="empty">데이터를 불러오는 중입니다.</div></div>
+    </div>
+
+    <p class="note" id="note">
+      검증(2023년 말 상태로 칸을 나누고 2024–26년 실제 폐업과 비교): 상권 점포당 매출 상위 25%에 있던 치킨집은 폐업 14.2%, 나머지 21.4% (p=0.003). 같은 기준이 개인 치킨집에서는 뚜렷하지만(15.4% vs 25.9%) 프랜차이즈 안에서는 차이가 없었습니다. 프랜차이즈는 어느 칸이냐보다 어느 브랜드냐가 폐업을 가릅니다. '경쟁이 적은 칸'은 프랜차이즈에서 오히려 폐업이 많아(23.2% vs 11.8%) 기준에서 뺐습니다. 같은 브랜드 1km 밖 조건은 가맹 영업구역 관행을 따른 것이고 검증된 효과는 아닙니다.<br><br>
+      자료: 서울 인허가 치킨집(2026-11-04), 서울시 상권분석서비스 상권 추정매출·점포(2024Q1–2026Q2), 공정위 가맹정보 2024. 매출은 카드 결제 기반 추정이며 이익이 아닙니다.
+    </p>
+  </aside>
+  <main><div id="map" role="region" aria-label="서울 지도"></div><div class="loading" id="loading">지도를 그리는 중입니다.</div></main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const $=id=>document.getElementById(id);
+const st={brand:null,strat:'long',layers:{trdar:true,hot:true,cand:true}};
+let D,map,L_gu,L_tr,L_hot,L_cand,trIndex={};
+const QN={1:'①',2:'②',3:'③',4:'④'};
+const fmt=(x,d=1)=>x==null?'–':x.toLocaleString('ko-KR',{maximumFractionDigits:d,minimumFractionDigits:d});
+
+fetch('data.json').then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(init).catch(e=>{
+  $('loading').textContent='지도 데이터(data.json)를 불러오지 못했습니다. 페이지를 새로 고쳐 주세요.';$('list').innerHTML='<div class="empty">데이터를 불러오지 못했습니다.</div>';
+});
+
+function init(data){
+  D=data; $('loading').hidden=true;
+  D.trdar.forEach(t=>trIndex[t.code]=t);
+  map=L.map('map',{zoomControl:true,preferCanvas:true,attributionControl:false,zoomSnap:.25}).setView([37.5565,126.99],11);
+  const ren=L.canvas({padding:.3});
+  L_gu=L.layerGroup().addTo(map);
+  D.gu.forEach(g=>{
+    const lay=L.geoJSON(g.geom,{renderer:ren,interactive:false,style:{color:css('--line2'),weight:1.2,fill:true,fillColor:css('--panel'),fillOpacity:1}}).addTo(L_gu);
+    const c=lay.getBounds().getCenter();
+    L.marker(c,{interactive:false,icon:L.divIcon({className:'gu-label',html:g.name,iconSize:null})}).addTo(L_gu);
+  });
+  L_tr=L.geoJSON({type:'FeatureCollection',features:D.trdar.map(t=>({type:'Feature',geometry:t.geom,properties:t}))},{renderer:ren,style:trStyle,onEachFeature:(f,l)=>l.bindTooltip(trTip(f.properties),{sticky:true})}).addTo(map);
+  L_hot=L.layerGroup().addTo(map); L_cand=L.layerGroup().addTo(map);
+  const seoul=L.geoJSON(D.gu.map(g=>g.geom)).getBounds();
+  const fit=()=>{map.invalidateSize(false); const s=map.getSize(); if(s.x>0&&s.y>0) map.fitBounds(seoul,{padding:[12,12],animate:false}); else map.setView([37.5565,126.99],11,{animate:false})};
+  requestAnimationFrame(fit); new ResizeObserver(()=>map.invalidateSize(false)).observe($('map'));
+  const sel=$('brand');
+  const order=['교촌','bhc','60계','굽네','지코바','처갓집','푸라닭','BBQ'];
+  const bs=[...D.brands].sort((a,b)=>(order.indexOf(a.name)<0?99:order.indexOf(a.name))-(order.indexOf(b.name)<0?99:order.indexOf(b.name))||b.stores-a.stores);
+  sel.innerHTML=bs.map(b=>`<option value="${b.name}">${b.name}${b.quad?'  ·  사분면 '+b.quad:''}</option>`).join('');
+  st.brand=bs[0].name;
+  sel.addEventListener('change',e=>{st.brand=e.target.value;render()});
+  $('s-long').onclick=()=>{st.strat='long';render()}; $('s-short').onclick=()=>{st.strat='short';render()};
+  for(const k of ['trdar','hot','cand']) $('l-'+k).onclick=()=>{st.layers[k]=!st.layers[k];$('l-'+k).setAttribute('aria-pressed',st.layers[k]);applyLayers()};
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{L_tr.setStyle(trStyle);render()});
+  render();
+}
+function trStyle(f){
+  const p=f.properties; const col=p.q?css('--q'+p.q):css('--line2');
+  return {color:p.both1?css('--q1'):col,weight:p.both1?1.6:.6,fillColor:col,fillOpacity:p.q?(p.q===1?.42:.28):.06,opacity:p.q?.9:.4};
+}
+function trTip(p){
+  if(!p.q) return `<b>${p.name}</b><br>${p.gu} · ${p.type}<br>치킨 매출 자료 없음`;
+  return `<b>${p.name}</b> <span>${QN[p.q]}</span><br>${p.gu} · ${p.type}<br>치킨집 점포당 연매출 <span class="m">${fmt(p.sales,2)}</span>억 <span style="color:var(--ink3)">(2021–23: ${fmt(p.sales0,2)})</span><br>연 실제 폐업률 <span class="m">${fmt(p.close)}</span>% <span style="color:var(--ink3)">(2021–23: ${fmt(p.close0)}%)</span>${p.both1?'<br>두 기간 모두 ①':''}`;
+}
+function cells(){
+  const C=D.cells, dist=D.dist[st.brand], out=[];
+  for(let i=0;i<C.lat.length;i++){
+    if(C.pct[i]==null||C.pct[i]<.75||dist[i]<=1000) continue;
+    if(st.strat==='long'&&(C.turn[i]>=D.meta.turn75||C.chk[i]>D.meta.q50)) continue;
+    out.push(i);
+  }
+  return out.sort((a,b)=>C.sales[b]-C.sales[a]||C.chk[a]-C.chk[b]);
+}
+function render(){
+  const b=D.brands.find(x=>x.name===st.brand);
+  $('s-long').setAttribute('aria-pressed',st.strat==='long'); $('s-short').setAttribute('aria-pressed',st.strat==='short');
+  $('facts').innerHTML=[[b.close3==null?'–':fmt(b.close3)+'%','서울 3년 폐업'],[b.sales==null?'–':fmt(b.sales,1)+'억','연 평균매출'],[b.cost==null?'–':fmt(b.cost,2)+'억','창업비'],[b.stores.toLocaleString('ko-KR'),'서울 영업 중']].map(([v,k])=>`<div><b>${v}</b><span>${k}</span></div>`).join('');
+  $('rule').textContent=(st.strat==='long'
+    ?`조건: 상권 점포당 매출 상위 25% · 같은 ${st.brand} 1km 밖 · 최근 5년 가게 회전 상위 25% 아님 · 500m 치킨집 ${D.meta.q50}곳 이하`
+    :`조건: 상권 점포당 매출 상위 25% · 같은 ${st.brand} 1km 밖`);
+  // 밀집
+  L_hot.clearLayers(); const hot=css('--hot'); const dn=D.dens[st.brand]||[]; const mx=Math.max(2,...dn.map(d=>d[2]));
+  dn.forEach(([la,lo,n])=>{const dla=250/111320,dlo=250/(111320*Math.cos(la*Math.PI/180));
+    L.rectangle([[la-dla,lo-dlo],[la+dla,lo+dlo]],{stroke:false,fillColor:hot,fillOpacity:.25+.55*Math.min(1,(n-1)/(mx-1))}).bindTooltip(`<b>${st.brand}</b> ${n}곳이 이 500m 칸에 영업 중`,{sticky:true}).addTo(L_hot)});
+  // 후보
+  L_cand.clearLayers(); const ids=cells(), C=D.cells, cc=css('--cand'), ring=css('--candring');
+  ids.forEach((i,k)=>{const t=trIndex[C.tr[i]]||{};
+    L.circleMarker([C.lat[i],C.lon[i]],{radius:5.5,color:ring,weight:1.5,fillColor:cc,fillOpacity:1}).bindTooltip(candTip(i,k,t),{sticky:true}).addTo(L_cand)});
+  $('count').textContent=ids.length.toLocaleString('ko-KR')+'칸';
+  $('list').innerHTML=ids.length?ids.slice(0,60).map((i,k)=>{const t=trIndex[C.tr[i]]||{};
+    return `<div class="row" tabindex="0" data-i="${i}"><span class="n">${k+1}</span><span class="nm">${t.gu||''} ${t.name||''}</span><span class="v">${fmt(C.sales[i],2)}억</span><span class="sub">500m 치킨집 ${C.chk[i]}곳 · 같은 브랜드 ${D.dist[st.brand][i]>=9999?'없음':(D.dist[st.brand][i]/1000).toFixed(1)+'km'} · 가게 회전 ${Math.round(C.turn[i]*100)}%</span></div>`}).join('')+(ids.length>60?`<div class="empty">상위 60칸만 보여줍니다. 나머지 ${ids.length-60}칸은 지도에 있습니다.</div>`:'')
+    :'<div class="empty">조건을 모두 만족하는 칸이 없습니다. "굵고 짧게"로 바꿔 보세요.</div>';
+  $('list').querySelectorAll('.row').forEach(r=>{const go=()=>{const i=+r.dataset.i;map.setView([C.lat[i],C.lon[i]],15);L_cand.eachLayer(l=>{const p=l.getLatLng();if(Math.abs(p.lat-C.lat[i])<1e-6&&Math.abs(p.lng-C.lon[i])<1e-6)l.openTooltip()})};r.onclick=go;r.onkeydown=e=>{if(e.key==='Enter')go()}});
+  applyLayers();
+}
+function candTip(i,k,t){const C=D.cells,d=D.dist[st.brand][i];
+  return `<b>후보 ${k+1}</b> · ${t.gu||''} ${t.name||''} ${t.q?QN[t.q]:''}<br>상권 점포당 연매출 <span class="m">${fmt(C.sales[i],2)}</span>억 (서울 상위 ${Math.max(1,Math.round((1-C.pct[i])*100))}%)<br>500m 안 치킨집 <span class="m">${C.chk[i]}</span>곳 · 칸 안 음식점 <span class="m">${C.food[i]}</span>곳<br>가장 가까운 ${st.brand} <span class="m">${d>=9999?'없음':(d/1000).toFixed(1)+'km'}</span> · 최근 5년 가게 회전 <span class="m">${Math.round(C.turn[i]*100)}%</span>`}
+function applyLayers(){
+  for(const [k,l] of [['trdar',L_tr],['hot',L_hot],['cand',L_cand]]){ if(st.layers[k]&&!map.hasLayer(l)) l.addTo(map); if(!st.layers[k]&&map.hasLayer(l)) map.removeLayer(l); }
+  if(map.hasLayer(L_hot)) L_hot.eachLayer(l=>l.bringToFront()); if(map.hasLayer(L_cand)) L_cand.eachLayer(l=>l.bringToFront());
+}
+</script>
