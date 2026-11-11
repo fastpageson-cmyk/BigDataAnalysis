@@ -13,6 +13,7 @@ data/raw/상권영역/
 data/raw/도로망/
 data/raw/생활인구/
 data/raw/막시무스/
+data/raw/행정동경계/
 
 # 중간 산출물: 바이너리·점포 단위·대용량
 data/processed/*.pkl

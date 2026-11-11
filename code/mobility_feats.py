@@ -6,19 +6,25 @@ from pyproj import Transformer
 O=os.path.dirname(os.path.dirname(os.path.abspath(__file__))); P=f'{O}/data/processed'
 tf=Transformer.from_crs(4326,5174,always_xy=True)   # 인허가 좌표계(EPSG:5174)에 맞춤
 
-# 1) 생활인구: 월 파일마다 행정동×시간대 평균 → 연도 평균. 시간대 띠: 낮 11–13시, 저녁 17–20시, 밤 21–23시
-BAND={**{h:'낮' for h in (11,12,13)},**{h:'저녁' for h in (17,18,19,20)},**{h:'밤' for h in (21,22,23)}}
+# 1) 생활인구: 월 파일마다 행정동×시간대 평균 → 연도 평균. 시간대 띠: 새벽 3–5시(거주자 대리), 낮 11–13시, 저녁 17–20시, 밤 21–23시
+#    연령: 저녁 20대(20–29), 저녁 30·40대(30–49, 가족 배달 수요)
+BAND={**{h:'새벽' for h in (3,4,5)},**{h:'낮' for h in (11,12,13)},**{h:'저녁' for h in (17,18,19,20)},**{h:'밤' for h in (21,22,23)}}
 out=[]
 for z in sorted(glob.glob(f'{O}/data/raw/생활인구/LOCAL_PEOPLE_DONG_*.zip')):
     with zipfile.ZipFile(z) as Z:
         for n in Z.namelist():
             raw=Z.read(n); enc='utf-8-sig' if raw[:3]==b'\xef\xbb\xbf' else 'cp949'   # 월마다 인코딩이 다름
-            df=pd.read_csv(io.BytesIO(raw),encoding=enc,usecols=[0,1,2,3],header=0,names=['일','시','동','인구'],dtype={'일':str,'시':int,'동':str})
+            df=pd.read_csv(io.BytesIO(raw),encoding=enc,header=0,dtype={0:str,2:str},usecols=range(32))
+            c=df.columns; df=df.rename(columns={c[0]:'일',c[1]:'시',c[2]:'동',c[3]:'인구'}); df['시']=df.시.astype(int)
+            age=lambda lo,hi:[x for x in c[4:] if any(f'{a}세부터' in x for a in range(lo,hi,5))]
+            df['인구2029']=df[age(20,30)].apply(pd.to_numeric,errors='coerce').sum(axis=1); df['인구3049']=df[age(30,50)].apply(pd.to_numeric,errors='coerce').sum(axis=1)
             df['띠']=df.시.map(BAND); df=df.dropna(subset=['띠'])
-            g=df.groupby(['동','띠']).인구.mean().unstack(); g['월']=n[-10:-4]; out.append(g.reset_index())
+            g=df.groupby(['동','띠']).인구.mean().unstack()
+            e=df[df.띠=='저녁'].groupby('동')[['인구2029','인구3049']].mean().rename(columns=lambda x:'저녁'+x[2:])
+            g=g.join(e); g['월']=n[-10:-4]; out.append(g.reset_index())
             print(n,len(df),flush=True)
 lp=pd.concat(out); lp['연']=lp.월.str[:4].astype(int)
-lp=lp.groupby(['동','연'])[['낮','저녁','밤']].mean().reset_index(); lp.to_csv(f'{P}/living_pop_dong_year.csv',index=False,encoding='utf-8-sig')
+lp=lp.groupby(['동','연'])[['새벽','낮','저녁','밤','저녁2029','저녁3049']].mean().reset_index(); lp.to_csv(f'{P}/living_pop_dong_year.csv',index=False,encoding='utf-8-sig')
 print('생활인구',lp.shape,lp.연.min(),lp.연.max(),lp.동.nunique(),'동')
 
 # 2) 지하철: 역명 정리(괄호 부기 제거, 끝 '역' 제거) → 역×연도 월평균 하차(전체, 저녁 17–20시). 환승역은 호선 합산

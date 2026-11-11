@@ -15,6 +15,7 @@
 | raw/출입구/osm_subway_entrance_seoul.json | OpenStreetMap 서울 지하철 출입구(railway=subway_entrance, ref=출구번호) | OpenStreetMap 기여자 | https://overpass-api.de (Overpass API) | 2026-11-08, ODbL(출처 표기 필요) |
 | raw/출입구/seoul_station_master_20260902.csv | 서울시 역사마스터 정보(역 좌표) | 서울특별시 | DAT 저장소 사본, 원 출처 data.seoul.go.kr | 2026-09-02 |
 | raw/도로망/osm_roads_seoul.json | OpenStreetMap 서울 도로(highway 12종, 서울 경계 상자) | OpenStreetMap 기여자 | https://overpass-api.de (Overpass API) | 2026-11-08, ODbL(출처 표기 필요) |
+| raw/행정동경계/HangJeongDong_ver20200701.geojson | 행정동 경계 2020-07 (EPSG:5179), 통계청 SGIS 경계 기반 가공 | admdongkor(vuski), CC BY 4.0 | https://github.com/vuski/admdongkor | 2026-11-11 |
 | (추가 후보) 전국 일반음식점 인허가 | 행정안전부_식품_일반음식점 (15045016) | 행정안전부 | https://www.data.go.kr/data/15045016/fileData.do | 미수집 |
 | raw/ftc_brand_list_2017_2025.csv | 공정위 가맹정보 브랜드 목록 정보 (15125467), 대표자명 제외 저장 | 공정거래위원회 | https://www.data.go.kr/data/15125467/openapi.do | 2026-11-11 (API) |
 | raw/ftc_brand_frcs_stats_2017_2025.csv | 공정위 가맹정보 브랜드별 가맹점 현황 (15110241) | 공정거래위원회 | https://www.data.go.kr/data/15110241/openapi.do | 2026-11-11 (API) |

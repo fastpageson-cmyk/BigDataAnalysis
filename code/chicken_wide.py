@@ -29,7 +29,7 @@ def run(name,mask):
     for i,r in c[c.close.notna()].iterrows():
         q=[j for j in T.query_ball_point([r.X,r.Y],30) if j!=i]
         if q: o=c.open.values[q]; same[i]=((o>=np.datetime64(r.close-pd.Timedelta(days=60)))&(o<=np.datetime64(r.close+pd.Timedelta(days=365)))).any()
-    c['재등록']=same
+    c['재등록']=same; STORES[name]=c   # 전 기간 점포(재등록 표시 포함)를 다른 스크립트가 쓰도록 보관
     d=c[c.open.dt.year.between(2015,2022)].copy()
     d['y_신고']=(d.close<=d.open+pd.DateOffset(years=3)).astype(int); d['y_실제']=(d.y_신고.astype(bool)&~d.재등록).astype(int)
     ao=c.open.values; ac=c.close.fillna(pd.Timestamp('2100-01-01')).values; dens=[]
@@ -45,7 +45,7 @@ def run(name,mask):
     out.update(AUC_프랜만=roc_auc_score(d[te].y_실제,d[te].프랜차이즈.map(d[tr].groupby('프랜차이즈').y_실제.mean())),AUC_모델=roc_auc_score(d[te].y_실제,m.predict(d[te])))
     return out,d
 
-R=[];D={}
+R=[];D={};STORES={}
 for k,v in defs.items(): o,D[k]=run(k,v); R.append(o)
 pd.set_option('display.width',250)
 print(pd.DataFrame(R).set_index('정의').T.round(3).to_string())
