@@ -1,5 +1,5 @@
 # 업종별 입지 민감도 비교: '동네의 과거 폐업률'이 새 가게의 3년 폐업을 얼마나 가르는가를 치킨과 다른 외식 업종에서 같은 방법으로 잰다.
-#  y = 3년 안 인허가 폐업 − 점주 교체(같은 업종이 같은 자리 30m에 폐업 −60일~+1년 안 재등록). chicken_wide.py와 같은 규칙을 모든 업종에 적용.
+#  y = 3년 안 인허가 폐업 − 점주 교체(같은 업종이 같은 자리 30m에 폐업 −60일~+90일 안 재등록). chicken_wide.py와 같은 규칙을 모든 업종에 적용.
 #  동네 위험 = 500m 칸에서 2010–14 개업한 전 업종 음식점의 3년 실제 폐업률(평가 표본 개업 전인 2017년 말까지 결과 확정, 20곳 가중 수축).
 #  평가 = 2018–22 개업. 통제 = 브랜드(30곳 이상 브랜드는 개별, 나머지 프랜차이즈 묶음, 개인) + 면적 + 개업연도.
 # 출력: data/processed/industry_location.csv
@@ -37,7 +37,7 @@ for g,s in a.groupby('업종'):
     nb=T.query_ball_point(cl[['X','Y']].values,30); out=np.zeros(len(cl),bool)
     for i,(q,c0,me) in enumerate(zip(nb,cl.close.values,cl.index.values)):
         q=[j for j in q if idx[j]!=me]
-        if q: oo=o[q]; out[i]=((oo>=c0-np.timedelta64(60,'D'))&(oo<=c0+np.timedelta64(365,'D'))).any()
+        if q: oo=o[q]; out[i]=((oo>=c0-np.timedelta64(60,'D'))&(oo<=c0+np.timedelta64(90,'D'))).any()
     a.loc[cl.index,'재등록']=out
 a['연']=a.open.dt.year
 a['y신고']=(a.close<=a.open+pd.DateOffset(years=3)).astype(int); a['y']=(a.y신고.astype(bool)&~a.재등록).astype(int)

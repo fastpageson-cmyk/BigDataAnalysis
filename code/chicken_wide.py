@@ -25,10 +25,10 @@ defs={'A_좁음':(a.src=='rest')&((a.업태구분명=='통닭(치킨)')|((a.업�
 def run(name,mask):
     c=a[mask].copy(); c['X']=pd.to_numeric(c['좌표정보(X)'],errors='coerce'); c['Y']=pd.to_numeric(c['좌표정보(Y)'],errors='coerce')
     c=c[c.X.notna()].reset_index(drop=True); c['프랜차이즈']=c.브랜드.notna()
-    T=cKDTree(c[['X','Y']].values); same=np.zeros(len(c),bool)   # 같은 자리(30m) 폐업 -60일~+1년 안 같은 정의 점포 재등록 = 점주 교체
+    T=cKDTree(c[['X','Y']].values); same=np.zeros(len(c),bool)   # 같은 자리(30m) 폐업 -60일~+90일 안 같은 정의 점포 재등록 = 점주 교체 (11/12 1년→90일: 3개월 넘게 비었다 들어온 건 양도가 아니라 폐업 후 새 세입자)
     for i,r in c[c.close.notna()].iterrows():
         q=[j for j in T.query_ball_point([r.X,r.Y],30) if j!=i]
-        if q: o=c.open.values[q]; same[i]=((o>=np.datetime64(r.close-pd.Timedelta(days=60)))&(o<=np.datetime64(r.close+pd.Timedelta(days=365)))).any()
+        if q: o=c.open.values[q]; same[i]=((o>=np.datetime64(r.close-pd.Timedelta(days=60)))&(o<=np.datetime64(r.close+pd.Timedelta(days=90)))).any()
     c['재등록']=same; STORES[name]=c   # 전 기간 점포(재등록 표시 포함)를 다른 스크립트가 쓰도록 보관
     d=c[c.open.dt.year.between(2015,2022)].copy()
     d['y_신고']=(d.close<=d.open+pd.DateOffset(years=3)).astype(int); d['y_실제']=(d.y_신고.astype(bool)&~d.재등록).astype(int)
